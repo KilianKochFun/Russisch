@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `коричневый–любимый`,
+  karten: [
+    { ru: `коричневый`, de: `braun`, m: `Adj.` },
+    { ru: `костюм`, de: `Anzug`, m: `m.` },
+    { ru: `кошка`, de: `Katze`, m: `f. (Pers.)` },
+    { ru: `красивый`, de: `schön`, m: `Adj.` },
+    { ru: `красный`, de: `Rot`, m: `Adj.` },
+    { ru: `кресло`, de: `Sessel`, m: `n.` },
+    { ru: `купить`, de: `kaufen`, m: `Verb` },
+    { ru: `курить`, de: `rauchen`, m: `Verb` },
+    { ru: `курица`, de: `Huhn`, m: `f. (Pers.)` },
+    { ru: `курс`, de: `Kurs`, m: `m.` },
+    { ru: `кухня`, de: `Die Küche`, m: `f.` },
+    { ru: `лампа`, de: `Lampe`, m: `f.` },
+    { ru: `левый`, de: `Linke(r`, m: `Adj.` },
+    { ru: `лежать`, de: `liegen`, m: `Verb` },
+    { ru: `лекция`, de: `Vorlesung`, m: `f.` },
+    { ru: `лето`, de: `Sommer`, m: `n.` },
+    { ru: `литература`, de: `Literatur`, m: `f.` },
+    { ru: `лицо`, de: `Gesicht`, m: `n.` },
+    { ru: `ложка`, de: `Der Löffel`, m: `f.` },
+    { ru: `любимый`, de: `Lieblings-`, m: `Adj.` },
+  ]
+}

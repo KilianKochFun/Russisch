@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `уставать–фотоаппарат`,
+  karten: [
+    { ru: `уставать`, de: `müde sein`, m: `Verb` },
+    { ru: `утро`, de: `der Morgen (Tagesanfang)`, m: `n.` },
+    { ru: `учебник`, de: `Lehrbuch`, m: `m.` },
+    { ru: `ученик`, de: `Schüler`, m: `m. (Pers.)` },
+    { ru: `учитель`, de: `Lehrer`, m: `m. (Pers.)` },
+    { ru: `учительница`, de: `Lehrerin`, m: `f. (Pers.)` },
+    { ru: `учить`, de: `lernen`, m: `Verb` },
+    { ru: `учиться`, de: `erlernen`, m: `Verb` },
+    { ru: `учреждение`, de: `(öffentl.) Einrichtung`, m: `n.` },
+    { ru: `учёный`, de: `gelehrt`, m: `m. (Pers.)` },
+    { ru: `фабрика`, de: `Fabrik`, m: `f.` },
+    { ru: `факультет`, de: `Fakultät`, m: `m.` },
+    { ru: `фамилия`, de: `Familienname`, m: `f.` },
+    { ru: `февраль`, de: `Februar`, m: `m.` },
+    { ru: `физика`, de: `Physik`, m: `f.` },
+    { ru: `философия`, de: `Philosophie`, m: `f.` },
+    { ru: `фильм`, de: `Film`, m: `m.` },
+    { ru: `фирма`, de: `Firma`, m: `f.` },
+    { ru: `форма`, de: `die Form`, m: `f.` },
+    { ru: `фотоаппарат`, de: `Fotoapparat`, m: `m.` },
+  ]
+}

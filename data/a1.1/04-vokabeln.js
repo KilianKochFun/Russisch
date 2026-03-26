@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `Adjektive & erste Verben`,
+  karten: [
+    { ru: `бизнесмен`, de: `Geschäftsmann`, m: `m. (Pers.) — Wie „Businessman" — direkt aus dem Englischen übernommen.` },
+    { ru: `билет`, de: `Eintrittskarte`, m: `m. — Wie „Billet" — frz. billet; Fahr- oder Eintrittskarte.` },
+    { ru: `биология`, de: `Biologie`, m: `f. — Wie „Biologie" — griech. βίος (Leben) + λόγος (Lehre); internationales Wort.` },
+    { ru: `богатый`, de: `reich`, m: `Adj. — Reich. Gegenteil: бедный (arm). Реdewendung: богатый опыт = reiche Erfahrung.` },
+    { ru: `больной`, de: `krank`, m: `Adj./m. (Pers.) — Von боль (Schmerz). больной = krank; der Kranke. Gegenteil: здоровый.` },
+    { ru: `большой`, de: `groß`, m: `Adj. — Groß. Merke: Большой Театр = das berühmte Moskauer Bolschoi-Theater!` },
+    { ru: `брат`, de: `Bruder`, m: `m. (Pers.) — Wie dt. „Bruder" — beide von urindogerm. *bhrātēr. Universales Wort.` },
+    { ru: `брать`, de: `nehmen`, m: `Verb — Nehmen (imperfektiv). Perfektiv-Paar: брать / взять. Merke: возьми это! = nimm das!` },
+    { ru: `будущий`, de: `zukünftig`, m: `Adj. — Von будущее (Zukunft), von быть (sein). Das Zukünftige, das Kommende.` },
+    { ru: `бытовой`, de: `Alltags-`, m: `Adj. — Von быт (Alltag, Lebensweise). бытовые проблемы = Alltagsprobleme.` },
+    { ru: `вагон`, de: `Wagen`, m: `m. — Wie „Waggon" — aus dem Englischen/Deutschen. Der Eisenbahnwagen.` },
+    { ru: `век`, de: `Jahrhundert`, m: `m. — Jahrhundert oder Zeitalter. Redewendung: на мой век = zu meiner Lebenszeit.` },
+    { ru: `великий`, de: `groß`, m: `Adj. — Bedeutend, groß (im übertragenen Sinne). Пётр Великий = Peter der Große!` },
+    { ru: `весна`, de: `Frühling`, m: `f. — Frühling. Benannt nach der slawischen Frühlingsgöttin Весна. весной = im Frühling.` },
+    { ru: `весёлый`, de: `fröhlich`, m: `Adj. — Fröhlich, lustig. Von веселье (Freude, Spaß). весёлая вечеринка = lustige Party.` },
+    { ru: `вечер`, de: `Abend`, m: `m. — Abend. Merke: добрый вечер! = Guten Abend!; вечером = abends.` },
+    { ru: `взять`, de: `nehmen`, m: `Verb — Nehmen (perfektiv). Imperfektiv-Paar: брать / взять. возьми! = nimm! (Befehl)` },
+    { ru: `видеть`, de: `sehen`, m: `Verb — Sehen. Wie „Video" — lat. videre = sehen. я вижу = ich sehe (Stamm wechselt!).` },
+    { ru: `виза`, de: `Visum`, m: `f. — Wie „Visum/Visa" — lat. visus (gesehen). Das internationale Reisedokument.` },
+    { ru: `вино`, de: `Wein`, m: `n. — Wie ital./span. „vino" oder frz. „vin". Von lat. vinum — internationales Kulturwort.` },
+  ]
+}

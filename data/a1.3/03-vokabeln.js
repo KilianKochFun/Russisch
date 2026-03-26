@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `передача–позвонить`,
+  karten: [
+    { ru: `передача`, de: `Weitergabe (Abgabe`, m: `f.` },
+    { ru: `петь`, de: `singen`, m: `Verb` },
+    { ru: `пиво`, de: `Bier`, m: `n.` },
+    { ru: `писатель`, de: `Schriftsteller`, m: `m. (Pers.)` },
+    { ru: `писать`, de: `schreiben`, m: `Verb` },
+    { ru: `письмо`, de: `Brief`, m: `n.` },
+    { ru: `пить`, de: `trinken`, m: `Verb` },
+    { ru: `платье`, de: `Kleid`, m: `n.` },
+    { ru: `плохой`, de: `schlecht`, m: `Adj.` },
+    { ru: `площадь`, de: `Platz`, m: `f.` },
+    { ru: `повторять`, de: `wiederholen`, m: `Verb` },
+    { ru: `погода`, de: `Wetter`, m: `f.` },
+    { ru: `подарить`, de: `schenken`, m: `Verb` },
+    { ru: `подарок`, de: `Geschenk`, m: `m.` },
+    { ru: `подруга`, de: `Freundin`, m: `f. (Pers.)` },
+    { ru: `подумать`, de: `denken`, m: `Verb` },
+    { ru: `поезд`, de: `Zug`, m: `m.` },
+    { ru: `поездка`, de: `Reise`, m: `f.` },
+    { ru: `поехать`, de: `fahren`, m: `Verb` },
+    { ru: `позвонить`, de: `klingeln`, m: `Verb` },
+  ]
+}

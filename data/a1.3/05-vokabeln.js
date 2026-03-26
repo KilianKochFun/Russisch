@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `пойти–проблема`,
+  karten: [
+    { ru: `пойти`, de: `losgehen (gehen`, m: `Verb` },
+    { ru: `покупать`, de: `kaufen`, m: `Verb` },
+    { ru: `половина`, de: `die Hälfte`, m: `f.` },
+    { ru: `помнить`, de: `sich erinnern`, m: `Verb` },
+    { ru: `понедельник`, de: `Montag`, m: `m.` },
+    { ru: `понравиться`, de: `gefallen`, m: `Verb` },
+    { ru: `пообедать`, de: `Mittag essen`, m: `Verb` },
+    { ru: `попросить`, de: `bitten`, m: `Verb` },
+    { ru: `посмотреть`, de: `schauen`, m: `Verb` },
+    { ru: `поступать`, de: `behandeln`, m: `Verb` },
+    { ru: `посылать`, de: `schicken`, m: `Verb` },
+    { ru: `поужинать`, de: `Abendbrot essen`, m: `Verb` },
+    { ru: `почта`, de: `Post`, m: `f.` },
+    { ru: `поэт`, de: `Dichter`, m: `m. (Pers.)` },
+    { ru: `правый`, de: `(der/die/das) Rechte`, m: `Adj.` },
+    { ru: `предмет`, de: `Gegenstand`, m: `m.` },
+    { ru: `преподаватель`, de: `Lehrer`, m: `m. (Pers.)` },
+    { ru: `приезжать`, de: `ankommen`, m: `Verb` },
+    { ru: `приложение`, de: `Anhang`, m: `n.` },
+    { ru: `проблема`, de: `Problem`, m: `f.` },
+  ]
+}

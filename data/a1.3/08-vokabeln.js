@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `родственник–северный`,
+  karten: [
+    { ru: `родственник`, de: `Verwandter`, m: `m. (Pers.)` },
+    { ru: `рождение`, de: `Geburt`, m: `n.` },
+    { ru: `роман`, de: `Roman`, m: `m.` },
+    { ru: `российский`, de: `russisch`, m: `Adj.` },
+    { ru: `рот`, de: `Mund`, m: `m.` },
+    { ru: `рубашка`, de: `Hemd`, m: `f.` },
+    { ru: `рубль`, de: `Rubel`, m: `m.` },
+    { ru: `рука`, de: `Hand`, m: `f.` },
+    { ru: `русский`, de: `der Russe`, m: `Adj.` },
+    { ru: `ручка`, de: `Stift`, m: `f.` },
+    { ru: `рыба`, de: `Fisch`, m: `f. (Pers.)` },
+    { ru: `сад`, de: `Garten`, m: `m.` },
+    { ru: `салат`, de: `Salat`, m: `m.` },
+    { ru: `самолет`, de: `airplane`, m: `m.` },
+    { ru: `сахар`, de: `Zucker`, m: `m.` },
+    { ru: `свет`, de: `Licht`, m: `m.` },
+    { ru: `свидание`, de: `Verabredung`, m: `n.` },
+    { ru: `свободный`, de: `frei`, m: `Adj.` },
+    { ru: `сделать`, de: `machen`, m: `Verb` },
+    { ru: `северный`, de: `nördlich`, m: `Adj.` },
+  ]
+}

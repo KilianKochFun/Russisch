@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `семья–современный`,
+  karten: [
+    { ru: `семья`, de: `Familie`, m: `f.` },
+    { ru: `сентябрь`, de: `September`, m: `m.` },
+    { ru: `серый`, de: `grau`, m: `Adj.` },
+    { ru: `серьёзный`, de: `ernst`, m: `Adj.` },
+    { ru: `сестра`, de: `Schwester`, m: `f. (Pers.)` },
+    { ru: `сидеть`, de: `sitzen`, m: `Verb` },
+    { ru: `сильный`, de: `stark`, m: `Adj.` },
+    { ru: `синий`, de: `blau`, m: `Adj.` },
+    { ru: `сказать`, de: `sagen`, m: `Verb` },
+    { ru: `следующий`, de: `nächste`, m: `Adj.` },
+    { ru: `словарь`, de: `Wörterbuch`, m: `m.` },
+    { ru: `слово`, de: `Wort`, m: `n.` },
+    { ru: `смелый`, de: `mutig`, m: `Adj.` },
+    { ru: `смерть`, de: `Tod`, m: `f.` },
+    { ru: `смотреть`, de: `schauen`, m: `Verb` },
+    { ru: `смочь`, de: `können`, m: `Verb` },
+    { ru: `снег`, de: `Schnee`, m: `m.` },
+    { ru: `собака`, de: `Hund`, m: `f. (Pers.)` },
+    { ru: `событие`, de: `Ereignis`, m: `n.` },
+    { ru: `современный`, de: `modern`, m: `Adj.` },
+  ]
+}

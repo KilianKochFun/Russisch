@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `зелёный–картина`,
+  karten: [
+    { ru: `зелёный`, de: `Grün`, m: `Adj.` },
+    { ru: `зима`, de: `Winter`, m: `f.` },
+    { ru: `знать`, de: `Adel`, m: `Verb` },
+    { ru: `игра`, de: `Spiel`, m: `f.` },
+    { ru: `играть`, de: `spielen`, m: `Verb` },
+    { ru: `идти`, de: `gehen`, m: `Verb` },
+    { ru: `известный`, de: `bekannt`, m: `Adj.` },
+    { ru: `имя`, de: `Name`, m: `n.` },
+    { ru: `инженер`, de: `Ingenieur`, m: `m. (Pers.)` },
+    { ru: `иностранец`, de: `Ausländer`, m: `m. (Pers.)` },
+    { ru: `иностранный`, de: `ausländisch`, m: `Adj.` },
+    { ru: `интересный`, de: `interessant`, m: `Adj.` },
+    { ru: `исторический`, de: `historisch`, m: `Adj.` },
+    { ru: `история`, de: `Geschichte`, m: `f.` },
+    { ru: `июль`, de: `Juli`, m: `m.` },
+    { ru: `июнь`, de: `Juni`, m: `m.` },
+    { ru: `кабинет`, de: `Zimmer`, m: `m.` },
+    { ru: `карандаш`, de: `Bleistift`, m: `m.` },
+    { ru: `карта`, de: `Karte`, m: `f.` },
+    { ru: `картина`, de: `Bild`, m: `f.` },
+  ]
+}

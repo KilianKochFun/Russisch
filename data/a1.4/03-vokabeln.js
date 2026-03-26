@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `столица–телевизор`,
+  karten: [
+    { ru: `столица`, de: `Hauptstadt`, m: `f.` },
+    { ru: `столовая`, de: `Kantine`, m: `f.` },
+    { ru: `стоять`, de: `stehen`, m: `Verb` },
+    { ru: `страна`, de: `Land`, m: `f.` },
+    { ru: `страница`, de: `Seite`, m: `f.` },
+    { ru: `строить`, de: `bauen`, m: `Verb` },
+    { ru: `студент`, de: `Student`, m: `m. (Pers.)` },
+    { ru: `студенческий`, de: `Studenten-`, m: `Adj.` },
+    { ru: `стул`, de: `Stuhl`, m: `m.` },
+    { ru: `суббота`, de: `Samstag`, m: `f.` },
+    { ru: `сувенир`, de: `Souvenir`, m: `m.` },
+    { ru: `сумка`, de: `Tasche`, m: `f.` },
+    { ru: `суп`, de: `Suppe`, m: `m.` },
+    { ru: `счастливый`, de: `glücklich`, m: `Adj.` },
+    { ru: `сын`, de: `Sohn`, m: `m. (Pers.)` },
+    { ru: `сыр`, de: `Käse`, m: `m.` },
+    { ru: `талантливый`, de: `talentiert`, m: `Adj.` },
+    { ru: `танцевать`, de: `tanzen`, m: `Verb` },
+    { ru: `театр`, de: `Theater`, m: `m.` },
+    { ru: `телевизор`, de: `Fernsehgerät`, m: `m.` },
+  ]
+}

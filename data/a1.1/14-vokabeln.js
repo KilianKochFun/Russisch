@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `Verben & Gesundheit`,
+  karten: [
+    { ru: `ждать`, de: `warten`, m: `Verb — Warten. подожди! = warte mal!; долго ждать = lange warten. я жду = ich warte.` },
+    { ru: `желание`, de: `Wunsch`, m: `n. — Wunsch, Verlangen. Von желать (wünschen). загадать желание = einen Wunsch äußern.` },
+    { ru: `желать`, de: `wünschen`, m: `Verb — Wünschen. желаю удачи! = ich wünsche Glück!; желаю здоровья! = ich wünsche Gesundheit!` },
+    { ru: `жена`, de: `Ehefrau`, m: `f. (Pers.) — Ehefrau. муж и жена = Mann und Frau. женатый = verheiratet (von einem Mann).` },
+    { ru: `женский`, de: `weiblich`, m: `Adj. — Weiblich, für Frauen. женский туалет = Damentoilette; женское имя = weiblicher Vorname.` },
+    { ru: `женщина`, de: `Frau`, m: `f. (Pers.) — Frau (allgemein). мужчина и женщина = Mann und Frau. молодая женщина = junge Frau.` },
+    { ru: `жизнь`, de: `Leben`, m: `f. — Leben. вся жизнь = das ganze Leben; образ жизни = Lebensweise. Achtung: f. trotz -ь!` },
+    { ru: `житель`, de: `Einwohner`, m: `m. (Pers.) — Von жить (leben). жители города = die Stadtbewohner. жительница = Einwohnerin.` },
+    { ru: `жить`, de: `leben`, m: `Verb — Leben, wohnen. где вы живёте? = wo wohnen Sie?; живём! = wir leben! (ugs.: alles gut).` },
+    { ru: `журнал`, de: `Zeitschrift`, m: `m. — Wie frz. „journal" (Tagebuch, Zeitung). Журнал = Zeitschrift oder Heft in der Schule.` },
+    { ru: `журналист`, de: `Journalist`, m: `m. (Pers.) — Wie „Journalist" — aus dem Französischen. Schreiber für den журнал.` },
+    { ru: `жёлтый`, de: `gelb`, m: `Adj. — Gelb. жёлтая пресса = Boulevardpresse (die gelbe Presse). жёлтый свет = gelbes Licht.` },
+    { ru: `завод`, de: `Fabrik`, m: `m. — Fabrik, Werk. Von заводить (in Gang setzen). автомобильный завод = Automobilwerk.` },
+    { ru: `завтрак`, de: `Frühstück`, m: `m. — Frühstück. Von завтра (morgen)? Nein — das „frühmorgendliche Essen". завтракать = frühstücken.` },
+    { ru: `завтракать`, de: `frühstücken`, m: `Verb — Frühstücken. Von завтрак. я завтракаю = ich frühstücke; время завтрака = Frühstückszeit.` },
+    { ru: `звонить`, de: `anrufen`, m: `Verb — Klingeln, anrufen. позвони мне! = ruf mich an!; звонок = Klingel/Anruf. звонит телефон = das Handy klingelt.` },
+    { ru: `здание`, de: `Gebäude`, m: `n. — Gebäude, Bauwerk. высокое здание = hohes Gebäude; здание вокзала = Bahnhofsgebäude.` },
+    { ru: `здоровый`, de: `gesund`, m: `Adj. — Gesund. будь здоров! = sei gesund! (sagt man nach dem Niesen). здоровое питание = gesunde Ernährung.` },
+    { ru: `здоровье`, de: `Gesundheit`, m: `n. — Gesundheit. на здоровье! = Prost!/Gern geschehen!; за здоровье! = auf die Gesundheit!` },
+    { ru: `здравствовать`, de: `leben`, m: `Verb — Leben, gedeihen. Nur in: здравствуйте! = Guten Tag! (wörtl.: seid gesund/lebt!).` },
+  ]
+}

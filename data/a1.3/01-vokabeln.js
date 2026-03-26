@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `обувь–паспорт`,
+  karten: [
+    { ru: `обувь`, de: `Schuhe`, m: `f.` },
+    { ru: `общежитие`, de: `Wohnheim`, m: `n.` },
+    { ru: `общий`, de: `gemeinsam`, m: `Adj.` },
+    { ru: `овощ`, de: `Gemüse`, m: `m.` },
+    { ru: `одежда`, de: `Kleidung`, m: `f.` },
+    { ru: `окно`, de: `Fenster`, m: `n.` },
+    { ru: `октябрь`, de: `Oktober`, m: `m.` },
+    { ru: `опаздывать`, de: `sich verspäten`, m: `Verb` },
+    { ru: `осень`, de: `Herbst`, m: `f.` },
+    { ru: `остановка`, de: `Haltestelle`, m: `f.` },
+    { ru: `ответ`, de: `Antwort`, m: `m.` },
+    { ru: `отдыхать`, de: `sich ausruhen`, m: `Verb` },
+    { ru: `отец`, de: `Vater`, m: `m. (Pers.)` },
+    { ru: `открытка`, de: `Postkarte`, m: `f.` },
+    { ru: `очки`, de: `Brille`, m: `nur Pl.` },
+    { ru: `ошибка`, de: `Fehler`, m: `f.` },
+    { ru: `пальто`, de: `Mantel`, m: `n.` },
+    { ru: `папа`, de: `Papa`, m: `m. (Pers.)` },
+    { ru: `парк`, de: `Park`, m: `m.` },
+    { ru: `паспорт`, de: `Personalausweis`, m: `m.` },
+  ]
+}

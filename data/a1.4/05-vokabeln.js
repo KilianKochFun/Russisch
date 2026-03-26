@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `телефон–урок`,
+  karten: [
+    { ru: `телефон`, de: `Telefon`, m: `m.` },
+    { ru: `температура`, de: `Temperatur`, m: `f.` },
+    { ru: `теннис`, de: `Tennis`, m: `m.` },
+    { ru: `тетрадь`, de: `Heft`, m: `f.` },
+    { ru: `техника`, de: `Technik`, m: `f.` },
+    { ru: `трамвай`, de: `Straßenbahn`, m: `m.` },
+    { ru: `транспорт`, de: `Transport`, m: `m.` },
+    { ru: `троллейбус`, de: `Trolleybus`, m: `m.` },
+    { ru: `трудный`, de: `schwer`, m: `Adj.` },
+    { ru: `тётя`, de: `Tante`, m: `f. (Pers.)` },
+    { ru: `увидеть`, de: `sehen`, m: `Verb` },
+    { ru: `удовольствие`, de: `Vergnügen`, m: `n.` },
+    { ru: `ужин`, de: `Abendessen`, m: `m.` },
+    { ru: `ужинать`, de: `Abendbrot essen`, m: `Verb` },
+    { ru: `улица`, de: `Straße`, m: `f.` },
+    { ru: `умирать`, de: `sterben`, m: `Verb` },
+    { ru: `умный`, de: `klug`, m: `Adj.` },
+    { ru: `университет`, de: `Universität`, m: `m.` },
+    { ru: `упражнение`, de: `Übung`, m: `n.` },
+    { ru: `урок`, de: `Lektion`, m: `m.` },
+  ]
+}

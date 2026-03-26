@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `Grundwörter A–Б`,
+  karten: [
+    { ru: `Россия`, de: `Russland`, m: `f. — Weltbekannter Name, russisch „Rassija". Das Land der Russen.` },
+    { ru: `август`, de: `August`, m: `m. — Klingt wie „August" — von Kaiser Augustus, gilt auch im Russischen.` },
+    { ru: `автобус`, de: `Bus`, m: `m. — Klingt wie „Autobus" — direkt aus dem Deutschen/Englischen entlehnt.` },
+    { ru: `адрес`, de: `Adresse`, m: `m. — Klingt wie „Adresse" — aus dem Französischen übernommen.` },
+    { ru: `активный`, de: `aktiv`, m: `Adj. — Wie „aktiv" — lat. activus, in fast allen europäischen Sprachen gleich.` },
+    { ru: `английский`, de: `Englisch`, m: `Adj. — Von Англия (England) + -ский. Die Endung -ский macht Adjektive aus Ländernamen.` },
+    { ru: `англичанин`, de: `Engländer`, m: `m. (Pers.) — Англия + -чанин = Einwohner Englands. Endung -чанин/-янин = Einwohnersuffix.` },
+    { ru: `апрель`, de: `April`, m: `m. — Wie „April" — gleiche lateinische Wurzel (aperire = öffnen).` },
+    { ru: `аптека`, de: `Apotheke`, m: `f. — Wie „Apotheke" — aus griech. ἀποθήκη (Aufbewahrungsort).` },
+    { ru: `артист`, de: `Künstler`, m: `m. (Pers.) — Wie „Artist" — lat. ars = Kunst; internationales Wort.` },
+    { ru: `архитектура`, de: `Architektur`, m: `f. — Wie „Architektur" — griechisch-lateinischer Ursprung, weltweit gleich.` },
+    { ru: `аудитория`, de: `Auditorium`, m: `f. — Wie „Auditorium" — lat. audire (hören); der Hörsaal.` },
+    { ru: `аэропорт`, de: `Flughafen`, m: `m. — аэро (Luft, griech. ἀήρ) + порт (Hafen) = Lufthafen → Flughafen.` },
+    { ru: `бабушка`, de: `Großmutter`, m: `f. (Pers.) — „баба" = alte Frau (urslawisch); -ушка = Koseform → die liebe Oma.` },
+    { ru: `балет`, de: `Ballett`, m: `m. — Wie „Ballett" — aus frz. ballet entlehnt; Russland ist weltberühmt dafür.` },
+    { ru: `банк`, de: `Bank`, m: `m. — Wie „Bank" — ital. banco; weltweit gleiches Finanzwort.` },
+    { ru: `бассейн`, de: `Schwimmbad`, m: `m. — Aus frz. bassin (Becken) — das Schwimmbecken/der Pool.` },
+    { ru: `бедный`, de: `arm`, m: `Adj. — Arm, bedürftig. Gegenteil: богатый (reich). Бедный = bedrückt und ohne Geld.` },
+    { ru: `белый`, de: `weiß`, m: `Adj. — Weiß. Tipp: Белоруссия = „Weißrussland"; белый медведь = Eisbär (weißer Bär).` },
+    { ru: `библиотека`, de: `Bibliothek`, m: `f. — Wie „Bibliothek" — griech. βιβλίο (Buch) + θήκη (Aufbewahrung).` },
+  ]
+}

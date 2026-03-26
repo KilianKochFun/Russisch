@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `согласный–стол`,
+  karten: [
+    { ru: `согласный`, de: `einverstanden`, m: `Adj.` },
+    { ru: `сок`, de: `Saft`, m: `m.` },
+    { ru: `солнце`, de: `Sonne`, m: `n.` },
+    { ru: `соль`, de: `Salz`, m: `f.` },
+    { ru: `сосед`, de: `Nachbar`, m: `m. (Pers.)` },
+    { ru: `спать`, de: `schlafen`, m: `Verb` },
+    { ru: `специальность`, de: `Fach`, m: `f.` },
+    { ru: `спокойный`, de: `ruhig`, m: `Adj.` },
+    { ru: `спорт`, de: `Sport`, m: `m.` },
+    { ru: `спрашивать`, de: `fragen`, m: `Verb` },
+    { ru: `среда`, de: `Mittwoch`, m: `f.` },
+    { ru: `стадион`, de: `Stadion`, m: `m.` },
+    { ru: `становиться`, de: `werden (zu)`, m: `Verb` },
+    { ru: `станция`, de: `Station`, m: `f.` },
+    { ru: `старший`, de: `der ältere`, m: `Adj.` },
+    { ru: `старый`, de: `alt`, m: `Adj.` },
+    { ru: `статья`, de: `Artikel`, m: `f.` },
+    { ru: `стена`, de: `Wand`, m: `f.` },
+    { ru: `стоить`, de: `kosten`, m: `Verb` },
+    { ru: `стол`, de: `Tisch`, m: `m.` },
+  ]
+}

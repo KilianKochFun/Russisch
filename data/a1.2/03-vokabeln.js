@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `картошка–копейка`,
+  karten: [
+    { ru: `картошка`, de: `Kartoffel`, m: `f.` },
+    { ru: `касса`, de: `Kasse`, m: `f.` },
+    { ru: `качество`, de: `Qualität`, m: `n.` },
+    { ru: `квартира`, de: `Wohnung`, m: `f.` },
+    { ru: `килограмм`, de: `Kilogramm`, m: `m.` },
+    { ru: `класс`, de: `Klasse`, m: `m.` },
+    { ru: `клуб`, de: `Klub`, m: `m.` },
+    { ru: `ключ`, de: `Schlüssel`, m: `m.` },
+    { ru: `книга`, de: `Buch`, m: `f.` },
+    { ru: `книжный`, de: `Buch-`, m: `Adj.` },
+    { ru: `колбаса`, de: `Wurst`, m: `f.` },
+    { ru: `комедия`, de: `Komödie`, m: `f.` },
+    { ru: `коммуникация`, de: `Kommunikation`, m: `f.` },
+    { ru: `комната`, de: `Zimmer`, m: `f.` },
+    { ru: `компьютер`, de: `Computer`, m: `m.` },
+    { ru: `конверт`, de: `Briefumschlag`, m: `m.` },
+    { ru: `конец`, de: `Ende`, m: `m.` },
+    { ru: `концерт`, de: `Konzert`, m: `m.` },
+    { ru: `кончать`, de: `fertig sein`, m: `Verb` },
+    { ru: `копейка`, de: `Kopeke`, m: `f.` },
+  ]
+}

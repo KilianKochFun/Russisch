@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `Haushalt & Besitz`,
+  karten: [
+    { ru: `детский`, de: `kindlich`, m: `Adj. — Von дети (Kinder). детский сад = Kindergarten (wörtl.: Kindergarten)!` },
+    { ru: `дешёвый`, de: `billig`, m: `Adj. — Billig, günstig. Gegenteil: дорогой (teuer). где дешевле? = wo ist es günstiger?` },
+    { ru: `добрый`, de: `gutmütig`, m: `Adj. — Gut, gutherzig. добрый день! = Guten Tag!; добрый человек = guter Mensch.` },
+    { ru: `дождь`, de: `Regen`, m: `m. — Regen. идёт дождь = es regnet (wörtl.: der Regen geht). дождливый = regnerisch.` },
+    { ru: `документ`, de: `Dokument`, m: `m. — Wie „Dokument" — lat. documentum. Internationales Wort.` },
+    { ru: `должный`, de: `sollen`, m: `Adj. — Schuldig, müssen. я должен = ich muss/soll. должен + Infinitiv bildet Pflicht aus.` },
+    { ru: `дом`, de: `Haus`, m: `m. — Haus, Zuhause. дома = zu Hause; домой = nach Hause. домашний = häuslich.` },
+    { ru: `домохозяйка`, de: `Hausfrau`, m: `f. (Pers.) — дом (Haus) + хозяйка (Herrin) = die Hausherrin/Hausfrau.` },
+    { ru: `дорога`, de: `Weg`, m: `f. — Weg, Straße, Reise. счастливого пути! = gute Reise!; по дороге = unterwegs.` },
+    { ru: `дорогой`, de: `teuer`, m: `Adj. — Teuer, aber auch: lieb, wert. дорогой друг = lieber Freund; слишком дорого = zu teuer.` },
+    { ru: `дочь`, de: `Tochter`, m: `f. (Pers.) — Wie dt. „Tochter" — beide von urindogerm. *dhugatēr. Uralt verwandtes Wort.` },
+    { ru: `друг`, de: `Freund`, m: `m. (Pers.) — Freund (männlich). Freundin: подруга. лучший друг = bester Freund.` },
+    { ru: `другой`, de: `andere`, m: `Adj. — Andere(r/s). с другой стороны = andererseits; другой человек = ein anderer Mensch.` },
+    { ru: `думать`, de: `denken`, m: `Verb — Denken, glauben, meinen. я думаю = ich denke/glaube; что ты думаешь? = was meinst du?` },
+    { ru: `дядя`, de: `Onkel`, m: `m. (Pers.) — Onkel. Auch umgangssprachlich für fremden erwachsenen Mann (kindl.). тётя = Tante.` },
+    { ru: `еда`, de: `Essen`, m: `f. — Essen, Nahrung. Von есть (essen). вкусная еда = leckeres Essen.` },
+    { ru: `единица`, de: `Einheit`, m: `f. — Einheit, Eins. Von един (eines). единица = auch: die Note „Eins" (beste Note).` },
+    { ru: `ездить`, de: `fahren`, m: `Verb — Fahren (mehrfach/wiederholend). Gegensatz: ехать (einmalig, eine Richtung).` },
+    { ru: `есть`, de: `essen`, m: `Verb — Essen. Achtung: есть bedeutet auch „es gibt" (другое значение)! он ест = er isst.` },
+    { ru: `ехать`, de: `fahren`, m: `Verb — Fahren (einmalig, eine Richtung). куда ты едешь? = wohin fährst du?; я еду домой.` },
+  ]
+}

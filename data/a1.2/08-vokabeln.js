@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `мечтать–написать`,
+  karten: [
+    { ru: `мечтать`, de: `träumen`, m: `Verb` },
+    { ru: `милиция`, de: `Miliz`, m: `f.` },
+    { ru: `минута`, de: `Minute`, m: `f.` },
+    { ru: `мир`, de: `Welt`, m: `m.` },
+    { ru: `младший`, de: `der jüngere`, m: `Adj.` },
+    { ru: `молодой`, de: `jung`, m: `Adj.` },
+    { ru: `молоко`, de: `Milch`, m: `n.` },
+    { ru: `море`, de: `Meer`, m: `n.` },
+    { ru: `мороженое`, de: `Eis (Speiseeis)`, m: `n.` },
+    { ru: `московский`, de: `Moskauer`, m: `Adj.` },
+    { ru: `мочь`, de: `Macht`, m: `Verb` },
+    { ru: `муж`, de: `Mann`, m: `m. (Pers.)` },
+    { ru: `мужской`, de: `Männer-`, m: `Adj.` },
+    { ru: `мужчина`, de: `Mann`, m: `m. (Pers.)` },
+    { ru: `музей`, de: `Museum`, m: `m.` },
+    { ru: `музыка`, de: `Musik`, m: `f.` },
+    { ru: `музыкант`, de: `Musiker`, m: `m. (Pers.)` },
+    { ru: `мясо`, de: `Fleisch`, m: `n.` },
+    { ru: `называться`, de: `heißen`, m: `Verb` },
+    { ru: `написать`, de: `schreiben`, m: `Adj.` },
+  ]
+}

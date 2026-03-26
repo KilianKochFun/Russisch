@@ -1,0 +1,27 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `народный–образование`,
+  karten: [
+    { ru: `народный`, de: `Volks-`, m: `Adj.` },
+    { ru: `настоящий`, de: `echt`, m: `Adj.` },
+    { ru: `научный`, de: `wissenschaftlich`, m: `Adj.` },
+    { ru: `находиться`, de: `sich befinden`, m: `Verb` },
+    { ru: `национальность`, de: `Nationalität`, m: `f.` },
+    { ru: `национальный`, de: `National-`, m: `Adj.` },
+    { ru: `неделя`, de: `Woche`, m: `f.` },
+    { ru: `немец`, de: `der Deutsche`, m: `m. (Pers.)` },
+    { ru: `немецкий`, de: `Deutsch`, m: `Adj.` },
+    { ru: `новость`, de: `Neuigkeit`, m: `f.` },
+    { ru: `новый`, de: `neu`, m: `Adj.` },
+    { ru: `нога`, de: `Fuß`, m: `f.` },
+    { ru: `нож`, de: `Messer`, m: `m.` },
+    { ru: `номер`, de: `Nummer`, m: `m.` },
+    { ru: `ночь`, de: `Nacht`, m: `f.` },
+    { ru: `ноябрь`, de: `November`, m: `m.` },
+    { ru: `нравиться`, de: `gefallen`, m: `Verb` },
+    { ru: `нужный`, de: `brauchen`, m: `Adj.` },
+    { ru: `обед`, de: `Mittagessen`, m: `m.` },
+    { ru: `обедать`, de: `Mittag essen`, m: `Verb` },
+    { ru: `образование`, de: `Bildung`, m: `n.` },
+  ]
+}

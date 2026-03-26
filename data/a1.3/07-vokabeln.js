@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `программа–родной`,
+  karten: [
+    { ru: `программа`, de: `Programm`, m: `f.` },
+    { ru: `продолжать`, de: `fortsetzen`, m: `Verb` },
+    { ru: `продукт`, de: `Produkt`, m: `m.` },
+    { ru: `просить`, de: `bitten`, m: `Verb` },
+    { ru: `профессия`, de: `Beruf`, m: `f.` },
+    { ru: `пятница`, de: `Freitag`, m: `f.` },
+    { ru: `работа`, de: `Arbeit`, m: `f.` },
+    { ru: `работать`, de: `arbeiten`, m: `Verb` },
+    { ru: `рад`, de: `froh`, m: `Adj.` },
+    { ru: `раз`, de: `Mal`, m: `m.` },
+    { ru: `разговаривать`, de: `sprechen`, m: `Verb` },
+    { ru: `размер`, de: `Größe`, m: `m.` },
+    { ru: `разный`, de: `verschieden`, m: `Adj.` },
+    { ru: `разумный`, de: `vernünftig`, m: `Adj.` },
+    { ru: `район`, de: `Gebiet`, m: `m.` },
+    { ru: `рассказ`, de: `Erzählung`, m: `m.` },
+    { ru: `ребёнок`, de: `Kind`, m: `m. (Pers.)` },
+    { ru: `река`, de: `Fluss`, m: `f.` },
+    { ru: `ресторан`, de: `Restaurant`, m: `m.` },
+    { ru: `родной`, de: `verwandt`, m: `Adj.` },
+  ]
+}

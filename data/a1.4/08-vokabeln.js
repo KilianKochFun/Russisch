@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `фотографировать–час`,
+  karten: [
+    { ru: `фотографировать`, de: `fotografieren`, m: `Verb` },
+    { ru: `фотография`, de: `Foto`, m: `f.` },
+    { ru: `французский`, de: `Französisch`, m: `Adj.` },
+    { ru: `фрукт`, de: `Frucht`, m: `m.` },
+    { ru: `футбол`, de: `Fußball`, m: `m.` },
+    { ru: `хлеб`, de: `Brot`, m: `m.` },
+    { ru: `ходить`, de: `gehen`, m: `Verb` },
+    { ru: `хозяин`, de: `Besitzer`, m: `m. (Pers.)` },
+    { ru: `холодный`, de: `kalt`, m: `Adj.` },
+    { ru: `хороший`, de: `gut`, m: `Adj.` },
+    { ru: `хотеть`, de: `wollen`, m: `Verb` },
+    { ru: `художник`, de: `(Kunst)maler`, m: `m. (Pers.)` },
+    { ru: `цвет`, de: `Farbe`, m: `m.` },
+    { ru: `цветок`, de: `Blume`, m: `m.` },
+    { ru: `цена`, de: `Preis`, m: `f.` },
+    { ru: `центр`, de: `Mitte / Mittelpunkt`, m: `m.` },
+    { ru: `цирк`, de: `Zirkus`, m: `m.` },
+    { ru: `чай`, de: `Tee`, m: `m.` },
+    { ru: `чайник`, de: `Teekessel`, m: `m.` },
+    { ru: `час`, de: `Stunde`, m: `m.` },
+  ]
+}

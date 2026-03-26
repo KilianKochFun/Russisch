@@ -1,0 +1,27 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `часть–январь`,
+  karten: [
+    { ru: `часть`, de: `Teil / Stück`, m: `f.` },
+    { ru: `часы`, de: `Uhr`, m: `nur Pl.` },
+    { ru: `чашка`, de: `Tasse`, m: `f.` },
+    { ru: `человек`, de: `Mensch`, m: `m. (Pers.)` },
+    { ru: `четверг`, de: `Donnerstag`, m: `m.` },
+    { ru: `число`, de: `Zahl`, m: `n.` },
+    { ru: `чувствовать`, de: `fühlen`, m: `Verb` },
+    { ru: `чёрный`, de: `schwarz`, m: `Adj.` },
+    { ru: `шарф`, de: `Schal`, m: `m.` },
+    { ru: `шкаф`, de: `Schrank`, m: `m.` },
+    { ru: `школа`, de: `Schule`, m: `f.` },
+    { ru: `экзамен`, de: `Prüfung`, m: `m.` },
+    { ru: `экономика`, de: `Wirtschaft`, m: `f.` },
+    { ru: `экономический`, de: `Wirtschafts-`, m: `Adj.` },
+    { ru: `этаж`, de: `Stockwerk`, m: `m.` },
+    { ru: `южный`, de: `südlich`, m: `Adj.` },
+    { ru: `юрист`, de: `Jurist`, m: `m. (Pers.)` },
+    { ru: `яблоко`, de: `Apfel`, m: `n.` },
+    { ru: `язык`, de: `Sprache`, m: `m.` },
+    { ru: `яйцо`, de: `Ei`, m: `n.` },
+    { ru: `январь`, de: `Januar`, m: `m.` },
+  ]
+}

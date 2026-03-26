@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `Tätigkeiten & Alltag`,
+  karten: [
+    { ru: `городской`, de: `städtisch`, m: `Adj. — Von город (Stadt) + -ской. городской транспорт = öffentliche Verkehrsmittel.` },
+    { ru: `горячий`, de: `heiß`, m: `Adj. — Heiß, brennend. горячий чай = heißer Tee. горячая линия = Hotline (heiße Linie).` },
+    { ru: `господин`, de: `Herr`, m: `m. (Pers.) — Formelle Anrede. господин Мюллер = Herr Müller. госпожа = gnädige Frau.` },
+    { ru: `гостиница`, de: `Hotel`, m: `f. — Von гость (Gast): der Ort, wo Gäste übernachten. гостиная = Wohnzimmer (für Gäste).` },
+    { ru: `гость`, de: `Gast`, m: `m. (Pers.) — Gast. Sprichwort: незваный гость хуже татарина = ein ungebetener Gast ist ärger als ein Tatar.` },
+    { ru: `государственный`, de: `staatlich`, m: `Adj. — Von государство (Staat). государственный праздник = gesetzlicher Feiertag.` },
+    { ru: `готовый`, de: `bereit`, m: `Adj. — Fertig, bereit. готово! = Fertig!; готов к работе = arbeitsbereit. готовить = kochen/vorbereiten.` },
+    { ru: `грамм`, de: `Gramm`, m: `m. — Wie „Gramm" — griech. γράμμα. Internationale Maßeinheit, in allen Sprachen gleich.` },
+    { ru: `группа`, de: `Gruppe`, m: `f. — Wie „Gruppe" — aus dem Deutschen/Französischen. рабочая группа = Arbeitsgruppe.` },
+    { ru: `гулять`, de: `spazieren`, m: `Verb — Spazieren gehen, bummeln. пойдём гулять! = Lass uns spazieren gehen!; прогулка = Spaziergang.` },
+    { ru: `давать`, de: `geben`, m: `Verb — Geben (imperfektiv). давай! = Los!, Auf geht's!; дай мне = gib mir. Perfektiv: дать.` },
+    { ru: `дарить`, de: `schenken`, m: `Verb — Schenken. подарок = Geschenk (von дарить). дарить от сердца = von Herzen schenken.` },
+    { ru: `дверь`, de: `Tür`, m: `f. — Tür. Achtung: feminin, obwohl кein -а/-я! Nomen auf -ь können m. oder f. sein.` },
+    { ru: `девочка`, de: `Mädchen`, m: `f. (Pers.) — Kleines Mädchen (Kind). Von дева (Jungfrau) + -очка (Verkleinerungsform).` },
+    { ru: `девушка`, de: `junge Frau`, m: `f. (Pers.) — Junges Mädchen, junge Frau. Auch als Anrede: девушка! = Entschuldigung, Miss!` },
+    { ru: `дедушка`, de: `Großvater`, m: `m. (Pers.) — дед (Opa) + -ушка (Koseform) = der liebe Opa. дедушка ist trotz -а männlich!` },
+    { ru: `декабрь`, de: `Dezember`, m: `m. — Lat. december (decem = zehn — ursprünglich 10. Monat im Römerkalender).` },
+    { ru: `делать`, de: `machen`, m: `Verb — Machen, tun. что ты делаешь? = was machst du?; делать домашнее задание = Hausaufgaben machen.` },
+    { ru: `день`, de: `Tag`, m: `m. — Tag. добрый день! = Guten Tag!; целый день = den ganzen Tag; в тот день = an jenem Tag.` },
+    { ru: `деньги`, de: `Geld`, m: `nur Pl. — Nur Plural! Kommt vom mongolischen „тенге" (Münze) — historisches Lehnwort!` },
+  ]
+}

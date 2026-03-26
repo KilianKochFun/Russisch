@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `любить–метр`,
+  karten: [
+    { ru: `любить`, de: `lieben`, m: `Verb` },
+    { ru: `любовь`, de: `Liebe`, m: `f.` },
+    { ru: `лёгкий`, de: `leicht`, m: `Adj.` },
+    { ru: `магазин`, de: `Geschäft`, m: `m.` },
+    { ru: `май`, de: `Mai`, m: `m.` },
+    { ru: `маленький`, de: `klein`, m: `Adj.` },
+    { ru: `мальчик`, de: `Junge`, m: `m. (Pers.)` },
+    { ru: `мама`, de: `Mama`, m: `f. (Pers.)` },
+    { ru: `марка`, de: `Briefmarke`, m: `f.` },
+    { ru: `март`, de: `März`, m: `m.` },
+    { ru: `масло`, de: `Butter`, m: `n.` },
+    { ru: `математика`, de: `Mathematik`, m: `f.` },
+    { ru: `мать`, de: `Mutter`, m: `f. (Pers.)` },
+    { ru: `машина`, de: `Auto`, m: `f.` },
+    { ru: `мебель`, de: `Möbel`, m: `f.` },
+    { ru: `медицина`, de: `Medizin`, m: `f.` },
+    { ru: `менеджер`, de: `Manager`, m: `m. (Pers.)` },
+    { ru: `место`, de: `Platz`, m: `n.` },
+    { ru: `месяц`, de: `Monat`, m: `m.` },
+    { ru: `метр`, de: `Meter`, m: `m.` },
+  ]
+}
