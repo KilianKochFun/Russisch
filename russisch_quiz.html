@@ -1142,22 +1142,24 @@ function zeigeKarte() {
     badge.style.display = 'none';
   }
   const genusClass = genus ? `genus-${genus}` : '';
+  const ruColor = genus ? genusColor : '';
   const frontEl = document.getElementById('karte-front-wort');
   frontEl.textContent = frontText;
-  frontEl.className = `karte-wort ${karteRichtung === 'ru-de' ? genusClass : ''}`;
+  frontEl.className = 'karte-wort';
+  frontEl.style.color = karteRichtung === 'ru-de' ? ruColor : '';
 
   document.getElementById('karte-front-richtung').textContent = frontLang;
 
   // Rückseite vorbereiten
   const backObenEl = document.getElementById('karte-back-oben');
   backObenEl.textContent = frontText;
-  // back-oben = Vorderseiten-Wort (klein) — Genus-Farbe wenn es Russisch zeigt
-  backObenEl.className = `karte-wort karte-back-klein ${karteRichtung === 'ru-de' ? genusClass : ''}`;
+  backObenEl.className = 'karte-wort karte-back-klein';
+  backObenEl.style.color = karteRichtung === 'ru-de' ? ruColor : '';
 
   const backUntenEl = document.getElementById('karte-back-unten');
   backUntenEl.textContent = karteRichtung === 'ru-de' ? aktiveKarte.de : aktiveKarte.ru;
-  // back-unten = Lösung — bei de-ru zeigt es Russisch → Genus-Farbe
-  backUntenEl.className = `karte-de ${karteRichtung === 'de-ru' ? genusClass : ''}`;
+  backUntenEl.className = 'karte-de';
+  backUntenEl.style.color = karteRichtung === 'de-ru' ? ruColor : '';
 
   // Merksatz mit Wortfamilien-Highlight
   const mEl = document.getElementById('karte-m');
