@@ -10,7 +10,7 @@ module.exports = {
         [`кто`, `wer (Personen)`, `Кто это? — Wer ist das?`],
         [`что`, `was (Sachen)`, `Что это? — Was ist das?`],
         [`где`, `wo (Ort, statisch)`, `Где ты живёшь? — Wo wohnst du?`],
-        [`куда`, `wohin (Richtung)`, `Куда ты идёшь? — Wohin gehst du?`],
+        [`куда`, `wohin (Richtung)`, `Куда ты? — Wohin (gehst du)?`],
         [`когда`, `wann`, `Когда ты придёшь? — Wann kommst du?`],
         [`как`, `wie`, `Как тебя зовут? — Wie heißt du?`],
         [`почему`, `warum`, `Почему ты здесь? — Warum bist du hier?`],

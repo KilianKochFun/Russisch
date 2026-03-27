@@ -37,7 +37,7 @@ module.exports = {
         [`вы`, `у вас`, `У вас есть минута? — Haben Sie eine Minute?`],
         [`они`, `у них`, `У них есть дети. — Sie haben Kinder.`],
       ],
-      m: `Verneinung: у + Genitiv + нет + Genitiv des Nomens. У меня нет книги. (книга → книги)`
+      m: `Wichtig: нет nimmt das folgende Nomen immer im Genitiv! У меня нет книги — nicht нет книга. (книга → книги im Genitiv)`
     },
   ]
 }

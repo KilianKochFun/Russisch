@@ -62,5 +62,125 @@ module.exports = {
       c: 1,
       m: `не vor einem Nomen = kein/nicht. Это не + Nomen = Das ist kein/keine... Im Präsens ohne Verb.`
     },
+    {
+      q: `Welches Pronomen verwendet man für „du" (vertraut)?`,
+      a: [`вы`, `ты`, `он`],
+      c: 1,
+      m: `ты = du (vertraut, für Freunde und Familie). вы = Sie (formell) oder ihr (Plural).`
+    },
+    {
+      q: `Was ist das russische Pronomen für „er"?`,
+      a: [`она`, `оно`, `он`],
+      c: 2,
+      m: `он = er (männlich). она = sie (weiblich). оно = es (sächlich). Stimmt mit dem Genus des Nomens überein.`
+    },
+    {
+      q: `Welches Pronomen ersetzt ein sächliches Nomen wie „окно"?`,
+      a: [`он`, `она`, `оно`],
+      c: 2,
+      m: `оно = es (sächlich). Sächliche Nomen enden meist auf -о oder -е: окно, море, небо.`
+    },
+    {
+      q: `Welches Pronomen verwendet man für „ich"?`,
+      a: [`мы`, `ты`, `я`],
+      c: 2,
+      m: `я = ich. Wird im Russischen immer kleingeschrieben (außer am Satzanfang).`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „книга" (Buch)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 1,
+      m: `книга endet auf -а → feminin. Nomen auf -а/-я sind fast immer weiblich.`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „письмо" (Brief)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 2,
+      m: `письмо endet auf -о → sächlich. Nomen auf -о/-е sind fast immer sächlich.`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „брат" (Bruder)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 0,
+      m: `брат endet auf Konsonant → männlich. Das natürliche Geschlecht stimmt hier mit dem grammatischen überein.`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „сестра" (Schwester)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 1,
+      m: `сестра endet auf -а → feminin. Das natürliche Geschlecht stimmt hier mit dem grammatischen überein.`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „молоко" (Milch)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 2,
+      m: `молоко endet auf -о → sächlich. Weitere Beispiele: вино, мясо, яйцо.`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „дерево" (Baum)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 2,
+      m: `дерево endet auf -о → sächlich. Это большое дерево = Das ist ein großer Baum.`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „ночь" (Nacht)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 1,
+      m: `ночь endet auf -ь → kann m. oder f. sein. ночь ist feminin! Merke: ночь, дверь, мать, дочь sind f.`
+    },
+    {
+      q: `Welches grammatische Geschlecht hat „площадь" (Platz)?`,
+      a: [`männlich`, `weiblich`, `sächlich`],
+      c: 1,
+      m: `площадь endet auf -ь → feminin. Viele geographische Begriffe auf -ь sind feminin.`
+    },
+    {
+      q: `Welches Possessivpronomen passt zu „мой/моя/моё" — was nutzt man bei einem sächlichen Nomen?`,
+      a: [`мой`, `моя`, `моё`],
+      c: 2,
+      m: `моё = mein (sächlich): моё окно, моё письмо. мой (m.), моя (f.), моё (n.).`
+    },
+    {
+      q: `„___ сестра" — Possessivpronomen „mein" feminin?`,
+      a: [`мой`, `моё`, `моя`],
+      c: 2,
+      m: `моя = mein (feminin): моя сестра, моя книга, моя мама. Endung -я stimmt mit feminin überein.`
+    },
+    {
+      q: `„___ брат" — Possessivpronomen „mein" maskulin?`,
+      a: [`моя`, `мой`, `моё`],
+      c: 1,
+      m: `мой = mein (maskulin): мой брат, мой стол, мой дом. Endung -й für männliche Nomen.`
+    },
+    {
+      q: `Welches Possessivpronomen (dein, f.) passt zu „твоя/твой/твоё" bei „книга"?`,
+      a: [`твой`, `твоя`, `твоё`],
+      c: 1,
+      m: `твоя = dein (feminin): твоя книга = dein Buch. Gleiche Endungen wie мой/моя/моё.`
+    },
+    {
+      q: `Wie sagt man „sein Vater" — Possessivpronomen für он (m.)?`,
+      a: [`её`, `наш`, `его`],
+      c: 2,
+      m: `его = sein (für он/оно, unveränderlich!). его отец = sein Vater. его дом, его книга — immer его.`
+    },
+    {
+      q: `Wie sagt man „ihr Bruder" — Possessivpronomen für она?`,
+      a: [`его`, `её`, `их`],
+      c: 1,
+      m: `её = ihr (für она, unveränderlich!). её брат = ihr Bruder. её книга, её окно — immer её.`
+    },
+    {
+      q: `„___ университет" — Possessivpronomen „unser" maskulin (наш)?`,
+      a: [`наша`, `наш`, `наше`],
+      c: 1,
+      m: `наш = unser (maskulin): наш университет, наш город. наша (f.), наше (n.), наши (Pl.).`
+    },
+    {
+      q: `„___ страна" — Possessivpronomen „euer/Ihr" feminin (ваш)?`,
+      a: [`ваш`, `ваша`, `ваше`],
+      c: 1,
+      m: `ваша = euer/Ihr (feminin): ваша страна = euer Land. ваш (m.), ваша (f.), ваше (n.).`
+    },
   ]
 }

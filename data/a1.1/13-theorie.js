@@ -45,14 +45,14 @@ module.exports = {
       erklaerung: `Einige sehr häufige Verben folgen keiner der beiden Konjugationen und müssen auswendig gelernt werden. Diese Verben kommen im Alltag ständig vor — sie lohnen sich.`,
       tabelle: [
         [`Person`, `быть (sein)`, `хотеть (wollen)`, `идти (gehen)`],
-        [`я`, `—`, `хочу`, `иду`],
-        [`ты`, `—`, `хочешь`, `идёшь`],
-        [`он/она`, `—`, `хочет`, `идёт`],
-        [`мы`, `—`, `хотим`, `идём`],
-        [`вы`, `—`, `хотите`, `идёте`],
-        [`они`, `—`, `хотят`, `идут`],
+        [`я`, `(не используется)`, `хочу`, `иду`],
+        [`ты`, `(не используется)`, `хочешь`, `идёшь`],
+        [`он/ona`, `(не используется)`, `хочет`, `идёт`],
+        [`мы`, `(не используется)`, `хотим`, `идём`],
+        [`вы`, `(не используется)`, `хотите`, `идёте`],
+        [`они`, `(не используется)`, `хотят`, `идут`],
       ],
-      m: `быть hat im Präsens keine Formen (Nullkopula!). хотеть ist gemischt: Sg. = 1. Konj., Pl. = 2. Konj.`
+      m: `быть hat im Präsens keine konjugierten Formen — das ist die Nullkopula! Erst Vergangenheit (был) und Zukunft (буду) haben Formen. хотеть ist gemischt: Sg. = 1. Konj.-Endungen, Pl. = 2. Konj.-Endungen.`
     },
   ]
 }

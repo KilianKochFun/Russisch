@@ -688,6 +688,7 @@ let einheitenCursor = 0;
 let karteiStapel = [];
 let nochmalStapel = [];
 let karteiGewusst = 0;
+let karteiPaketGroesse = 0;
 let aktiveKarte = null;
 let aktiveRichtung = 'ru-de';  // 'ru-de' | 'de-ru' | 'mc'
 let karteRichtung = 'ru-de';
@@ -943,7 +944,7 @@ function startEinheit(idx) {
 
   switch (aktiveEinheit.typ) {
     case 'vokabeln':  startKarteikarten(aktiveEinheit); break;
-    case 'grammatik': startEinheitenQuiz(aktiveEinheit.fragen); break;
+    case 'grammatik': startKarteikarten(aktiveEinheit); break;
     case 'theorie':   startTheorieScreen(aktiveEinheit); break;
     case 'hoeren':    startHoerenScreen(aktiveEinheit); break;
     case 'dialog':    startDialogScreen(aktiveEinheit); break;
@@ -967,10 +968,10 @@ function startKarteikarten(einheit) {
 }
 
 function getPakete() {
-  const karten = aktiveEinheit.karten;
+  const pool = aktiveEinheit.typ === 'grammatik' ? aktiveEinheit.fragen : aktiveEinheit.karten;
   const pakete = [];
-  for (let i = 0; i < karten.length; i += 5) {
-    pakete.push(karten.slice(i, i + 5));
+  for (let i = 0; i < pool.length; i += 5) {
+    pakete.push(pool.slice(i, i + 5));
   }
   return pakete;
 }
@@ -1003,9 +1004,9 @@ function renderPaketeList() {
       <span class="cursor-arrow">›</span>
       <span class="menu-item-body">
         <span class="menu-item-name">Paket ${i + 1}</span>
-        <span class="menu-item-desc">Karten ${von}–${bis}</span>
+        <span class="menu-item-desc">${aktiveEinheit.typ === 'grammatik' ? 'Fragen' : 'Karten'} ${von}–${bis}</span>
       </span>
-      <span class="menu-item-meta"><span class="q-count">${p.length} Karten</span></span>`;
+      <span class="menu-item-meta"><span class="q-count">${p.length} ${aktiveEinheit.typ === 'grammatik' ? 'Fragen' : 'Karten'}</span></span>`;
     list.appendChild(div);
   });
 
@@ -1016,10 +1017,10 @@ function renderPaketeList() {
   alleDiv.innerHTML = `
     <span class="cursor-arrow">›</span>
     <span class="menu-item-body">
-      <span class="menu-item-name">Alle Karten</span>
+      <span class="menu-item-name">${aktiveEinheit.typ === 'grammatik' ? 'Alle Fragen' : 'Alle Karten'}</span>
       <span class="menu-item-desc">gesamter Stapel</span>
     </span>
-    <span class="menu-item-meta"><span class="q-count">${aktiveEinheit.karten.length} Karten</span></span>`;
+    <span class="menu-item-meta"><span class="q-count">${(aktiveEinheit.typ === 'grammatik' ? aktiveEinheit.fragen : aktiveEinheit.karten).length} ${aktiveEinheit.typ === 'grammatik' ? 'Fragen' : 'Karten'}</span></span>`;
   list.appendChild(alleDiv);
 }
 
@@ -1036,10 +1037,14 @@ function paketeSelect() {
   if (paketeCursor < pakete.length) {
     aktivesPaket = pakete[paketeCursor];
   } else {
-    aktivesPaket = aktiveEinheit.karten;
+    aktivesPaket = aktiveEinheit.typ === 'grammatik' ? aktiveEinheit.fragen : aktiveEinheit.karten;
   }
-  state = 'richtung-wahl';
-  show('richtung-screen');
+  if (aktiveEinheit.typ === 'grammatik') {
+    startEinheitenQuiz(aktivesPaket);
+  } else {
+    state = 'richtung-wahl';
+    show('richtung-screen');
+  }
 }
 
 function startKarteikartenMitRichtung(richtung) {
@@ -1054,6 +1059,7 @@ function startKarteikartenMitRichtung(richtung) {
   karteiStapel = shuffle([...pool]);
   nochmalStapel = [];
   karteiGewusst = 0;
+  karteiPaketGroesse = pool.length;
   zeigeKarte();
 }
 
@@ -1114,7 +1120,7 @@ function zeigeKarte() {
     ? (Math.random() < 0.5 ? 'ru-de' : 'de-ru')
     : aktiveRichtung;
 
-  const total = aktiveEinheit.karten.length;
+  const total = karteiPaketGroesse || aktiveEinheit.karten.length;
   const verbleibend = karteiStapel.length + nochmalStapel.length + 1;
   const done = total - verbleibend;
 

@@ -94,6 +94,20 @@ Quellen: SMARTool (GitHub) + OpenRussian (GitHub) — werden automatisch geladen
 
 ---
 
+## Grammatik-Lehrplan (Referenz)
+
+**Alle Grammatik-Einheiten (`*-grammatik.js`) orientieren sich am offiziellen RKI A1-Lehrplan.**
+Referenzdatei im Projekt-Root: `A1-Lehrplan RKI.html`
+
+Themenverteilung nach Kapitel:
+
+| Kapitel | Grammatik I (`02-`) | Grammatik II (`04-` oder `05-`/`08-`/...) |
+|---|---|---|
+| **a1.1** | Nullkopula, Pronomen, Genus, Possessivpronomen | Verneinung/Haben · Adjektive · Fragewörter/Präpositiv · Verbkonjugation · Zeitangaben |
+| **a1.2** | Akkusativ (Objekt) | Bewegungsverben (идти/ходить, ехать/ездить) + Wohin (в/на+Akk.) |
+| **a1.3** | Genitiv (Besitz, нет, у, Mengen, Zahlen) | Dativ (Adressat, Alter, нравиться) + Demonstrativpronomen |
+| **a1.4** | Instrumental (заниматься, быть+Beruf, с+Instr.) | Präteritum + Aspektpaar + Futur + Imperativ + можно/нельзя/должен |
+
 ## Anki-Export
 
 ```bash

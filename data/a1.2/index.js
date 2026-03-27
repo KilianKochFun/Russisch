@@ -4,8 +4,10 @@ module.exports = {
   beschreibung: `Зелёный bis Ехать`,
   einheiten: [
     require('./01-vokabeln'),
+    require('./02-theorie'),
     require('./02-grammatik'),
     require('./03-vokabeln'),
+    require('./04-theorie'),
     require('./04-grammatik'),
     require('./05-vokabeln'),
     require('./06-dialog'),
