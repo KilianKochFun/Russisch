@@ -234,6 +234,9 @@
   .cat-row { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); padding: 12px 16px; text-align: left; }
   .cat-name { font-family: var(--mono); font-size: 12px; flex: 1; color: var(--muted); letter-spacing: 0.05em; }
   .cat-score { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text); }
+  .cat-pass { font-family: var(--mono); font-size: 11px; font-weight: 700; min-width: 48px; text-align: right; }
+  .cat-pass.pass { color: var(--green); }
+  .cat-pass.fail { color: var(--red); }
   .cat-bar-track { flex: 2; height: 4px; background: var(--border); }
   .cat-bar-fill { height: 100%; background: var(--red); }
   .message-text { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
@@ -683,6 +686,12 @@ let einheitIdx = 0;
 let einheitenModus = false;
 let aktiveEinheit = null;
 let einheitenCursor = 0;
+let isKapiteltest = false;
+let kapiteltestConfig = null;
+let kapiteltestPhase = null; // 'vokabeln' | 'grammatik' | 'dialog-text' | 'hoeren' | 'result'
+let kapiteltestUnitsQueue = [];
+let kapiteltestPhaseResults = {};
+let _kapiteltestScoreKey = null;
 
 // Karteikarten Vars
 let karteiStapel = [];
@@ -888,12 +897,13 @@ function showEinheitenMenu() {
   list.appendChild(backDiv);
 
   const TYP_LABELS = {
-    vokabeln:  'Vokabeln',
-    grammatik: 'Grammatik',
-    theorie:   'Theorie',
-    hoeren:    'Hören',
-    dialog:    'Dialog',
-    text:      'Text',
+    vokabeln:    'Vokabeln',
+    grammatik:   'Grammatik',
+    theorie:     'Theorie',
+    hoeren:      'Hören',
+    dialog:      'Dialog',
+    text:        'Text',
+    kapiteltest: 'TEST',
   };
 
   aktivesKapitel.einheiten.forEach((einheit, i) => {
@@ -943,21 +953,36 @@ function startEinheit(idx) {
   aktiveEinheit = aktivesKapitel.einheiten[idx];
 
   switch (aktiveEinheit.typ) {
-    case 'vokabeln':  startKarteikarten(aktiveEinheit); break;
-    case 'grammatik': startKarteikarten(aktiveEinheit); break;
-    case 'theorie':   startTheorieScreen(aktiveEinheit); break;
-    case 'hoeren':    startHoerenScreen(aktiveEinheit); break;
-    case 'dialog':    startDialogScreen(aktiveEinheit); break;
-    case 'text':      startTextScreen(aktiveEinheit); break;
+    case 'vokabeln':    startKarteikarten(aktiveEinheit); break;
+    case 'grammatik':   startKarteikarten(aktiveEinheit); break;
+    case 'theorie':     startTheorieScreen(aktiveEinheit); break;
+    case 'hoeren':      startHoerenScreen(aktiveEinheit); break;
+    case 'dialog':      startDialogScreen(aktiveEinheit); break;
+    case 'text':        startTextScreen(aktiveEinheit); break;
+    case 'kapiteltest': startKapiteltest(aktiveEinheit); break;
     default: zurueckZuEinheiten();
   }
 }
 
 function nextEinheit() {
-  // Nach jeder Einheit: zurück zum Einheiten-Menü, nicht auto-weiter
-  einheitenModus = false;
-  einheitenCursor = einheitIdx; // Cursor bleibt auf der gerade gemachten Einheit
-  showEinheitenMenu();
+  // Kapiteltest: nach Dialog/Text/Hoeren-Quiz: speichert Scores mit _kapiteltestScoreKey
+  // und geht zu startKapiteltestUnit() (nächste Einheit oder Phase).
+  // Normale Einheiten: geht zurück zu Menü.
+  if (isKapiteltest && aktiveEinheit && aktiveEinheit._kapiteltestCategory) {
+    // Speichere Scores aus dieser Einheit
+    const category = aktiveEinheit._kapiteltestCategory;
+    const scoreKey = _kapiteltestScoreKey || aktiveEinheit.titel;
+    kapiteltestPhaseResults[category].correct += (scores[scoreKey] || 0);
+    kapiteltestPhaseResults[category].total += (totals[scoreKey] || 0);
+    _kapiteltestScoreKey = null; // Reset für nächste Einheit
+    // Gehe zur nächsten Einheit
+    startKapiteltestUnit();
+  } else {
+    // Nach jeder Einheit: zurück zum Einheiten-Menü, nicht auto-weiter
+    einheitenModus = false;
+    einheitenCursor = einheitIdx;
+    showEinheitenMenu();
+  }
 }
 
 // ── Pakete ─────────────────────────────────────────────────────────────────
@@ -1401,9 +1426,25 @@ function startTextScreen(einheit) {
 }
 
 // ── Einheiten-Quiz (Grammatik / Fragen nach Dialog & Text) ────────────────
+// Wird für: Grammatik-Quiz, Dialog/Text/Hoeren-Fragen, alte Quizze verwendet.
+// BUG-FIX: Dialog/Text/Hoeren in Kapiteltest hatten kein .cat → falscher Score-Key.
+// LÖSUNG: _kapiteltestScoreKey speichert eindeutige Key, alle Fragen werden getaggt.
 function startEinheitenQuiz(fragen) {
   if (!fragen || fragen.length === 0) { nextEinheit(); return; }
+
+  // Für Kapiteltest Dialog/Text/Hoeren: setze Score-Key
+  if (isKapiteltest && aktiveEinheit && aktiveEinheit._kapiteltestCategory &&
+      (aktiveEinheit.typ === 'dialog' || aktiveEinheit.typ === 'text' || aktiveEinheit.typ === 'hoeren')) {
+    _kapiteltestScoreKey = aktiveEinheit.titel;
+  }
+
   shuffled = fragen.map(f => ({ ...f, _quizName: aktivesKapitel ? aktivesKapitel.name : 'Quiz' }));
+
+  // Wenn Kapiteltest Score-Key gesetzt: tagge alle Fragen mit dieser Key
+  if (_kapiteltestScoreKey) {
+    shuffled = shuffled.map(f => ({ ...f, cat: _kapiteltestScoreKey }));
+  }
+
   current = 0;
   answered = false;
   scores = {};
@@ -1471,8 +1512,12 @@ function renderQuestion() {
   document.getElementById('result-verdict').textContent = '';
   document.getElementById('result-verdict').className = 'result-verdict';
 
-  const ru = extractRussian(q.q);
-  if (ru) speak(ru);
+  if (q.audio) {
+    speak(q.audio);
+  } else {
+    const ru = extractRussian(q.q);
+    if (ru) speak(ru);
+  }
 }
 
 function selectAnswer(idx) {
@@ -1508,10 +1553,27 @@ function selectAnswer(idx) {
 }
 
 function nextQuestion() {
+  // BUG-FIX: muss else-Branch für dialog-text/hoeren Phasen haben!
+  // Wenn isKapiteltest && phase='dialog-text' → muss zu nextEinheit() gehen,
+  // sonst passiert nichts (war Hauptbug).
   if (!answered) return;
   current++;
   if (current >= shuffled.length) {
-    if (einheitenModus) {
+    if (isKapiteltest) {
+      // Speichere Scores der aktuellen Phase
+      if (kapiteltestPhase === 'vokabeln') {
+        kapiteltestPhaseResults['Vokabeln'].correct += (scores['Vokabeln'] || 0);
+        kapiteltestPhaseResults['Vokabeln'].total += (totals['Vokabeln'] || 0);
+        goToKapiteltestPhase('grammatik');
+      } else if (kapiteltestPhase === 'grammatik') {
+        kapiteltestPhaseResults['Grammatik'].correct += (scores['Grammatik'] || 0);
+        kapiteltestPhaseResults['Grammatik'].total += (totals['Grammatik'] || 0);
+        goToKapiteltestPhase('dialog-text');
+      } else {
+        // Dialog/Text/Hören-Phase: Einheit-Quiz fertig → zu nextEinheit
+        nextEinheit();
+      }
+    } else if (einheitenModus) {
       nextEinheit();
     } else {
       showEndScreen();
@@ -1538,7 +1600,7 @@ function showEndScreen() {
   const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
   const pct = Math.round((totalScore / total) * 100);
 
-  document.getElementById('end-title').textContent = 'РЕЗУЛЬТАТ';
+  document.getElementById('end-title').textContent = isKapiteltest ? kapiteltestConfig.titel : 'РЕЗУЛЬТАТ';
   document.getElementById('end-score').textContent = `${totalScore}/${total}`;
   document.getElementById('end-pct').textContent = `${pct}% korrekt`;
 
@@ -1553,15 +1615,81 @@ function showEndScreen() {
 
   const breakdown = document.getElementById('cat-breakdown');
   breakdown.innerHTML = '';
-  Object.keys(totals).forEach(cat => {
-    const s = scores[cat] || 0;
-    const t = totals[cat];
-    const p = Math.round((s / t) * 100);
+  if (isKapiteltest) {
+    kapiteltestConfig.sektionen.forEach(sek => {
+      const s = scores[sek.name] || 0;
+      const t = totals[sek.name] || 0;
+      const p = t > 0 ? Math.round((s / t) * 100) : 0;
+      const passed = p >= sek.minProzent;
+      breakdown.innerHTML += `
+        <div class="cat-row">
+          <span class="cat-name">${sek.name}</span>
+          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${p}%"></div></div>
+          <span class="cat-score">${s}/${t}</span>
+          <span class="cat-pass ${passed ? 'pass' : 'fail'}">${passed ? '✓' : '✗'} ${sek.minProzent}%</span>
+        </div>`;
+    });
+  } else {
+    Object.keys(totals).forEach(cat => {
+      const s = scores[cat] || 0;
+      const t = totals[cat];
+      const p = Math.round((s / t) * 100);
+      breakdown.innerHTML += `
+        <div class="cat-row">
+          <span class="cat-name">${cat}</span>
+          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${p}%"></div></div>
+          <span class="cat-score">${s}/${t}</span>
+        </div>`;
+    });
+  }
+
+  renderEndOptions();
+}
+
+function showKapiteltestResult() {
+  // Finales Ergebnis: pro Sektion {correct/total, ✓/✗ Pass/Fail basierend auf minProzent}.
+  // Nutzt bestehenden End-Screen mit angepasstem cat-breakdown Layout.
+  state = 'end';
+  endCursor = 0;
+  show('end-screen');
+
+  document.getElementById('end-title').textContent = kapiteltestConfig.titel;
+
+  // Calc overall score
+  let totalCorrect = 0, totalItems = 0;
+  Object.values(kapiteltestPhaseResults).forEach(res => {
+    totalCorrect += res.correct;
+    totalItems += res.total;
+  });
+
+  const overallPct = totalItems > 0 ? Math.round((totalCorrect / totalItems) * 100) : 0;
+  document.getElementById('end-score').textContent = `${totalCorrect}/${totalItems}`;
+  document.getElementById('end-pct').textContent = `${overallPct}% korrekt`;
+
+  const msgs = [
+    [0,  40,  'Nicht schlecht als Anfang! Wiederhole die Merksätze – sie helfen wirklich. Давай!'],
+    [41, 65,  'Guter Fortschritt! Du hast die Grundlagen. Fokussiere auf die schwächeren Kategorien.'],
+    [66, 84,  'Sehr gut! Du hast ein solides Fundament. Die Etymologie-Tricks helfen langfristig.'],
+    [85, 100, 'Ausgezeichnet! Молодец! Fast alles richtig. Bereit für die nächste Stufe!'],
+  ];
+  const [,,msg] = msgs.find(([lo, hi]) => overallPct >= lo && overallPct <= hi) || msgs[3];
+  document.getElementById('end-message').textContent = msg;
+
+  const breakdown = document.getElementById('cat-breakdown');
+  breakdown.innerHTML = '';
+
+  kapiteltestConfig.sektionen.forEach(sek => {
+    const res = kapiteltestPhaseResults[sek.name];
+    const s = res ? res.correct : 0;
+    const t = res ? res.total : 0;
+    const p = t > 0 ? Math.round((s / t) * 100) : 0;
+    const passed = p >= sek.minProzent;
     breakdown.innerHTML += `
       <div class="cat-row">
-        <span class="cat-name">${cat}</span>
+        <span class="cat-name">${sek.name}</span>
         <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${p}%"></div></div>
         <span class="cat-score">${s}/${t}</span>
+        <span class="cat-pass ${passed ? 'pass' : 'fail'}">${passed ? '✓' : '✗'} ${sek.minProzent}%</span>
       </div>`;
   });
 
@@ -1580,6 +1708,8 @@ function endMove(dir) {
 }
 
 function endSelect() {
+  isKapiteltest = false;
+  kapiteltestConfig = null;
   if (endCursor === 0) {
     if (aktivesKapitel && !einheitenModus) {
       startKapitel(aktivesKapitel);
@@ -1591,6 +1721,113 @@ function endSelect() {
   } else {
     aktivesKapitel = null;
     renderMenu();
+  }
+}
+
+// ── Kapiteltest ────────────────────────────────────────────────────────────
+// Kapiteltest: Phasen-Sequenz [vokabeln→grammatik→dialog-text→hoeren→result]
+// Jede Phase hat Fragen-Pool und Pass/Fail-Schwelle. Dialog/Text/Hoeren zeigen
+// Inhalte VOR den Fragen (anders als reiner Quiz).
+// Scores pro Phase in kapiteltestPhaseResults[sektion] = {correct, total}
+function startKapiteltest(einheit) {
+  kapiteltestConfig = einheit;
+  isKapiteltest = true;
+  kapiteltestPhase = 'vokabeln';
+  kapiteltestPhaseResults = {
+    'Vokabeln': {correct: 0, total: 0},
+    'Grammatik': {correct: 0, total: 0},
+    'Dialog & Text': {correct: 0, total: 0},
+    'Hören': {correct: 0, total: 0},
+  };
+  goToKapiteltestPhase('vokabeln');
+}
+
+function goToKapiteltestPhase(phaseName) {
+  // Steuert Phasen-Wechsel. Für vokabeln/grammatik: Quiz-Pool aufbauen + starten.
+  // Für dialog-text/hoeren: Einheiten-Queue aufbauen + erste starten.
+  kapiteltestPhase = phaseName;
+
+  if (phaseName === 'vokabeln') {
+    // Build 15 vokabeln MC questions
+    const alleKarten = [];
+    aktivesKapitel.einheiten.forEach(e => {
+      if (e.typ === 'vokabeln') alleKarten.push(...e.karten);
+    });
+    const sampled = shuffle([...alleKarten]).slice(0, 15);
+    const fragen = sampled.map(karte => {
+      const decoys = shuffle(alleKarten.filter(k => k !== karte)).slice(0, 2).map(k => k.ru);
+      const opts = shuffle([karte.ru, ...decoys]);
+      return {
+        q: `Wie heißt „${karte.de}" auf Russisch?`,
+        a: opts,
+        c: opts.indexOf(karte.ru),
+        m: karte.m || `${karte.ru} = ${karte.de}`,
+        cat: 'Vokabeln'
+      };
+    });
+    startEinheitenQuiz(fragen);
+  } else if (phaseName === 'grammatik') {
+    // Build 20 grammatik questions
+    const alleFragen = [];
+    aktivesKapitel.einheiten.forEach(e => {
+      if (e.typ === 'grammatik' && e.fragen) alleFragen.push(...e.fragen);
+    });
+    const sampled = shuffle([...alleFragen]).slice(0, 20);
+    sampled.forEach(f => f.cat = 'Grammatik');
+    startEinheitenQuiz(sampled);
+  } else if (phaseName === 'dialog-text') {
+    // Build queue: zufällige Dialog und Text einheiten
+    kapiteltestUnitsQueue = [];
+    const dialogs = shuffle(aktivesKapitel.einheiten.filter(e => e.typ === 'dialog')).slice(0, 1);
+    const texts = shuffle(aktivesKapitel.einheiten.filter(e => e.typ === 'text')).slice(0, 1);
+    dialogs.forEach(d => kapiteltestUnitsQueue.push({einheit: d, category: 'Dialog & Text'}));
+    texts.forEach(t => kapiteltestUnitsQueue.push({einheit: t, category: 'Dialog & Text'}));
+
+    if (kapiteltestUnitsQueue.length > 0) {
+      startKapiteltestUnit();
+    } else {
+      goToKapiteltestPhase('hoeren');
+    }
+  } else if (phaseName === 'hoeren') {
+    // Build queue: zufällige hoeren einheit(en)
+    kapiteltestUnitsQueue = [];
+    const hoerens = shuffle(aktivesKapitel.einheiten.filter(e => e.typ === 'hoeren')).slice(0, 1);
+    hoerens.forEach(h => kapiteltestUnitsQueue.push({einheit: h, category: 'Hören'}));
+
+    if (kapiteltestUnitsQueue.length > 0) {
+      startKapiteltestUnit();
+    } else {
+      goToKapiteltestPhase('result');
+    }
+  } else if (phaseName === 'result') {
+    showKapiteltestResult();
+  }
+}
+
+function startKapiteltestUnit() {
+  // Startet nächste Einheit (Dialog/Text/Hoeren) aus Queue nacheinander.
+  // Jede Einheit: zeige Inhalt → Fragen → nextEinheit() speichert Scores.
+  // WICHTIG: einheitenModus=true damit Quiz-Ende zu nextEinheit() führt.
+  if (kapiteltestUnitsQueue.length === 0) {
+    if (kapiteltestPhase === 'dialog-text') {
+      goToKapiteltestPhase('hoeren');
+    } else if (kapiteltestPhase === 'hoeren') {
+      goToKapiteltestPhase('result');
+    }
+    return;
+  }
+
+  const {einheit, category} = kapiteltestUnitsQueue.shift();
+  aktiveEinheit = einheit;
+  aktiveEinheit._kapiteltestCategory = category;
+  einheitenModus = true;
+
+  if (einheit.typ === 'dialog') {
+    startDialogScreen(einheit);
+  } else if (einheit.typ === 'text') {
+    startTextScreen(einheit);
+  } else if (einheit.typ === 'hoeren') {
+    startHoerenScreen(einheit);
   }
 }
 

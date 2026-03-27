@@ -54,5 +54,22 @@ module.exports = {
       ],
       m: `быть hat im Präsens keine konjugierten Formen — das ist die Nullkopula! Erst Vergangenheit (был) und Zukunft (буду) haben Formen. хотеть ist gemischt: Sg. = 1. Konj.-Endungen, Pl. = 2. Konj.-Endungen.`
     },
+    {
+      titel: `Konsonantenwechsel in der 1. Person Singular`,
+      erklaerung: `Viele russische Verben haben in der 1. Person Singular (я) einen Konsonantenwechsel im Stammauslaut. Ab der 2. Person (ты) ist der Stamm wieder unverändert. Dieser Wechsel betrifft nur die 1. Person — außer bei хотеть, wo er durch den gesamten Singular geht.`,
+      tabelle: [
+        [`Infinitiv`, `Wechsel`, `я`, `ты`, `он/она`],
+        [`писать`, `с → ш`, `пишу`, `пишешь`, `пишет`],
+        [`любить`, `б → бл`, `люблю`, `любишь`, `любит`],
+        [`видеть`, `д → ж`, `вижу`, `видишь`, `видит`],
+        [`хотеть`, `т → ч (ganzer Sg.)`, `хочу`, `хочешь`, `хочет`],
+      ],
+      beispiele: [
+        `Я пишу письмо. — Ich schreibe einen Brief.`,
+        `Я люблю музыку. — Ich liebe Musik.`,
+        `Я вижу парк. — Ich sehe den Park.`,
+      ],
+      m: `Faustregel: Wechsel nur bei я, ab ты stabil. Bei хотеть gilt er im ganzen Singular. Diese Verben kommen sehr häufig vor — auswendig lernen.`
+    },
   ]
 }

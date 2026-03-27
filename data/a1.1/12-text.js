@@ -2,25 +2,25 @@ module.exports = {
   typ: `text`,
   titel: `Lesetext: In der Stadt`,
   tts: true,
-  inhalt: `Я живу в Москве. Это большой и красивый город. В центре города есть красивый парк. Рядом с парком — старый театр. Турист спрашивает: «Где библиотека?» Я говорю: «Библиотека — там, в центре!»`,
+  inhalt: `Я живу в Москве. Это большой и красивый город. В центре города есть красивый парк. У парка — старый театр. Рядом с театром — библиотека. Турист стоит у входа и спрашивает: «Где банк?» Я говорю: «Банк там, у вокзала!»`,
   fragen: [
     {
-      q: `Wo lebt die erzählende Person?`,
-      a: [`В Санкт-Петербурге`, `В Лондоне`, `В Москве`],
+      q: `Was befindet sich am Park (у парка)?`,
+      a: [`Eine Bibliothek`, `Eine Bank`, `Ein altes Theater`],
       c: 2,
-      m: `„Я живу в Москве." — в + Präpositiv (Ortsangabe): в Москве = in Moskau. Москва → в Москве.`
+      m: `„У парка — старый театр." — у + Genitiv: парк → у парка = am Park. Nullkopula: kein Verb nötig.`
     },
     {
-      q: `Was befindet sich im Stadtzentrum?`,
-      a: [`Старый театр`, `Красивый парк`, `Большой магазин`],
+      q: `Wo steht der Tourist?`,
+      a: [`У театра`, `У банка`, `У входа`],
+      c: 2,
+      m: `„Турист стоит у входа." — у + Genitiv: вход → у входа = am Eingang. стоит = er steht.`
+    },
+    {
+      q: `Wo ist die Bank laut der erzählenden Person?`,
+      a: [`В центре`, `У вокзала`, `На улице`],
       c: 1,
-      m: `„В центре города есть красивый парк." — в центре = im Zentrum; парк (m.) → красивый парк.`
-    },
-    {
-      q: `Wonach fragt der Tourist?`,
-      a: [`Где парк?`, `Где театр?`, `Где библиотека?`],
-      c: 2,
-      m: `„Где библиотека?" — где = wo? Fragewort für den Aufenthaltsort → Antwort mit Präpositiv.`
+      m: `„Банк там, у вокзала!" — у + Genitiv: вокзал → у вокзала = beim Bahnhof. Näheangabe mit у.`
     }
   ]
 }

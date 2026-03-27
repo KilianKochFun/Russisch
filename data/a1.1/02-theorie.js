@@ -39,5 +39,32 @@ module.exports = {
       ],
       m: `Что это? = für Sachen · Кто это? = für Personen. Это bleibt immer gleich — nie этот/эта.`
     },
+    {
+      titel: `Grammatisches Genus — Endungsregeln`,
+      erklaerung: `Jedes russische Nomen hat ein grammatisches Geschlecht (Genus): männlich, weiblich oder sächlich. Das Genus ist wichtig, weil Adjektive und Possessivpronomen sich danach richten. Meistens erkennt man es an der Endung des Nomens.`,
+      tabelle: [
+        [`Genus`, `Typische Endung`, `Beispiele`],
+        [`männlich (м.р.)`, `Konsonant`, `стол, брат, врач, дом, город`],
+        [`weiblich (ж.р.)`, `-а / -я`, `книга, сестра, аптека, семья`],
+        [`sächlich (с.р.)`, `-о / -е`, `окно, письмо, море, здание`],
+        [`Ausnahme ж.р.`, `-ь`, `ночь, дверь, мать, площадь`],
+        [`Ausnahme м.р.`, `-ь`, `день, путь, рубль`],
+      ],
+      m: `Nomen auf -ь können м.р. oder ж.р. sein — muss man auswendig lernen. Pronomen: он/она/оно richtet sich nach dem Genus des Nomens.`
+    },
+    {
+      titel: `Possessivpronomen — мой, твой, его, её, наш, ваш`,
+      erklaerung: `Possessivpronomen zeigen Zugehörigkeit (mein, dein, sein, ihr). Sie richten sich nach dem Genus des Nomens, das sie begleiten — nicht nach dem Besitzer. Die Formen его und её sind unveränderlich: sie passen zu allen Genera.`,
+      tabelle: [
+        [`Besitzer`, `м.р. (Konsonant)`, `ж.р. (-а/-я)`, `с.р. (-о/-е)`],
+        [`ich — мой`, `мой брат`, `моя сестра`, `моё окно`],
+        [`du — твой`, `твой друг`, `твоя книга`, `твоё слово`],
+        [`er — его`, `его брат`, `его сестра`, `его окно`],
+        [`sie — её`, `её брат`, `её сестра`, `её окно`],
+        [`wir — наш`, `наш дом`, `наша семья`, `наше место`],
+        [`ihr/Sie — ваш`, `ваш паспорт`, `ваша виза`, `ваше фото`],
+      ],
+      m: `его und её sind unveränderlich — kein Genusunterschied! его язык, его книга, его окно — immer его. Endungen мой/наш: -й (м.), -я/-а (ж.), -ё/-е (с.).`
+    },
   ]
 }

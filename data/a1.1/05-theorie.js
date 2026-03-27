@@ -39,5 +39,21 @@ module.exports = {
       ],
       m: `Wichtig: нет nimmt das folgende Nomen immer im Genitiv! У меня нет книги — nicht нет книга. (книга → книги im Genitiv)`
     },
+    {
+      titel: `Genitiv Singular — Nomen nach нет`,
+      erklaerung: `Nach нет steht das Nomen immer im Genitiv Singular. Die Genitiv-Endung hängt von Genus und Nominativ-Endung ab. Es gibt mehrere Muster — je nach Endung des Nomens.`,
+      tabelle: [
+        [`Genus`, `Nom.-Endung`, `Genitiv-Endung`, `Beispiel`],
+        [`männlich`, `Konsonant`, `+ -а`, `брат → брата · друг → друга`],
+        [`männlich`, `-й`, `-я`, `музей → музея · трамвай → трамвая`],
+        [`weiblich`, `-а`, `-ы`, `сестра → сестры · машина → машины`],
+        [`weiblich`, `-я`, `-и`, `семья → семьи · станция → станции`],
+        [`weiblich`, `-ь`, `-и`, `дверь → двери · ночь → ночи`],
+        [`sächlich`, `-о`, `-а`, `окно → окна · слово → слова`],
+        [`sächlich`, `-е / -ие`, `-я / -ия`, `море → моря · здание → здания`],
+        [`Ausnahme`, `время`, `времени`, `у меня нет времени`],
+      ],
+      m: `Plural nach нет: oft auf -ов/-ев (м.р.) oder -∅ (ж./с.р.): нет друзей, нет денег, нет книг. Plural-Genitiv am besten mit jedem Wort mitlernen.`
+    },
   ]
 }

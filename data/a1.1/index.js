@@ -40,5 +40,6 @@ module.exports = {
     require('./14-text'),       // Lesetext: Sashas Woche
     require('./14-hoeren'),     // Hören: Pläne für die Woche
     require('./15-text'),       // Abschlusstext: Меня зовут Анна
+    require('./16-kapiteltest'), // Kapiteltest A1.1
   ]
 }

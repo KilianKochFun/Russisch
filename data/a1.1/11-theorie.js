@@ -56,5 +56,18 @@ module.exports = {
       ],
       m: `на вокзале, на работе, на улице, на уроке — diese 4 Ausdrücke mit на auswendig lernen.`
     },
+    {
+      titel: `у + Genitiv — Nähe und Lage`,
+      erklaerung: `у + Genitiv drückt räumliche Nähe aus: „bei, neben, an, am". Der Genitiv der Nomen folgt denselben Regeln wie nach нет: м.р. → + -а, ж.р. -а → -ы, с.р. -о → -а. Diese Konstruktion kennt man bereits von у меня есть (= ich habe) — hier dieselbe Präposition für Ortsangaben.`,
+      tabelle: [
+        [`Nominativ`, `Genitiv`, `Ausdruck`, `Bedeutung`],
+        [`вход (м.р.)`, `входа`, `у входа`, `am Eingang`],
+        [`банк (м.р.)`, `банка`, `у банка`, `bei der Bank`],
+        [`окно (с.р.)`, `окна`, `у окна`, `am Fenster`],
+        [`дверь (ж.р.)`, `двери`, `у двери`, `an der Tür`],
+        [`остановка (ж.р.)`, `остановки`, `у остановки`, `an der Haltestelle`],
+      ],
+      m: `у + Genitiv = statisch (WO?). Nicht verwechseln mit в/на + Präpositiv (drinnen/drauf) — у betont Nähe von außen.`
+    },
   ]
 }
