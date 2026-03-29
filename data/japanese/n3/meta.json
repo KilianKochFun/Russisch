@@ -1,0 +1,8 @@
+{
+  "name": "N3",
+  "ordnung": [
+    { "typ": "folder", "name": "N3.1", "ordner": "n31" },
+    { "typ": "folder", "name": "N3.2", "ordner": "n32" },
+    { "typ": "folder", "name": "N3.3", "ordner": "n33" }
+  ]
+}

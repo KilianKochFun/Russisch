@@ -1,0 +1,16 @@
+{
+  "name": "A1.4 — Abschluss A1",
+  "beschreibung": "Instrumental, Präteritum, Aspekt, Imperativ",
+  "ordnung": [
+    { "typ": "file", "name": "Vokabeln Arbeit", "datei": "vokabeln-01.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Instrumental (Grammatik)", "datei": "grammatik-02.js", "format": "grammatik" },
+    { "typ": "file", "name": "Vokabeln Familie", "datei": "vokabeln-03.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Präteritum & Aspekt (Grammatik)", "datei": "grammatik-04.js", "format": "grammatik" },
+    { "typ": "file", "name": "Vokabeln Bildung", "datei": "vokabeln-05.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Zukunftspläne (Dialog)", "datei": "dialog-06.js", "format": "dialog" },
+    { "typ": "file", "name": "Vokabeln Freizeit", "datei": "vokabeln-07.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Vokabeln Reisen", "datei": "vokabeln-08.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Vokabeln Kultur", "datei": "vokabeln-09.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Eine interessante Geschichte (Text)", "datei": "text-10.js", "format": "text" }
+  ]
+}

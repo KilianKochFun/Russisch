@@ -1,0 +1,7 @@
+{
+  "sprache": "Русский",
+  "icon": "🇷🇺",
+  "ordnung": [
+    { "typ": "folder", "name": "A1", "ordner": "a1" }
+  ]
+}

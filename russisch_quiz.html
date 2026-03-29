@@ -415,8 +415,6 @@
   .back-btn:hover { color: var(--text); border-color: #555; }
 
   /* ── BATCH SCREEN ── */
-  #batch-screen { text-align: center; }
-
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes slideUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   ::selection { background: var(--red); color: #fff; }
@@ -428,11 +426,27 @@
 <body>
 
 <!-- MENU SCREEN -->
-<div id="menu-screen" class="screen">
+<!-- SPRACHEN SCREEN -->
+<div id="sprachen-screen" class="screen">
   <div style="text-align:center; margin-bottom:32px;">
-    <div class="star-badge">★ Russisch ★</div>
-    <h1>РYCСКИЙ<br><span>QUIZ</span></h1>
-    <p class="subtitle">// Kapitel oder Quiz auswählen</p>
+    <h1 style="font-family: var(--display); font-size: clamp(36px, 8vw, 72px); font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em;">
+      KILIAN LERNT<br><span style="color: var(--red);">SPRACHEN</span>
+    </h1>
+    <p class="subtitle">// Welche Sprache heute?</p>
+  </div>
+  <div id="sprachen-list"></div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
+</div>
+
+<!-- KAPITEL SCREEN (ehemals MENU) -->
+<div id="menu-screen" class="screen">
+  <div id="breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
+    <span id="breadcrumb-text"></span>
+  </div>
+  <div style="text-align:center; margin-bottom:32px;">
+    <div class="star-badge" id="menu-sprache-badge"></div>
+    <h1>KAPITEL<br><span id="menu-sprache-name">auswählen</span></h1>
+    <p class="subtitle">// Wo möchtest du lernen?</p>
   </div>
   <div id="menu-list"></div>
   <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
@@ -440,6 +454,9 @@
 
 <!-- PAKETE SCREEN -->
 <div id="pakete-screen" class="screen">
+  <div id="pakete-breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
+    <span id="pakete-breadcrumb-text"></span>
+  </div>
   <div style="text-align:center; margin-bottom:32px;">
     <div class="star-badge" id="pakete-einheit-name"></div>
     <h1 style="font-family:var(--display);font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
@@ -453,6 +470,9 @@
 
 <!-- EINHEITEN SCREEN -->
 <div id="einheiten-screen" class="screen">
+  <div id="einheiten-breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
+    <span id="einheiten-breadcrumb-text"></span>
+  </div>
   <div style="text-align:center; margin-bottom:32px;">
     <div class="star-badge" id="einheiten-kapitel-name"></div>
     <h1 style="font-family:var(--display);font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
@@ -464,20 +484,9 @@
   <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> starten</p>
 </div>
 
-<!-- BATCH SCREEN (für alte Quizze) -->
-<div id="batch-screen" class="screen">
-  <div style="text-align:center; margin-bottom:32px;">
-    <div class="star-badge" id="batch-quiz-name"></div>
-    <h1 style="font-family:var(--display);font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">WIE VIELE<br><span style="color:var(--red)">FRAGEN?</span></h1>
-    <p class="subtitle">// Wähle deine Batch-Größe</p>
-  </div>
-  <div id="batch-list"></div>
-  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> starten</p>
-</div>
-
 <!-- RICHTUNG SCREEN -->
 <div id="richtung-screen" class="screen" style="text-align:center;">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <button class="back-btn" onclick="zurueckZuEinheiten()" id="richtung-back-btn">← Einheiten</button>
   <div style="margin-bottom:32px;">
     <div class="star-badge">★ Karteikarten ★</div>
     <h1 style="font-family:var(--display);font-size:clamp(28px,6vw,52px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
@@ -541,6 +550,18 @@
   <div id="dialog-titel"></div>
   <div class="dialog-container" id="dialog-zeilen"></div>
   <p class="key-hint" id="dialog-hint"><kbd>B</kbd> nächste Zeile &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
+</div>
+
+<!-- DIALOG-REVIEW SCREEN -->
+<div id="dialog-review-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="meta-row">
+    <span class="category-tag blue">REVIEW</span>
+    <span></span>
+  </div>
+  <h2 style="font-family: var(--display); font-size: clamp(20px, 4vw, 28px); margin-bottom: 32px;" id="dialog-review-titel"></h2>
+  <div class="dialog-container" id="dialog-review-zeilen"></div>
+  <p class="key-hint"><kbd>B</kbd> fertig &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
 </div>
 
 <!-- HÖREN SCREEN -->
@@ -615,6 +636,18 @@
   <p class="key-hint"><kbd>B</kbd> zu den Fragen &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
 </div>
 
+<!-- TEXT-REVIEW SCREEN -->
+<div id="text-review-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="meta-row">
+    <span class="category-tag blue">REVIEW</span>
+    <span></span>
+  </div>
+  <h2 style="font-family: var(--display); font-size: clamp(20px, 4vw, 28px); margin-bottom: 32px;" id="text-review-titel"></h2>
+  <div id="text-review-absaetze" style="display: flex; flex-direction: column; gap: 32px;"></div>
+  <p class="key-hint"><kbd>B</kbd> fertig &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
+</div>
+
 <!-- QUIZ SCREEN -->
 <div id="quiz-screen" class="screen">
   <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
@@ -658,29 +691,26 @@
   <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
 </div>
 
-<script src="quizze.js"></script>
 <script>
 // ── State ──────────────────────────────────────────────────────────────────
-// state: 'menu' | 'batch' | 'richtung-wahl' | 'karte-front' | 'karte-back' |
+// state: 'sprachen-menu' | 'menu' | 'richtung-wahl' | 'karte-front' | 'karte-back' |
 //        'hoeren-lauschen' | 'hoeren-frage' | 'hoeren-beantwortet' |
 //        'theorie' | 'dialog-lesen' | 'dialog-fertig' | 'text-lesen' |
 //        'quiz-answering' | 'quiz-answered' | 'end'
-let state = 'menu';
+let state = 'sprachen-menu';
 let menuCursor = 0;
-let batchCursor = 0;
 let endCursor = 0;
 
-// Alte Quiz-Modus Vars
-let activeQuizId = null;
-let activeBatchSize = null;
-let shuffled = [];
-let current = 0;
-let answered = false;
-let scores = {};
-let totals = {};
+// Mehrsprachen-Modus Vars
+let sprachenData = [];
+let aktiveSprache = null;      // {id, sprache, icon, kapitel[]}
+let sprachenCursor = 0;
+let hierarchiePfad = [];       // Stack für Zurück-Navigation
+let aktiveKapitelEbene = null; // Current level in hierarchy
+let cursorStack = [];          // Speichert menuCursor für jeden Level
+let einheitenCursorStack = []; // Speichert einheitenCursor für jeden Unterkapitel
 
 // Kapitel-Modus Vars
-let kapitelData = [];
 let aktivesKapitel = null;
 let einheitIdx = 0;
 let einheitenModus = false;
@@ -731,23 +761,99 @@ function show(id) {
   document.getElementById(id).classList.add('active');
 }
 
+// ── Sprachen Menu ──────────────────────────────────────────────────────────
+function renderSprachen() {
+  state = 'sprachen-menu';
+  show('sprachen-screen');
+  const list = document.getElementById('sprachen-list');
+  list.innerHTML = '';
+  menuCursor = 0;
+
+  sprachenData.forEach((sprache, i) => {
+    const div = document.createElement('div');
+    div.className = 'menu-item' + (i === sprachenCursor ? ' selected' : '');
+    div.innerHTML = `
+      <span class="cursor-arrow">›</span>
+      <span class="menu-item-body">
+        <span class="menu-item-name">${sprache.icon} ${sprache.sprache}</span>
+        <span class="menu-item-desc">${sprache.kapitel?.length || 0} Kapitel</span>
+      </span>`;
+    list.appendChild(div);
+  });
+}
+
+function sprachenMove(dir) {
+  sprachenCursor = (sprachenCursor + dir + sprachenData.length) % sprachenData.length;
+  renderSprachen();
+}
+
+function sprachenSelect() {
+  aktiveSprache = sprachenData[sprachenCursor];
+  hierarchiePfad = [];
+  aktiveKapitelEbene = aktiveSprache;
+  menuCursor = 0;
+  renderMenu();
+}
+
 // ── Menu ───────────────────────────────────────────────────────────────────
 function getMenuItems() {
   const items = [];
-  // Kapitel zuerst
-  kapitelData.forEach(k => items.push({
-    id: k.id, name: k.name,
-    beschreibung: k.beschreibung || '',
-    schwierigkeit: 1,
-    isKapitel: true, kapitel: k,
-    itemCount: k.einheiten ? k.einheiten.reduce((n, e) =>
-      n + (e.karten ? e.karten.length : e.fragen ? e.fragen.length : 1), 0) : 0
-  }));
-  // Trennlinie falls Kapitel vorhanden
-  if (kapitelData.length > 0) items.push({ isSeparator: true });
-  // Alte Quizze
-  items.push({ id: null, name: '🎲 Zufällig — Alle Fragen', beschreibung: 'Alle Quizze gemischt', schwierigkeit: null, isKapitel: false });
-  QUIZZE.forEach(q => items.push({ ...q, isKapitel: false }));
+
+  if (!aktiveKapitelEbene) return items;
+
+  // Add back button at top if we can go back
+  if (hierarchiePfad.length > 0) {
+    const parent = hierarchiePfad[hierarchiePfad.length - 1];
+    items.push({
+      id: '__back__',
+      name: '← ' + (parent.name || parent.sprache || 'Zurück'),
+      beschreibung: '',
+      schwierigkeit: null,
+      isKapitel: false,
+      isBack: true,
+      kapitel: null,
+      itemCount: 0
+    });
+  } else if (aktiveSprache) {
+    // At kapitel level, can go back to sprachen
+    items.push({
+      id: '__back__',
+      name: '← Sprachen',
+      beschreibung: '',
+      schwierigkeit: null,
+      isKapitel: false,
+      isBack: true,
+      kapitel: null,
+      itemCount: 0
+    });
+  }
+
+  const itemsToShow = aktiveKapitelEbene.kapitel || aktiveKapitelEbene.unterkapitel || [];
+
+  itemsToShow.forEach(item => {
+    const isFolder = !!(item.kapitel || item.unterkapitel);
+
+    let itemCount = 0;
+    if (item.einheiten) {
+      itemCount = item.einheiten.reduce((n, e) =>
+        n + (e.karten ? e.karten.length : e.fragen ? e.fragen.length : 1), 0);
+    } else if (item.unterkapitel) {
+      itemCount = item.unterkapitel.reduce((n, uk) =>
+        n + (uk.einheiten?.reduce((s, e) =>
+          s + (e.karten ? e.karten.length : e.fragen ? e.fragen.length : 1), 0) || 0), 0);
+    }
+
+    items.push({
+      id: item.id,
+      name: item.name,
+      beschreibung: item.beschreibung || '',
+      schwierigkeit: isFolder ? null : 1,
+      isKapitel: isFolder,
+      kapitel: item,
+      itemCount: itemCount
+    });
+  });
+
   return items;
 }
 
@@ -758,13 +864,37 @@ function renderMenu() {
   const list = document.getElementById('menu-list');
   list.innerHTML = '';
 
-  items.forEach((item, i) => {
-    if (item.isSeparator) {
-      list.appendChild(document.createElement('hr')).className = 'menu-separator';
-      return;
+  // Update header badge and title
+  if (aktiveSprache) {
+    document.getElementById('menu-sprache-badge').textContent = aktiveSprache.icon || '🌍';
+    document.getElementById('menu-sprache-name').textContent = aktiveSprache.sprache || 'Sprache';
+  }
+
+  // Update breadcrumb — Icon + Sprache + Unterordner + aktuelle Ebene
+  const breadcrumbWrapper = document.getElementById('breadcrumb-wrapper');
+  const breadcrumbText = document.getElementById('breadcrumb-text');
+
+  if (aktiveSprache) {
+    breadcrumbWrapper.style.display = 'block';
+    const path = [(aktiveSprache?.icon || '🌍') + ' ' + (aktiveSprache?.sprache || 'Sprache')];
+    for (let i = 0; i < hierarchiePfad.length; i++) {
+      const item = hierarchiePfad[i];
+      if (item.id === aktiveSprache?.id) continue;
+      path.push(item.name || item.sprache || '');
     }
+    // Add current level (aktiveKapitelEbene)
+    if (aktiveKapitelEbene && aktiveKapitelEbene.id !== aktiveSprache?.id) {
+      path.push(aktiveKapitelEbene.name || '');
+    }
+    breadcrumbText.textContent = path.join(' > ');
+  } else {
+    breadcrumbWrapper.style.display = 'none';
+  }
+
+  items.forEach((item, i) => {
     const div = document.createElement('div');
-    div.className = 'menu-item' + (i === menuCursor ? ' selected' : '') + (item.isKapitel ? ' kapitel-item' : '');
+    const isBackButton = item.isBack;
+    div.className = 'menu-item' + (i === menuCursor ? ' selected' : '') + (item.isKapitel ? ' kapitel-item' : '') + (isBackButton ? ' back-item' : '');
 
     let diffHtml = '';
     if (item.schwierigkeit !== null && item.schwierigkeit !== undefined) {
@@ -773,10 +903,7 @@ function renderMenu() {
       diffHtml = `<span class="diff-stars">${filled}<span class="dim">${empty}</span></span>`;
     }
 
-    const count = item.isKapitel
-      ? item.itemCount
-      : (item.id === null ? QUIZZE.reduce((n, q) => n + q.fragen.length, 0) : item.fragen.length);
-    const countLabel = item.isKapitel ? `${count} Items` : `${count} Fragen`;
+    const countLabel = item.itemCount > 0 ? `${item.itemCount} Items` : '';
 
     div.innerHTML = `
       <span class="cursor-arrow">›</span>
@@ -794,13 +921,7 @@ function renderMenu() {
 
 function menuMove(dir) {
   const items = getMenuItems();
-  let next = menuCursor + dir;
-  // Separatoren überspringen
-  while (next >= 0 && next < items.length && items[next].isSeparator) next += dir;
-  if (next < 0) next = items.length - 1;
-  if (next >= items.length) next = 0;
-  while (items[next] && items[next].isSeparator) next = (next + dir + items.length) % items.length;
-  menuCursor = next;
+  menuCursor = (menuCursor + dir + items.length) % items.length;
   renderMenu();
   document.querySelector('#menu-list .selected')?.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
@@ -808,66 +929,46 @@ function menuMove(dir) {
 function menuSelect() {
   const items = getMenuItems();
   const chosen = items[menuCursor];
-  if (!chosen || chosen.isSeparator) return;
-  if (chosen.isKapitel) {
-    startKapitel(chosen.kapitel);
-  } else {
-    activeQuizId = chosen.id;
-    showBatchScreen();
+  if (!chosen) return;
+
+  // Handle back button
+  if (chosen.isBack) {
+    zurueckZumMenu();
+    return;
   }
-}
 
-// ── Batch screen (alte Quizze) ─────────────────────────────────────────────
-function getTotalForActive() {
-  if (activeQuizId === null) return QUIZZE.reduce((n, q) => n + q.fragen.length, 0);
-  return QUIZZE.find(q => q.id === activeQuizId).fragen.length;
-}
-
-function getBatchOptions() {
-  const total = getTotalForActive();
-  const sizes = [10, 20, 30].filter(n => n < total);
-  return [...sizes.map(n => ({ label: `${n} Fragen`, value: n })),
-          { label: `Alle (${total})`, value: null }];
-}
-
-function showBatchScreen() {
-  state = 'batch';
-  batchCursor = 0;
-  show('batch-screen');
-  const items = getMenuItems();
-  const chosen = items[menuCursor];
-  document.getElementById('batch-quiz-name').textContent = chosen.name;
-  renderBatchList();
-}
-
-function renderBatchList() {
-  const opts = getBatchOptions();
-  const list = document.getElementById('batch-list');
-  list.innerHTML = '';
-  opts.forEach((opt, i) => {
-    const div = document.createElement('div');
-    div.className = 'menu-item' + (i === batchCursor ? ' selected' : '');
-    div.innerHTML = `<span class="cursor-arrow">›</span><span class="menu-item-body"><span class="menu-item-name">${opt.label}</span></span>`;
-    list.appendChild(div);
-  });
-}
-
-function batchMove(dir) {
-  const opts = getBatchOptions();
-  batchCursor = (batchCursor + dir + opts.length) % opts.length;
-  renderBatchList();
-}
-
-function batchSelect() {
-  const opts = getBatchOptions();
-  activeBatchSize = opts[batchCursor].value;
-  einheitenModus = false;
-  startQuiz();
+  // If item has children (folder), navigate deeper
+  if (chosen.isKapitel && (chosen.kapitel.kapitel || chosen.kapitel.unterkapitel)) {
+    // Speichere aktuellen Cursor bevor wir runter navigieren
+    cursorStack.push(menuCursor);
+    hierarchiePfad.push(aktiveKapitelEbene);
+    aktiveKapitelEbene = chosen.kapitel;
+    menuCursor = 0;
+    renderMenu();
+  } else if (chosen.kapitel.einheiten) {
+    // Item has einheiten, start learning
+    startKapitel(chosen.kapitel);
+  }
 }
 
 // ── Navigation ─────────────────────────────────────────────────────────────
 function zurueckZumMenu() {
-  renderMenu();
+  if (hierarchiePfad.length > 0) {
+    // Go back one level in hierarchy
+    aktiveKapitelEbene = hierarchiePfad.pop();
+    // Restore saved cursor for this level
+    menuCursor = cursorStack.pop() || 0;
+    renderMenu();
+  } else if (aktiveSprache) {
+    // Back from kapitel level to sprachen selection
+    sprachenCursor = sprachenData.findIndex(s => s.id === aktiveSprache.id);
+    aktiveSprache = null;
+    aktiveKapitelEbene = null;
+    menuCursor = 0;
+    cursorStack = [];
+    einheitenCursorStack = [];
+    renderSprachen();
+  }
 }
 
 function zurueckZuEinheiten() {
@@ -878,6 +979,8 @@ function zurueckZuEinheiten() {
 function startKapitel(kapitel) {
   aktivesKapitel = kapitel;
   einheitenModus = false;
+  // Speichere aktuellen menuCursor bevor wir in Einheiten gehen
+  cursorStack.push(menuCursor);
   showEinheitenMenu();
 }
 
@@ -886,14 +989,36 @@ function showEinheitenMenu() {
   show('einheiten-screen');
   document.getElementById('einheiten-kapitel-name').textContent = aktivesKapitel.name;
 
+  // Update breadcrumb for einheiten — Icon + Sprache + Unterordner + Kapitel + Unterkapitel
+  const breadcrumbWrapper = document.getElementById('einheiten-breadcrumb-wrapper');
+  const breadcrumbText = document.getElementById('einheiten-breadcrumb-text');
+  breadcrumbWrapper.style.display = 'block';
+
+  const path = [(aktiveSprache?.icon || '🌍') + ' ' + (aktiveSprache?.sprache || 'Sprache')];
+  for (let i = 0; i < hierarchiePfad.length; i++) {
+    const item = hierarchiePfad[i];
+    if (item.id === aktiveSprache?.id) continue;
+    path.push(item.name || item.sprache || '');
+  }
+  // Add aktuelles Kapitel (z.B. A1)
+  if (aktiveKapitelEbene && aktiveKapitelEbene.id !== aktiveSprache?.id) {
+    path.push(aktiveKapitelEbene.name || '');
+  }
+  // Add aktuelles Unterkapitel (z.B. A1.1)
+  path.push(aktivesKapitel?.name || '');
+  breadcrumbText.textContent = path.join(' > ');
+
   const list = document.getElementById('einheiten-list');
   list.innerHTML = '';
 
-  // Zurück-Eintrag (Cursor -1)
+  // Zurück-Eintrag (Cursor -1) — automatisch zum parent Unterkapitel
   const backDiv = document.createElement('div');
-  backDiv.className = 'einheit-item einheit-back' + (einheitenCursor === -1 ? ' selected' : '');
-  backDiv.innerHTML = `<span class="cursor-arrow">›</span><span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.1em;">← Kapitelübersicht</span>`;
-  backDiv.onclick = zurueckZumMenu;
+  backDiv.className = 'menu-item' + (einheitenCursor === -1 ? ' selected' : '');
+  backDiv.innerHTML = `
+    <span class="cursor-arrow">›</span>
+    <span class="menu-item-body">
+      <span class="menu-item-name">← ${aktivesKapitel.name}</span>
+    </span>`;
   list.appendChild(backDiv);
 
   const TYP_LABELS = {
@@ -916,13 +1041,15 @@ function showEinheitenMenu() {
           : '';
 
     const div = document.createElement('div');
-    div.className = 'einheit-item' + (i === einheitenCursor ? ' selected' : '');
+    div.className = 'menu-item kapitel-item' + (i === einheitenCursor ? ' selected' : '');
     div.innerHTML = `
       <span class="cursor-arrow">›</span>
-      <span class="einheit-typ-badge typ-${einheit.typ}">${TYP_LABELS[einheit.typ] || einheit.typ}</span>
-      <span class="einheit-info">
-        <span class="einheit-titel">${einheit.titel}</span>
-        <span class="einheit-meta">${itemCount}</span>
+      <span class="menu-item-body">
+        <span class="menu-item-name">${einheit.titel}</span>
+        <span class="menu-item-desc">${TYP_LABELS[einheit.typ] || einheit.typ}</span>
+      </span>
+      <span class="menu-item-meta">
+        <span class="q-count">${itemCount}</span>
       </span>`;
     list.appendChild(div);
   });
@@ -942,10 +1069,19 @@ function einheitenMenuMove(dir) {
 }
 
 function einheitenMenuSelect() {
-  if (einheitenCursor === -1) { zurueckZumMenu(); return; }
+  if (einheitenCursor === -1) { zurueckVonEinheiten(); return; }
   einheitIdx = einheitenCursor;
   einheitenModus = true;
   startEinheit(einheitIdx);
+}
+
+function zurueckVonEinheiten() {
+  // Zurück zur Unterkapitel-Auswahl (menu-screen) — OHNE hierarchiePfad zu ändern!
+  state = 'menu';
+  show('menu-screen');
+  // Restore saved cursor für diesen Unterkapitel-Level
+  menuCursor = cursorStack.pop() || 0;
+  renderMenu();
 }
 
 function startEinheit(idx) {
@@ -961,6 +1097,56 @@ function startEinheit(idx) {
     case 'text':        startTextScreen(aktiveEinheit); break;
     case 'kapiteltest': startKapiteltest(aktiveEinheit); break;
     default: zurueckZuEinheiten();
+  }
+}
+
+// ── Dialog-Review (nach Dialog-Fragen) ──────────────────────────────────────
+function showDialogReview() {
+  state = 'dialog-review';
+  show('dialog-review-screen');
+
+  document.getElementById('dialog-review-titel').textContent = aktiveEinheit.titel;
+
+  const container = document.getElementById('dialog-review-zeilen');
+  container.innerHTML = '';
+
+  aktiveEinheit.zeilen.forEach(zeile => {
+    const div = document.createElement('div');
+    div.className = 'dialog-zeile';
+    // Format: Sprecher: RUSSISCH (Deutsch)
+    const text = zeile.de ? `${zeile.text} (${zeile.de})` : zeile.text;
+    div.innerHTML = `<span class="dialog-sprecher">${zeile.sprecher}</span><span class="dialog-text">${text}</span>`;
+    container.appendChild(div);
+  });
+}
+
+// ── Text-Review (nach Text-Fragen) ──────────────────────────────────────────
+function showTextReview() {
+  state = 'text-review';
+  show('text-review-screen');
+
+  document.getElementById('text-review-titel').textContent = aktiveEinheit.titel;
+
+  const container = document.getElementById('text-review-absaetze');
+  container.innerHTML = '';
+
+  if (aktiveEinheit.absaetze && aktiveEinheit.absaetze.length > 0) {
+    // Mit Absätze (ru + de untereinander)
+    aktiveEinheit.absaetze.forEach(abs => {
+      const div = document.createElement('div');
+      div.style.cssText = 'padding: 20px; border-left: 3px solid var(--blue); background: var(--surface);';
+      div.innerHTML = `
+        <div style="font-size: 16px; line-height: 1.6; margin-bottom: 12px; color: var(--text);">${abs.ru}</div>
+        <div style="font-size: 14px; line-height: 1.6; color: var(--muted); font-style: italic;">${abs.de}</div>
+      `;
+      container.appendChild(div);
+    });
+  } else {
+    // Fallback: einfach den Text anzeigen
+    const div = document.createElement('div');
+    div.style.cssText = 'padding: 20px; border-left: 3px solid var(--blue); background: var(--surface);';
+    div.innerHTML = `<div style="font-size: 16px; line-height: 1.6; color: var(--text);">${aktiveEinheit.inhalt}</div>`;
+    container.appendChild(div);
   }
 }
 
@@ -1009,15 +1195,39 @@ function showPaketeScreen() {
 }
 
 function renderPaketeList() {
+  // Update breadcrumb for pakete — Icon + Sprache + alles
+  const breadcrumbWrapper = document.getElementById('pakete-breadcrumb-wrapper');
+  const breadcrumbText = document.getElementById('pakete-breadcrumb-text');
+  breadcrumbWrapper.style.display = 'block';
+
+  const path = [(aktiveSprache?.icon || '🌍') + ' ' + (aktiveSprache?.sprache || 'Sprache')];
+  for (let i = 0; i < hierarchiePfad.length; i++) {
+    const item = hierarchiePfad[i];
+    if (item.id === aktiveSprache?.id) continue;
+    path.push(item.name || item.sprache || '');
+  }
+  // Add aktuelles Kapitel (z.B. A1)
+  if (aktiveKapitelEbene && aktiveKapitelEbene.id !== aktiveSprache?.id) {
+    path.push(aktiveKapitelEbene.name || '');
+  }
+  // Add aktuelles Unterkapitel (z.B. A1.1)
+  path.push(aktivesKapitel?.name || '');
+  // Add aktuelle Einheit (z.B. Vokabeln)
+  path.push(aktiveEinheit?.titel || '');
+  breadcrumbText.textContent = path.join(' > ');
+
   const pakete = getPakete();
   const list = document.getElementById('pakete-list');
   list.innerHTML = '';
 
-  // Zurück-Eintrag (Cursor -1)
+  // Zurück-Eintrag (Cursor -1) — automatisch zum parent Unterkapitel
   const backDiv = document.createElement('div');
-  backDiv.className = 'einheit-item einheit-back' + (paketeCursor === -1 ? ' selected' : '');
-  backDiv.innerHTML = `<span class="cursor-arrow">›</span><span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.1em;">← Einheitenübersicht</span>`;
-  backDiv.onclick = zurueckZuEinheiten;
+  backDiv.className = 'menu-item' + (paketeCursor === -1 ? ' selected' : '');
+  backDiv.innerHTML = `
+    <span class="cursor-arrow">›</span>
+    <span class="menu-item-body">
+      <span class="menu-item-name">← ${aktivesKapitel.name}</span>
+    </span>`;
   list.appendChild(backDiv);
 
   pakete.forEach((p, i) => {
@@ -1069,6 +1279,8 @@ function paketeSelect() {
   } else {
     state = 'richtung-wahl';
     show('richtung-screen');
+    // Update back button label to show current Unterkapitel
+    document.getElementById('richtung-back-btn').textContent = '← ' + aktivesKapitel.name;
   }
 }
 
@@ -1264,6 +1476,7 @@ function zeigeHoerenFrage() {
   ['A', 'B', 'C'].forEach((key, i) => {
     const btn = document.createElement('button');
     btn.className = 'answer-btn';
+    btn.disabled = false;
     btn.innerHTML = `<span class="key-badge">${key}</span><span>${aufgabe.a[i]}</span>`;
     btn.onclick = () => selectHoerenAnswer(i);
     container.appendChild(btn);
@@ -1422,15 +1635,37 @@ function startTextScreen(einheit) {
   document.getElementById('text-titel').textContent = einheit.titel;
   document.getElementById('text-inhalt').textContent = einheit.inhalt;
   show('text-screen');
-  if (einheit.tts) speak(einheit.inhalt);
+
+  if (einheit.tts && einheit.inhalt) {
+    // Teile Text in Sätze auf und spiele sie der Reihe nach ab (Queue)
+    const sentences = splitIntoSentences(einheit.inhalt);
+    enqueueTTSQueue(sentences);
+  }
+}
+
+function splitIntoSentences(text) {
+  // Japanisch: 。で分割, Deutsch/Englisch: . ! ? で分割
+  const sentences = text.split(/([。.!?])/);
+  const result = [];
+  for (let i = 0; i < sentences.length; i += 2) {
+    const chunk = sentences[i] + (sentences[i + 1] || '');
+    result.push(chunk);
+  }
+  return result.filter(s => s.trim());
 }
 
 // ── Einheiten-Quiz (Grammatik / Fragen nach Dialog & Text) ────────────────
 // Wird für: Grammatik-Quiz, Dialog/Text/Hoeren-Fragen, alte Quizze verwendet.
 // BUG-FIX: Dialog/Text/Hoeren in Kapiteltest hatten kein .cat → falscher Score-Key.
 // LÖSUNG: _kapiteltestScoreKey speichert eindeutige Key, alle Fragen werden getaggt.
+let isDialogQuiz = false; // Merkt sich ob wir gerade Dialog-Fragen machen
+let isTextQuiz = false; // Merkt sich ob wir gerade Text-Fragen machen
 function startEinheitenQuiz(fragen) {
   if (!fragen || fragen.length === 0) { nextEinheit(); return; }
+
+  // Prüfe ob wir Dialog- oder Text-Fragen machen
+  isDialogQuiz = aktiveEinheit && aktiveEinheit.typ === 'dialog';
+  isTextQuiz = aktiveEinheit && aktiveEinheit.typ === 'text';
 
   // Für Kapiteltest Dialog/Text/Hoeren: setze Score-Key
   if (isKapiteltest && aktiveEinheit && aktiveEinheit._kapiteltestCategory &&
@@ -1458,33 +1693,7 @@ function startEinheitenQuiz(fragen) {
   renderQuestion();
 }
 
-// ── Quiz (alte Quizze) ─────────────────────────────────────────────────────
-function startQuiz() {
-  let pool;
-  if (activeQuizId === null) {
-    pool = [];
-    QUIZZE.forEach(quiz => quiz.fragen.forEach(f => pool.push({ ...f, _quizName: quiz.name })));
-  } else {
-    const quiz = QUIZZE.find(q => q.id === activeQuizId);
-    pool = quiz.fragen.map(f => ({ ...f, _quizName: quiz.name }));
-  }
-  const full = shuffle(pool);
-  shuffled = activeBatchSize ? full.slice(0, activeBatchSize) : full;
-
-  current = 0;
-  answered = false;
-  scores = {};
-  totals = {};
-  shuffled.forEach(q => {
-    const key = q.cat || q._quizName;
-    totals[key] = (totals[key] || 0) + 1;
-    scores[key] = scores[key] || 0;
-  });
-
-  show('quiz-screen');
-  renderQuestion();
-}
-
+// ── Quiz ──────────────────────────────────────────────────────────────────
 function renderQuestion() {
   state = 'quiz-answering';
   answered = false;
@@ -1501,6 +1710,7 @@ function renderQuestion() {
   ['A', 'B', 'C'].forEach((key, i) => {
     const btn = document.createElement('button');
     btn.className = 'answer-btn';
+    btn.disabled = false;
     btn.innerHTML = `<span class="key-badge">${key}</span><span>${q.a[i]}</span>`;
     btn.onclick = () => selectAnswer(i);
     container.appendChild(btn);
@@ -1559,7 +1769,12 @@ function nextQuestion() {
   if (!answered) return;
   current++;
   if (current >= shuffled.length) {
-    if (isKapiteltest) {
+    // Nach Dialog/Text-Fragen: zeige Review statt direkt zu nextEinheit()
+    if (isDialogQuiz && einheitenModus) {
+      showDialogReview();
+    } else if (isTextQuiz && einheitenModus) {
+      showTextReview();
+    } else if (isKapiteltest) {
       // Speichere Scores der aktuellen Phase
       if (kapiteltestPhase === 'vokabeln') {
         kapiteltestPhaseResults['Vokabeln'].correct += (scores['Vokabeln'] || 0);
@@ -1713,8 +1928,6 @@ function endSelect() {
   if (endCursor === 0) {
     if (aktivesKapitel && !einheitenModus) {
       startKapitel(aktivesKapitel);
-    } else if (activeQuizId !== undefined && !einheitenModus) {
-      startQuiz();
     } else {
       renderMenu();
     }
@@ -1833,12 +2046,58 @@ function startKapiteltestUnit() {
 
 // ── TTS ────────────────────────────────────────────────────────────────────
 let _currentAudio = null;
+let _ttsPlaying = false;
+
+function _ttsLang() {
+  const langMap = { russian: 'ru', japanese: 'ja' };
+  return langMap[aktiveSprache?.id] || 'ru';
+}
 
 function speak(text) {
   if (!text) return;
+  _ttsPlaying = false;
   if (_currentAudio) { _currentAudio.pause(); _currentAudio = null; }
-  _currentAudio = new Audio('/tts?q=' + encodeURIComponent(text));
-  _currentAudio.play().catch(() => {});
+  const url = '/tts?q=' + encodeURIComponent(text) + '&lang=' + _ttsLang();
+  const audio = new Audio(url);
+  _currentAudio = audio;
+  audio.play().catch(() => {});
+}
+
+async function enqueueTTSQueue(sentences) {
+  _ttsPlaying = true;
+  if (_currentAudio) { _currentAudio.pause(); _currentAudio = null; }
+
+  for (const sentence of sentences.filter(s => s.trim())) {
+    if (!_ttsPlaying) break;
+
+    try {
+      const url = '/tts?q=' + encodeURIComponent(sentence) + '&lang=' + _ttsLang();
+      const res = await fetch(url);
+      if (!res.ok) continue;
+
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const audio = new Audio(blobUrl);
+      _currentAudio = audio;
+
+      audio.play().catch(() => {});
+
+      // Warte bis Audio fertig ist
+      await new Promise((resolve) => {
+        const onended = () => { URL.revokeObjectURL(blobUrl); resolve(); };
+        const timeout = setTimeout(onended, 10000); // 10s fallback
+        audio.addEventListener('ended', () => { clearTimeout(timeout); onended(); }, { once: true });
+        audio.addEventListener('error', () => { clearTimeout(timeout); onended(); }, { once: true });
+      });
+
+      // Kleine Pause zwischen Sätzen
+      await new Promise(r => setTimeout(r, 150));
+    } catch (e) {
+      console.error('TTS Fehler:', e);
+    }
+  }
+
+  _ttsPlaying = false;
 }
 
 function extractRussian(text) {
@@ -1852,7 +2111,12 @@ document.addEventListener('keydown', (e) => {
   if (key !== 'A' && key !== 'B' && key !== 'C') return;
   e.preventDefault();
 
-  if (state === 'menu') {
+  if (state === 'sprachen-menu') {
+    if (key === 'A') sprachenMove(-1);
+    else if (key === 'C') sprachenMove(1);
+    else if (key === 'B') sprachenSelect();
+
+  } else if (state === 'menu') {
     if (key === 'A') menuMove(-1);
     else if (key === 'C') menuMove(1);
     else if (key === 'B') menuSelect();
@@ -1866,11 +2130,6 @@ document.addEventListener('keydown', (e) => {
     if (key === 'A') paketeMove(-1);
     else if (key === 'C') paketeMove(1);
     else if (key === 'B') paketeSelect();
-
-  } else if (state === 'batch') {
-    if (key === 'A') batchMove(-1);
-    else if (key === 'C') batchMove(1);
-    else if (key === 'B') batchSelect();
 
   } else if (state === 'richtung-wahl') {
     if (key === 'A') startKarteikartenMitRichtung('ru-de');
@@ -1919,6 +2178,16 @@ document.addEventListener('keydown', (e) => {
     else if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
     else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
 
+  } else if (state === 'dialog-review') {
+    if (key === 'B') nextEinheit();
+    else if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
+    else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
+
+  } else if (state === 'text-review') {
+    if (key === 'B') nextEinheit();
+    else if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
+    else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
+
   } else if (state === 'text-lesen') {
     if (key === 'B') {
       if (aktiveEinheit.fragen && aktiveEinheit.fragen.length > 0) {
@@ -1947,12 +2216,12 @@ document.addEventListener('keydown', (e) => {
 // ── Init ───────────────────────────────────────────────────────────────────
 async function init() {
   try {
-    const res = await fetch('/api/kapitel');
-    kapitelData = await res.json();
+    const res = await fetch('/api/sprachen');
+    sprachenData = await res.json();
   } catch (e) {
-    console.warn('Kapitel nicht geladen (Server läuft?):', e.message);
+    console.warn('Sprachen nicht geladen (Server läuft?):', e.message);
   }
-  renderMenu();
+  renderSprachen();
 }
 
 init();

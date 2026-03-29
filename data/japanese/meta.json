@@ -1,0 +1,8 @@
+{
+  "sprache": "日本語",
+  "icon": "🇯🇵",
+  "ordnung": [
+    { "typ": "folder", "name": "N3", "ordner": "n3" },
+    { "typ": "folder", "name": "N2", "ordner": "n2" }
+  ]
+}

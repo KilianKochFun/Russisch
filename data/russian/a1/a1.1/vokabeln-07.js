@@ -1,0 +1,26 @@
+module.exports = {
+  typ: `vokabeln`,
+  titel: `Familie & Orte`,
+  karten: [
+    { ru: `внук`, de: `Enkel`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: WINK (der Enkel winkt der Oma zu). Idiom: мой внук учится = mein Enkel lernt` },
+    { ru: `внучка`, de: `Enkelin`, m: `Etymologie: внук + -ка (weibliches Suffix). Eselsbrücke: WINK-KA = weiblicher Enkel. Idiom: внучка рассказывает = die Enkelin erzählt` },
+    { ru: `вода`, de: `Wasser`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: WO-DA klingt wie Wasser (klar und flüssig). Idiom: питьевая вода = Trinkwasser` },
+    { ru: `вокзал`, de: `Bahnhof`, m: `Etymologie: Englisch „Vauxhall" (Londoner Bahnhof). Eselsbrücke: VOX-ZAHL = viele (Stimmen) am Bahnhof. Idiom: на вокзале = am Bahnhof` },
+    { ru: `вопрос`, de: `Frage`, m: `Etymologie: Slawisch (в + опрос). Eselsbrücke: VO-SPROSS = aus-Spruch (man spricht eine Frage). Idiom: задавать вопрос = Frage stellen` },
+    { ru: `воскресенье`, de: `Sonntag`, m: `Etymologie: Von воскресение (Auferstehung). Eselsbrücke: WOS-KRESEN = „wos krächzen" (Kirchen läuten laut). Idiom: в воскресенье = am Sonntag` },
+    { ru: `врач`, de: `Arzt`, m: `Etymologie: Slawisch (alter Beruf). Eselsbrücke: V-RACHE = gegen Krankheit kämpfen (Rache gegen Krankheit). Idiom: мой врач = mein Arzt` },
+    { ru: `время`, de: `Zeit`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: VRE-МЯ = FREMDE (Zeit ist fremd und vergeht). Idiom: сколько времени? = Wie spät ist es?` },
+    { ru: `встречать`, de: `treffen`, m: `Etymologie: Slawisch (в + встреча). Eselsbrücke: FERN-TRECHEN = sich fernweg treffen. Idiom: встречать гостей = Gäste empfangen` },
+    { ru: `вторник`, de: `Dienstag`, m: `Etymologie: От второй (zweiter). Eselsbrücke: ZWEITER = 2. Wochentag (Wochentage heißen nach ihrer Nummer). Idiom: в вторник = am Dienstag` },
+    { ru: `вход`, de: `Eingang`, m: `Etymologie: Slawisch (в + ход). Eselsbrücke: V-HOD = hinein-GEHEN. Gegenteil: выход (Ausgang). Idiom: вход бесплатный = freier Eintritt` },
+    { ru: `высокий`, de: `hoch`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: HÖHE (ausgesprochen wie das russische Wort). Idiom: высокий человек = großer Mensch` },
+    { ru: `газета`, de: `Zeitung`, m: `Etymologie: Italienisch gazzetta (eine alte Münze). Eselsbrücke: GAS-ZEITUNG (die Zeitung ist wie Gas — schnell verteilt). Idiom: читать газету = Zeitung lesen` },
+    { ru: `гитара`, de: `Gitarre`, m: `Etymologie: Spanisch/Griechisch (internationales Wort). Eselsbrücke: GI-TARA klingt wie GITARRE. Idiom: играть на гитаре = Gitarre spielen` },
+    { ru: `глаз`, de: `Auge`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: GLAS (das Auge ist klar wie Glas). Idiom: с глазу на глаз = unter vier Augen` },
+    { ru: `говорить`, de: `sprechen`, m: `Etymologie: Slawisch (Hauptverb). Eselsbrücke: GO-WORDS = spreche Worte. Idiom: говорить правду = die Wahrheit sagen` },
+    { ru: `год`, de: `Jahr`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: JAHR (ähnlicher Klang). Merke: Plural = лет (nicht: годов). Idiom: с новым годом! = Frohes neues Jahr!` },
+    { ru: `голова`, de: `Kopf`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: GOLL-VA = rund wie eine Kugel (GOLL). Idiom: у меня болит голова = mir tut der Kopf weh` },
+    { ru: `голубой`, de: `hellblau`, m: `Etymologie: Слав. голубь (Taube). Eselsbrücke: TAUBE (Taubenfarbe = Hellblau). Merke: голубь = Taube. Idiom: голубое небо = blauer Himmel` },
+    { ru: `город`, de: `Stadt`, m: `Etymologie: Slawisch (uralt). Eselsbrücke: GARTEN-ORT = besiedelter Ort/Garten. Idiom: в городе = in der Stadt` },
+  ]
+}

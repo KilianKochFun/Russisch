@@ -3,6 +3,14 @@ module.exports = {
   titel: `Lesetext: Meine Familie`,
   tts: true,
   inhalt: `Меня зовут Борис. Моя мама добрая и красивая. Мой папа умный и добрый. У меня есть сестра. Она молодая и весёлая. Я очень люблю мою семью!`,
+  absaetze: [
+    { ru: `Меня зовут Борис.`, de: `Mein Name ist Boris.` },
+    { ru: `Моя мама добрая и красивая.`, de: `Meine Mutter ist gut und schön.` },
+    { ru: `Мой папа умный и добрый.`, de: `Mein Vater ist klug und gut.` },
+    { ru: `У меня есть сестра.`, de: `Ich habe eine Schwester.` },
+    { ru: `Она молодая и весёлая.`, de: `Sie ist jung und fröhlich.` },
+    { ru: `Я очень люблю мою семью!`, de: `Ich liebe meine Familie sehr!` },
+  ],
   fragen: [
     {
       q: `Wie wird Borises Mutter beschrieben?`,

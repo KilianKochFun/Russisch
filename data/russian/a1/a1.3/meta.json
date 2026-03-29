@@ -1,0 +1,16 @@
+{
+  "name": "A1.3 — Alltag und Umgebung",
+  "beschreibung": "Genitiv, Dativ, Demonstrativpronomen",
+  "ordnung": [
+    { "typ": "file", "name": "Vokabeln Kleidung", "datei": "vokabeln-01.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Genitiv (Grammatik)", "datei": "grammatik-02.js", "format": "grammatik" },
+    { "typ": "file", "name": "Vokabeln Körperpflege", "datei": "vokabeln-03.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Dativ (Grammatik)", "datei": "grammatik-04.js", "format": "grammatik" },
+    { "typ": "file", "name": "Vokabeln Verben", "datei": "vokabeln-05.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Einkaufen (Dialog)", "datei": "dialog-06.js", "format": "dialog" },
+    { "typ": "file", "name": "Vokabeln Tätigkeiten", "datei": "vokabeln-07.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Vokabeln Gefühle", "datei": "vokabeln-08.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Vokabeln Charaktereigenschaften", "datei": "vokabeln-09.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Mein Tag (Text)", "datei": "text-10.js", "format": "text" }
+  ]
+}

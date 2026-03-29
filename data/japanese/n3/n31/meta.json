@@ -1,0 +1,8 @@
+{
+  "name": "N3.1",
+  "beschreibung": "N3.1 Level — 5つの重要な文法",
+  "ordnung": [
+    { "typ": "file", "name": "5つの重要な文法", "datei": "theorie-01.js", "format": "theorie" },
+    { "typ": "file", "name": "山田さんの一週間", "datei": "text-01.js", "format": "text" }
+  ]
+}
