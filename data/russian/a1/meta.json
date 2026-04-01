@@ -4,6 +4,7 @@
     { "typ": "folder", "name": "A1.1 — Erste Kontakte", "ordner": "a1.1" },
     { "typ": "folder", "name": "A1.2 — Akkusativ & Bewegungsverben", "ordner": "a1.2" },
     { "typ": "folder", "name": "A1.3 — Alltag und Umgebung", "ordner": "a1.3" },
-    { "typ": "folder", "name": "A1.4 — Abschluss A1", "ordner": "a1.4" }
+    { "typ": "folder", "name": "A1.4 — Abschluss A1", "ordner": "a1.4" },
+    { "typ": "folder", "name": "A1-Abschlusstest", "ordner": "a1-abschluss" }
   ]
 }

@@ -57,12 +57,6 @@ module.exports = {
       m: `Nomen auf -о/-е sind fast immer sächlich: окно, море, поле, здание.`
     },
     {
-      q: `Was bedeutet „Это не банк, это аптека"?`,
-      a: [`Das ist eine Bank und eine Apotheke`, `Das ist keine Bank, das ist eine Apotheke`, `Wo ist die Bank?`],
-      c: 1,
-      m: `не vor einem Nomen = kein/nicht. Это не + Nomen = Das ist kein/keine... Im Präsens ohne Verb.`
-    },
-    {
       q: `Welches Pronomen verwendet man für „du" (vertraut)?`,
       a: [`вы`, `ты`, `он`],
       c: 1,

@@ -1,16 +1,21 @@
 {
   "name": "A1.4 — Abschluss A1",
-  "beschreibung": "Instrumental, Präteritum, Aspekt, Imperativ",
+  "beschreibung": "Instrumental, Präteritum, Aspekt, Imperativ, Futur",
   "ordnung": [
     { "typ": "file", "name": "Vokabeln Arbeit", "datei": "vokabeln-01.js", "format": "vokabeln" },
-    { "typ": "file", "name": "Instrumental (Grammatik)", "datei": "grammatik-02.js", "format": "grammatik" },
+    { "typ": "file", "name": "Instrumental (Theorie)", "datei": "theorie-02.js", "format": "theorie" },
+    { "typ": "file", "name": "Instrumental (Übungen)", "datei": "grammatik-02.js", "format": "grammatik" },
     { "typ": "file", "name": "Vokabeln Familie", "datei": "vokabeln-03.js", "format": "vokabeln" },
-    { "typ": "file", "name": "Präteritum & Aspekt (Grammatik)", "datei": "grammatik-04.js", "format": "grammatik" },
+    { "typ": "file", "name": "Präteritum & Aspekt (Theorie)", "datei": "theorie-04.js", "format": "theorie" },
+    { "typ": "file", "name": "Präteritum & Aspekt (Übungen)", "datei": "grammatik-04.js", "format": "grammatik" },
     { "typ": "file", "name": "Vokabeln Bildung", "datei": "vokabeln-05.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Futur, Imperativ & Modalwörter (Theorie)", "datei": "theorie-06.js", "format": "theorie" },
     { "typ": "file", "name": "Zukunftspläne (Dialog)", "datei": "dialog-06.js", "format": "dialog" },
+    { "typ": "file", "name": "Eine Reise planen (Hören)", "datei": "hoeren-06.js", "format": "hoeren" },
     { "typ": "file", "name": "Vokabeln Freizeit", "datei": "vokabeln-07.js", "format": "vokabeln" },
     { "typ": "file", "name": "Vokabeln Reisen", "datei": "vokabeln-08.js", "format": "vokabeln" },
     { "typ": "file", "name": "Vokabeln Kultur", "datei": "vokabeln-09.js", "format": "vokabeln" },
-    { "typ": "file", "name": "Eine interessante Geschichte (Text)", "datei": "text-10.js", "format": "text" }
+    { "typ": "file", "name": "Iwan zieht um (Text)", "datei": "text-10.js", "format": "text" },
+    { "typ": "file", "name": "Kapiteltest A1.4", "datei": "kapiteltest-11.js", "format": "kapiteltest" }
   ]
 }

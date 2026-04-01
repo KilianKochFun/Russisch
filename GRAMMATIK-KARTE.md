@@ -10,16 +10,17 @@
 |---|---|---|---|
 | `02-theorie` | Theorie | Personalpronomen & Nullkopula | я/ты/он/она/оно/мы/вы/они · быть im Präsens entfällt · Это (das ist) · Genus der Nomen (Endungsregeln: Konsonant=m., -а/-я=f., -о/-е=n., -ь=m.od.f.) · Possessivpronomen мой/твой/его/её/наш/ваш |
 | `02-grammatik` | Übung | dto. | Nullkopula, Pronomen, Genus-Bestimmung, Possessivpronomen |
+| `03-theorie` | Theorie | Erste Verben & Fragewörter | кто/что/где/откуда/как/почему · Konjugation жить/говорить/учить (alle 6 Formen) · из + Genitiv für Herkunft (Phrasen-Einführung) |
 | `05-theorie` | Theorie | Verneinung & Haben | не vor Verb/Adj/Nomen · нет (Nein / кein+Genitiv) · у+Genitiv+есть = haben · Genitiv Singular der Nomen nach нет (m.→+а, f.-а→-ы, n.-о→-а, -я→-и, -ь→-и) |
 | `05-grammatik` | Übung | dto. | не vs. нет · Haben-Konstruktion · Genitiv-Formen nach нет |
 | `08-theorie` | Theorie | Genus & Adjektivkongruenz | 3 Genera · Adjektivendungen Nom.Sg. (-ый/-ий/-ой, -ая/-яя, -ое/-ее, Pl. -ые/-ие) · Kurzadjektive (рад, занят, болен, должен) |
 | `08-grammatik` | Übung | dto. | Adjektiv-Genus-Zuordnung · Adjektiv+Nomen Kongruenz |
 | `11-theorie` | Theorie | Fragewörter & Präpositiv | кто/что/где/куда/когда/как/почему/сколько · Präpositiv (6. Kasus) · Endung -е/-ии · в vs. на · у+Genitiv für Lageangaben |
 | `11-grammatik` | Übung | dto. | Fragewörter · в/на+Präpositiv · у+Genitiv (у входа, у банка …) |
-| `13-theorie` | Theorie | Verbkonjugation Präsens | Infinitiv+Stamm · 1.Konj. (читать-Typ: -ю/-ешь/-ет/-ем/-ете/-ют) · 2.Konj. (говорить-Typ: -ю/-ишь/-ит/-им/-ите/-ят) · unregelmäßige Verben: быть/хотеть/идти · Konsonantenwechsel 1.Pers.Sg. (писать с→ш, любить б→бл, видеть д→ж) |
+| `13-theorie` | Theorie | Verbkonjugation Präsens (vollständig) | Infinitiv+Stamm · 1.Konj. (читать-Typ: -ю/-ешь/-ет/-ем/-ете/-ют) · 2.Konj. (говорить-Typ: -ю/-ишь/-ит/-им/-ите/-ят) · unregelmäßige Verben: быть/хотеть/идти · Konsonantenwechsel 1.Pers.Sg. (писать с→ш, любить б→бл, видеть д→ж) |
 | `13-grammatik` | Übung | dto. | alle 6 Pers.-Formen для читать/работать/говорить/учить/знать/писать/любить/хотеть |
-| `14-theorie` | Theorie | Zeitangaben | Tageszeiten (утром/днём/вечером/ночью) · Wochentage (в+Akk.) · Jahreszeiten (-ом/-ой/-ью) · Häufigkeitsadverbien (всегда/часто/иногда/редко/никогда не) |
-| `14-grammatik` | Übung | dto. | Zeitangaben einsetzen · никогда не · во вторник (Lautregeln) |
+| `14-theorie` | Theorie | Zeitangaben | Tageszeiten (утром/днём/вечером/ночью) · Wochentage (в+Akk.) · Jahreszeiten (-ом/-ой/-ью) · Häufigkeitsadverbien (всегда/часто/иногда/редко/никогда не) · **in meta.json jetzt vor dialog-13** |
+| `14-grammatik` | Übung | dto. | Zeitangaben einsetzen · никогда не · во вторник (Lautregeln) · **in meta.json jetzt vor dialog-13** |
 
 ---
 
@@ -31,6 +32,8 @@
 | `02-grammatik` | Übung | dto. | Akkusativ-Formen für f./m.belebt/m.unbelebt/n. · Satzebene |
 | `04-theorie` | Theorie | Bewegungsverben & Wohin | идти (einmalig jetzt) vs. ходить (Gewohnheit) · ехать vs. ездить (mit Fahrzeug) · Konjugation идти/ехать · Wohin = в/на+Akkusativ · Woher = из/с+Genitiv (Einführung) |
 | `04-grammatik` | Übung | dto. | идти/ходить/ехать/ездить unterscheiden · alle Konjugationsformen · Wohin-Fragen · Wo vs. Wohin (Präpositiv vs. Akkusativ) · пойти (perfektiv, Einführung) |
+| `08-theorie` | Theorie | Personalpronomen im Akkusativ | я→меня · ты→тебя · он→его · она→её · мы→нас · вы→вас · они→их · н-Anlaut nach Präposition (к нему, у неё, о них) · его/её als Akkusativ vs. Possessivpronomen |
+| `08-grammatik` | Übung | dto. | Pronomen im Akkusativ einsetzen · н-Anlaut nach Präposition · его/её Unterscheidung · 12 Fragen |
 
 ---
 

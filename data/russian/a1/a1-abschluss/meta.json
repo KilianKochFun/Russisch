@@ -1,0 +1,14 @@
+{
+  "name": "A1-Abschlusstest",
+  "beschreibung": "Gesamttest A1: Vokabeln, Grammatik, Lesen, Hören",
+  "ordnung": [
+    { "typ": "file", "name": "Vokabeltest (25 Fragen)", "datei": "vokabeltest.js", "format": "grammatik" },
+    { "typ": "file", "name": "Grammatiktest (25 Fragen)", "datei": "grammatiktest.js", "format": "grammatik" },
+    { "typ": "file", "name": "Lesetext: Ein Jahr in Russland", "datei": "text-lang.js", "format": "text" },
+    { "typ": "file", "name": "Lesetext: Kurz 1 — Im Zug", "datei": "text-kurz1.js", "format": "text" },
+    { "typ": "file", "name": "Lesetext: Kurz 2 — Der Markt", "datei": "text-kurz2.js", "format": "text" },
+    { "typ": "file", "name": "Hörtext: Mein Alltag", "datei": "hoeren-lang.js", "format": "hoeren" },
+    { "typ": "file", "name": "Hörtext: Kurz 1 — Am Telefon", "datei": "hoeren-kurz1.js", "format": "hoeren" },
+    { "typ": "file", "name": "Hörtext: Kurz 2 — Im Café", "datei": "hoeren-kurz2.js", "format": "hoeren" }
+  ]
+}

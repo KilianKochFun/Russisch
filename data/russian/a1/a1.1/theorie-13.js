@@ -1,75 +1,48 @@
 module.exports = {
   typ: `theorie`,
-  titel: `Verbkonjugation Präsens`,
+  titel: `Verbkonjugation — 1. Konjugation`,
   karten: [
     {
-      titel: `Das Verb — Infinitiv und Stamm`,
-      erklaerung: `Russische Verben stehen im Wörterbuch im Infinitiv. Die meisten Infinitive enden auf -ть. Um zu konjugieren, entfernt man die Infinitivendung und hängt die Personalendung an den Stamm. Es gibt zwei große Konjugationsklassen: die 1. und die 2. Konjugation.`,
+      titel: `Wie funktioniert Konjugation?`,
+      erklaerung: `Russische Verben stehen im Wörterbuch immer im Infinitiv — erkennbar an der Endung -ть. Um zu konjugieren, trennt man die Infinitivendung ab und hängt die Personalendung an den Stamm. Es gibt zwei große Gruppen: die 1. und die 2. Konjugation. Die erste Konjugation erkennst du an der Endung -ать oder -ять — und an den е-Endungen in der Konjugation.`,
       beispiele: [
-        `читать → читай- + Endung → я читаю`,
-        `говорить → говор- + Endung → я говорю`,
-        `работать → работай- + Endung → я работаю`,
+        `читать → Stamm читай- → я читаю, ты читаешь ...`,
+        `работать → Stamm работай- → я работаю, ты работаешь ...`,
+        `знать → Stamm зна- → я знаю, ты знаешь ...`,
       ],
-      m: `Infinitiv endet auf -ть → Endung abschneiden → Stamm + Personalendung.`
+      m: `Infinitiv endet auf -ть → -ть abschneiden → Stamm + Personalendung. Merke: alle Endungen der 1.Konj. haben den Vokal е (außer я und они).`
     },
     {
-      titel: `1. Konjugation — Typ читать`,
-      erklaerung: `Die 1. Konjugation (auch е-Konjugation) umfasst die meisten Verben auf -ать und -ять. Die Endungen enthalten den Vokal е (außer in der 1. Person Singular und 3. Person Plural).`,
+      titel: `1. Konjugation — Endungen`,
+      erklaerung: `Alle Verben der 1. Konjugation folgen demselben Muster. Der Vokal е zieht sich durch alle Formen — nur bei ich (-ю/-у) und sie (Pl.) (-ют/-ут) ist er nicht sichtbar. Typische Verben: читать, работать, знать, слушать, думать, понимать, ждать.`,
       tabelle: [
-        [`Person`, `Endung`, `читать`, `работать`],
-        [`я`, `-ю / -у`, `читаю`, `работаю`],
-        [`ты`, `-ешь`, `читаешь`, `работаешь`],
-        [`он/она`, `-ет`, `читает`, `работает`],
-        [`мы`, `-ем`, `читаем`, `работаем`],
-        [`вы`, `-ете`, `читаете`, `работаете`],
-        [`они`, `-ют / -ут`, `читают`, `работают`],
+        [`Person`, `Endung`, `читать`, `работать`, `знать`],
+        [`я`, `-ю`, `читаю`, `работаю`, `знаю`],
+        [`ты`, `-ешь`, `читаешь`, `работаешь`, `знаешь`],
+        [`он/она`, `-ет`, `читает`, `работает`, `знает`],
+        [`мы`, `-ем`, `читаем`, `работаем`, `знаем`],
+        [`вы`, `-ете`, `читаете`, `работаете`, `знаете`],
+        [`они`, `-ют`, `читают`, `работают`, `знают`],
       ],
-      m: `Merkhilfe: -ю · -ешь · -ет · -ем · -ете · -ют — der е-Vokal zieht sich durch.`
+      m: `Merkhilfe für die Endungen: -ю · -ешь · -ет · -ем · -ете · -ют. Der е-Vokal ist das Erkennungszeichen der 1. Konjugation.`
     },
     {
-      titel: `2. Konjugation — Typ говорить`,
-      erklaerung: `Die 2. Konjugation (auch и-Konjugation) umfasst viele Verben auf -ить und -еть. Die Endungen enthalten den Vokal и (außer 1. Person Singular und 3. Person Plural). Achtung: In der 1. Person Singular gibt es oft Konsonantenwechsel.`,
+      titel: `Konsonantenwechsel: писать (Sonderfall 1. Konjugation)`,
+      erklaerung: `Einige 1.Konjugation-Verben haben in der 1. Person Singular (я) einen Konsonantenwechsel im Stammauslaut. Ab der 2. Person (ты) ist der Stamm wieder normal. Dieser Wechsel betrifft NUR die я-Form — das macht ihn leicht zu merken.`,
       tabelle: [
-        [`Person`, `Endung`, `говорить`, `учить`],
-        [`я`, `-ю / -у`, `говорю`, `учу`],
-        [`ты`, `-ишь`, `говоришь`, `учишь`],
-        [`он/она`, `-ит`, `говорит`, `учит`],
-        [`мы`, `-им`, `говорим`, `учим`],
-        [`вы`, `-ите`, `говорите`, `учите`],
-        [`они`, `-ят / -ат`, `говорят`, `учат`],
-      ],
-      m: `Merkhilfe: -ю · -ишь · -ит · -им · -ите · -ят — der и-Vokal zieht sich durch.`
-    },
-    {
-      titel: `Wichtige unregelmäßige Verben`,
-      erklaerung: `Einige sehr häufige Verben folgen keiner der beiden Konjugationen und müssen auswendig gelernt werden. Diese Verben kommen im Alltag ständig vor — sie lohnen sich.`,
-      tabelle: [
-        [`Person`, `быть (sein)`, `хотеть (wollen)`, `идти (gehen)`],
-        [`я`, `(не используется)`, `хочу`, `иду`],
-        [`ты`, `(не используется)`, `хочешь`, `идёшь`],
-        [`он/ona`, `(не используется)`, `хочет`, `идёт`],
-        [`мы`, `(не используется)`, `хотим`, `идём`],
-        [`вы`, `(не используется)`, `хотите`, `идёте`],
-        [`они`, `(не используется)`, `хотят`, `идут`],
-      ],
-      m: `быть hat im Präsens keine konjugierten Formen — das ist die Nullkopula! Erst Vergangenheit (был) und Zukunft (буду) haben Formen. хотеть ist gemischt: Sg. = 1. Konj.-Endungen, Pl. = 2. Konj.-Endungen.`
-    },
-    {
-      titel: `Konsonantenwechsel in der 1. Person Singular`,
-      erklaerung: `Viele russische Verben haben in der 1. Person Singular (я) einen Konsonantenwechsel im Stammauslaut. Ab der 2. Person (ты) ist der Stamm wieder unverändert. Dieser Wechsel betrifft nur die 1. Person — außer bei хотеть, wo er durch den gesamten Singular geht.`,
-      tabelle: [
-        [`Infinitiv`, `Wechsel`, `я`, `ты`, `он/она`],
-        [`писать`, `с → ш`, `пишу`, `пишешь`, `пишет`],
-        [`любить`, `б → бл`, `люблю`, `любишь`, `любит`],
-        [`видеть`, `д → ж`, `вижу`, `видишь`, `видит`],
-        [`хотеть`, `т → ч (ganzer Sg.)`, `хочу`, `хочешь`, `хочет`],
+        [`Person`, `писать (с→ш)`, `Endung`],
+        [`я`, `пишу`, `-у (nach ш)`],
+        [`ты`, `пишешь`, `-ешь (normal)`],
+        [`он/она`, `пишет`, `-ет (normal)`],
+        [`мы`, `пишем`, `-ем (normal)`],
+        [`вы`, `пишете`, `-ете (normal)`],
+        [`они`, `пишут`, `-ут (normal)`],
       ],
       beispiele: [
         `Я пишу письмо. — Ich schreibe einen Brief.`,
-        `Я люблю музыку. — Ich liebe Musik.`,
-        `Я вижу парк. — Ich sehe den Park.`,
+        `Ты пишешь хорошо. — Du schreibst gut.`,
       ],
-      m: `Faustregel: Wechsel nur bei я, ab ты stabil. Bei хотеть gilt er im ganzen Singular. Diese Verben kommen sehr häufig vor — auswendig lernen.`
+      m: `Konsonantenwechsel nur bei я: писать с→ш. Ab ты: normaler Stamm пиш-. Weitere 1.Konj.-Wechsel lernst du später.`
     },
   ]
 }

@@ -3,14 +3,21 @@
   "beschreibung": "Genitiv, Dativ, Demonstrativpronomen",
   "ordnung": [
     { "typ": "file", "name": "Vokabeln Kleidung", "datei": "vokabeln-01.js", "format": "vokabeln" },
-    { "typ": "file", "name": "Genitiv (Grammatik)", "datei": "grammatik-02.js", "format": "grammatik" },
+    { "typ": "file", "name": "Genitiv (Theorie)", "datei": "theorie-02.js", "format": "theorie" },
+    { "typ": "file", "name": "Genitiv (Übungen)", "datei": "grammatik-02.js", "format": "grammatik" },
     { "typ": "file", "name": "Vokabeln Körperpflege", "datei": "vokabeln-03.js", "format": "vokabeln" },
-    { "typ": "file", "name": "Dativ (Grammatik)", "datei": "grammatik-04.js", "format": "grammatik" },
+    { "typ": "file", "name": "Im Café (Dialog)", "datei": "dialog-03.js", "format": "dialog" },
+    { "typ": "file", "name": "Im Supermarkt (Hören)", "datei": "hoeren-03.js", "format": "hoeren" },
+    { "typ": "file", "name": "Dativ (Theorie)", "datei": "theorie-04.js", "format": "theorie" },
+    { "typ": "file", "name": "Dativ (Übungen)", "datei": "grammatik-04.js", "format": "grammatik" },
     { "typ": "file", "name": "Vokabeln Verben", "datei": "vokabeln-05.js", "format": "vokabeln" },
-    { "typ": "file", "name": "Einkaufen (Dialog)", "datei": "dialog-06.js", "format": "dialog" },
+    { "typ": "file", "name": "Demonstrativpronomen (Theorie)", "datei": "theorie-05.js", "format": "theorie" },
+    { "typ": "file", "name": "Ein Geschenk kaufen (Dialog)", "datei": "dialog-06.js", "format": "dialog" },
+    { "typ": "file", "name": "Wem gefällt was? (Hören)", "datei": "hoeren-06.js", "format": "hoeren" },
     { "typ": "file", "name": "Vokabeln Tätigkeiten", "datei": "vokabeln-07.js", "format": "vokabeln" },
     { "typ": "file", "name": "Vokabeln Gefühle", "datei": "vokabeln-08.js", "format": "vokabeln" },
     { "typ": "file", "name": "Vokabeln Charaktereigenschaften", "datei": "vokabeln-09.js", "format": "vokabeln" },
-    { "typ": "file", "name": "Mein Tag (Text)", "datei": "text-10.js", "format": "text" }
+    { "typ": "file", "name": "Familie Sokolowych (Text)", "datei": "text-10.js", "format": "text" },
+    { "typ": "file", "name": "Kapiteltest A1.3", "datei": "kapiteltest-11.js", "format": "kapiteltest" }
   ]
 }
