@@ -1,4 +1,6 @@
+.env
 node_modules/
+image-cache/
 __pycache__/
 *.pyc
 *.apkg

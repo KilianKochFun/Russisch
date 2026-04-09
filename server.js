@@ -3,9 +3,20 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
+// .env laden
+try {
+  const envFile = fs.readFileSync(path.join(__dirname, '.env'), 'utf-8');
+  envFile.split('\n').forEach(line => {
+    const [key, ...val] = line.split('=');
+    if (key && val.length) process.env[key.trim()] = val.join('=').trim();
+  });
+} catch (e) {}
+
 const PORT = 3000;
 const DIR = __dirname;
 const DATA_DIR = path.join(DIR, 'data');
+const IMAGE_CACHE_DIR = path.join(DIR, 'image-cache');
+if (!fs.existsSync(IMAGE_CACHE_DIR)) fs.mkdirSync(IMAGE_CACHE_DIR);
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -208,6 +219,65 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(500);
       res.end(JSON.stringify({ error: e.message }));
     }
+    return;
+  }
+
+  // Image-Proxy: /api/image?q=Katze — liefert Unsplash-Bild, gecacht
+  if (req.url.startsWith('/api/image?')) {
+    const params = new URLSearchParams(req.url.slice(11));
+    const q = params.get('q') || '';
+    if (!q) { res.writeHead(400); res.end('Missing q'); return; }
+
+    const cacheKey = q.toLowerCase().replace(/[^a-zа-яё0-9]/gi, '_');
+    const cachePath = path.join(IMAGE_CACHE_DIR, cacheKey + '.json');
+
+    // Cache prüfen
+    try {
+      if (fs.existsSync(cachePath)) {
+        const cached = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(cached));
+        return;
+      }
+    } catch (e) {}
+
+    const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+    if (!accessKey) { res.writeHead(500); res.end(JSON.stringify({ error: 'No UNSPLASH_ACCESS_KEY' })); return; }
+
+    const apiUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=1&orientation=squarish`;
+    https.get(apiUrl, {
+      headers: { 'Authorization': `Client-ID ${accessKey}`, 'Accept-Version': 'v1' }
+    }, (apiRes) => {
+      let body = '';
+      apiRes.on('data', c => body += c);
+      apiRes.on('end', () => {
+        try {
+          const data = JSON.parse(body);
+          if (apiRes.statusCode !== 200) {
+            res.writeHead(apiRes.statusCode); res.end(JSON.stringify({ error: data.errors ? data.errors[0] : 'Unsplash error ' + apiRes.statusCode })); return;
+          }
+          if (!data.results || data.results.length === 0) {
+            res.writeHead(404); res.end(JSON.stringify({ error: 'No image found' })); return;
+          }
+          const img = data.results[0];
+          const result = {
+            url: img.urls.small,
+            thumb: img.urls.thumb,
+            alt: img.alt_description || q,
+            credit: img.user.name,
+            link: img.links.html
+          };
+          // Cache speichern
+          fs.writeFileSync(cachePath, JSON.stringify(result));
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify(result));
+        } catch (e) {
+          res.writeHead(502); res.end(JSON.stringify({ error: 'Parse error' }));
+        }
+      });
+    }).on('error', (e) => {
+      res.writeHead(502); res.end(JSON.stringify({ error: e.message }));
+    });
     return;
   }
 

@@ -30,6 +30,38 @@ const SRS_STAGES = [
   { name: 'Burned',       interval: Infinity,    color: '#95a5a6' },
 ];
 
+// ── SRS Image Loading ─────────────────────────────────────────────────────
+const _srsImageCache = {}; // de → {url, credit, link} or null
+
+async function srsLoadImage(de, imgEl) {
+  imgEl.style.display = 'none';
+  imgEl.innerHTML = '';
+
+  if (_srsImageCache[de] === null) return; // already tried, no result
+  if (_srsImageCache[de]) {
+    srsShowImage(imgEl, _srsImageCache[de]);
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/image?q=' + encodeURIComponent(de));
+    if (!res.ok) { _srsImageCache[de] = null; return; }
+    const data = await res.json();
+    _srsImageCache[de] = data;
+    srsShowImage(imgEl, data);
+  } catch (e) {
+    _srsImageCache[de] = null;
+  }
+}
+
+function srsShowImage(imgEl, data) {
+  imgEl.innerHTML = `<img src="${data.url}" alt="${data.alt}" style="max-width:100%;max-height:160px;border-radius:4px;object-fit:cover;">
+    <div style="font-family:var(--mono);font-size:8px;color:var(--muted);margin-top:4px;">Foto: ${data.credit}</div>`;
+  imgEl.style.display = 'block';
+  imgEl.style.textAlign = 'center';
+  imgEl.style.margin = '12px 0';
+}
+
 // ── SRS System ────────────────────────────────────────────────────────────
 
 function srsCardKey(card) { return card.ru + '|' + card.de; }
@@ -423,12 +455,14 @@ function srsLessonFlip() {
   document.getElementById('srs-lesson-back-de').textContent = card.de;
   document.getElementById('srs-lesson-m').innerHTML = highlightRu(card.m || '');
 
+  // Bild laden
+  const imgEl = document.querySelector('#srs-lesson-back .srs-card-image');
+  srsLoadImage(card.de, imgEl);
+
   document.getElementById('srs-lesson-front').style.display = 'none';
   document.getElementById('srs-lesson-back').style.display = 'block';
 
   speak(card.ru);
-  // Also speak German for dyslexia support
-  setTimeout(() => speak(card.de, 'de'), 1500);
 }
 
 function srsLessonNext() {
@@ -550,11 +584,9 @@ function srsShowReviewCard() {
   document.getElementById('srs-review-front').style.display = 'block';
   document.getElementById('srs-review-back').style.display = 'none';
 
-  // TTS
+  // TTS — nur Russisch vorlesen
   if (direction === 'ru-de') {
     speak(pair.card.ru);
-  } else {
-    speak(pair.card.de, 'de');
   }
 }
 
@@ -564,6 +596,10 @@ function srsReviewFlip() {
   document.getElementById('srs-review-back').style.display = 'block';
 
   const { pair } = srsCurrentReview;
+  // Bild laden
+  const imgEl = document.querySelector('#srs-review-back .srs-card-image');
+  srsLoadImage(pair.card.de, imgEl);
+
   // Always speak RU on flip
   speak(pair.card.ru);
 }
@@ -586,7 +622,7 @@ function srsReviewGewusst() {
     if (!srsReviewFailed.has(pair.key)) {
       const change = srsUpdateCard(pair.key, true);
       if (change !== 0) {
-        srsShowStageOverlay(change > 0);
+        srsShowStageOverlay(change > 0, pair.key);
         setTimeout(() => { srsHideStageOverlay(); srsPickNextReviewCard(); }, 1200);
         return;
       }
@@ -614,7 +650,7 @@ function srsReviewNochmal() {
       // Reset both directions so user must redo both
       pair.ruDeOk = false;
       pair.deRuOk = false;
-      srsShowStageOverlay(false);
+      srsShowStageOverlay(false, pair.key);
       setTimeout(() => { srsHideStageOverlay(); srsPickNextReviewCard(); }, 1200);
       return;
     }
@@ -645,7 +681,10 @@ function srsUpdateCard(key, correct) {
     card.nextReview = null; // Burned
     srsSessionStats.burned++;
   } else {
-    card.nextReview = new Date(Date.now() + SRS_STAGES[card.srs].interval).toISOString();
+    // Auf volle Stunde abrunden, damit alle Karten einer Stunde gleichzeitig fällig werden
+    const due = new Date(Date.now() + SRS_STAGES[card.srs].interval);
+    due.setMinutes(0, 0, 0);
+    card.nextReview = due.toISOString();
   }
 
   if (card.srs > oldSrs) { srsSessionStats.up++; return 1; }
@@ -653,24 +692,29 @@ function srsUpdateCard(key, correct) {
   return 0; // no change (e.g. new card failed, stays at 0)
 }
 
-function srsShowStageOverlay(up) {
+function srsShowStageOverlay(up, key) {
   const overlay = document.getElementById('srs-stage-overlay');
   const arrow = document.getElementById('srs-stage-arrow');
   const label = document.getElementById('srs-stage-label');
 
-  if (up) {
-    arrow.textContent = '↑';
-    arrow.style.color = 'var(--green)';
-    arrow.style.animation = 'srsArrowUp 0.4s ease';
-    label.textContent = '';
-    label.style.color = 'var(--green)';
-  } else {
-    arrow.textContent = '↓';
-    arrow.style.color = 'var(--red)';
-    arrow.style.animation = 'srsArrowDown 0.4s ease';
-    label.textContent = '';
-    label.style.color = 'var(--red)';
-  }
+  const cardData = srsData.cards[key];
+  const stageName = cardData ? SRS_STAGES[cardData.srs].name : '';
+  const stageColor = cardData ? SRS_STAGES[cardData.srs].color : '';
+
+  const color = up ? 'var(--green)' : 'var(--red)';
+  const borderColor = up ? 'rgba(46,204,113,0.3)' : 'rgba(230,51,41,0.3)';
+  const bgColor = up ? 'rgba(46,204,113,0.1)' : 'rgba(230,51,41,0.1)';
+
+  arrow.textContent = up ? '↑' : '↓';
+  arrow.style.color = color;
+  arrow.style.animation = up ? 'srsArrowUp 0.4s ease' : 'srsArrowDown 0.4s ease';
+
+  label.innerHTML = `<span style="color:${stageColor};font-weight:700;">${stageName}</span>`;
+  label.style.background = bgColor;
+  label.style.border = `1px solid ${borderColor}`;
+  label.style.borderRadius = '6px';
+  label.style.padding = '6px 16px';
+  label.style.marginTop = '12px';
 
   overlay.style.display = 'flex';
   overlay.classList.add('show');
