@@ -1,8 +1,22 @@
 {
   "name": "N3.1",
-  "beschreibung": "N3.1 Level — 5つの重要な文法",
+  "beschreibung": "N3.1 Level — 40 N3文法",
   "ordnung": [
-    { "typ": "file", "name": "5つの重要な文法", "datei": "theorie-01.js", "format": "theorie" },
-    { "typ": "file", "name": "山田さんの一週間", "datei": "text-01.js", "format": "text" }
+    { "typ": "file", "name": "文法 1-5: だけ・ばいい・べきだ・から〜にかけて・代わりに", "datei": "theorie-01.js", "format": "theorie" },
+    { "typ": "file", "name": "山田さんの一週間", "datei": "text-01.js", "format": "text" },
+    { "typ": "file", "name": "文法 6-10: 上げる・あまり・あまりにも・合う・ばよかった", "datei": "theorie-02.js", "format": "theorie" },
+    { "typ": "file", "name": "後悔の日曜日", "datei": "text-02.js", "format": "text" },
+    { "typ": "file", "name": "文法 11-15: ば〜ほど・ば〜のに・ばかりで・ばかりでなく・べきではない", "datei": "theorie-03.js", "format": "theorie" },
+    { "typ": "file", "name": "ピアノの先生", "datei": "text-03.js", "format": "text" },
+    { "typ": "file", "name": "文法 16-20: 別に〜ない・ぶりに・中・だけでなく・だけど", "datei": "theorie-04.js", "format": "theorie" },
+    { "typ": "file", "name": "再会の約束", "datei": "text-04.js", "format": "text" },
+    { "typ": "file", "name": "文法 21-25: だらけ・どんなに〜ても・どうしても・ふりをする・ふと", "datei": "theorie-05.js", "format": "theorie" },
+    { "typ": "file", "name": "猫を拾った日", "datei": "text-05.js", "format": "text" },
+    { "typ": "file", "name": "文法 26-30: がち・がたい・気味・ごとに・ほど", "datei": "theorie-06.js", "format": "theorie" },
+    { "typ": "file", "name": "健康診断の日", "datei": "text-06.js", "format": "text" },
+    { "typ": "file", "name": "文法 31-35: ほど〜ない・一度に・いくら〜ても・一方だ・一体", "datei": "theorie-07.js", "format": "theorie" },
+    { "typ": "file", "name": "東京の生活", "datei": "text-07.js", "format": "text" },
+    { "typ": "file", "name": "文法 36-40: じゃない・か何か・かける・結果・結局", "datei": "theorie-08.js", "format": "theorie" },
+    { "typ": "file", "name": "忘れ物の一日", "datei": "text-08.js", "format": "text" }
   ]
 }

@@ -1,5 +1,16 @@
 # Fortschritt A1 (überarbeitet)
 
+## Konzept
+
+Dieser Kurs verfolgt einen bewusst anderen Ansatz als der ursprüngliche A1-Kurs:
+
+- **Extrem langsames Tempo bei Grammatik.** Jedes Thema wird in kleine Häppchen zerlegt, ausführlich erklärt und mit vielen Übungen gefestigt, bevor das nächste kommt. Lieber ein Thema wirklich verstehen als fünf halb.
+- **Zu jeder Grammatik/Theorie direkt passende Texte, Dialoge und Hörübungen.** Keine trockene Regelsammlung — jede neue Struktur wird sofort in Kontext eingebettet, damit man sieht wie sie in der Praxis funktioniert.
+- **Vokabeln werden separat über das SRS-System gelernt** und tauchen hier nicht als eigene Einheiten auf. Die Texte und Dialoge verwenden bewusst einfache Wörter, die nach und nach schwerer werden — grob orientiert an dem was man im SRS schon kennt. Aber nicht 1:1 — man soll auch lernen mit unbekannten Wörtern umzugehen und aus dem Kontext zu erschließen.
+- **Keine Vokabel-Einheiten im Kurs.** Wortschatz kommt über SRS + natürliche Begegnung in Texten/Dialogen.
+
+---
+
 ## Vokabel-Tracking
 
 CSV-Datei: `data/russian/a1-rev/vokabel-tracker.csv`

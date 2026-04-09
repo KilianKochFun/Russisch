@@ -140,8 +140,62 @@ async function loadSprachen() {
   return sprachen;
 }
 
+// ── SRS-Persistenz ────────────────────────────────────────────────────────
+const SRS_FILE = path.join(DIR, 'srs-data.json');
+
+function readSrsData() {
+  try {
+    return JSON.parse(fs.readFileSync(SRS_FILE, 'utf-8'));
+  } catch (e) {
+    return {};
+  }
+}
+
+function writeSrsData(data) {
+  fs.writeFileSync(SRS_FILE, JSON.stringify(data, null, 2), 'utf-8');
+}
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', () => {
+      try { resolve(JSON.parse(body)); }
+      catch (e) { reject(e); }
+    });
+    req.on('error', reject);
+  });
+}
+
 // ── HTTP Server ────────────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
+
+  // SRS-API: GET /api/srs/:sprache
+  const srsMatch = req.url.match(/^\/api\/srs\/([a-z]+)$/);
+  if (srsMatch && req.method === 'GET') {
+    const sprache = srsMatch[1];
+    const all = readSrsData();
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify(all[sprache] || { cards: {}, unlockedLevel: 1 }));
+    return;
+  }
+
+  // SRS-API: POST /api/srs/:sprache
+  if (srsMatch && req.method === 'POST') {
+    try {
+      const sprache = srsMatch[1];
+      const body = await readBody(req);
+      const all = readSrsData();
+      all[sprache] = body;
+      writeSrsData(all);
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ ok: true }));
+    } catch (e) {
+      res.writeHead(400);
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
 
   // Sprachen-API: /api/sprachen
   if (req.url === '/api/sprachen') {
