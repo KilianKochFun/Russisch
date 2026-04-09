@@ -1,0 +1,47 @@
+{
+  "name": "A1.1 — Erste Schritte",
+  "beschreibung": "Personalpronomen, Nominativ, Genus, Nullkopula, Verneinung, Кто/Что, Possessivpronomen, Adjektive",
+  "ordnung": [
+    { "typ": "file", "name": "Personalpronomen (Theorie)", "datei": "theorie-01.js", "format": "theorie" },
+    { "typ": "file", "name": "Personalpronomen (Übungen)", "datei": "grammatik-01.js", "format": "grammatik" },
+
+    { "typ": "file", "name": "Erste Wörter (Vokabeln)", "datei": "vokabeln-02.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Nominativ & Genus (Theorie)", "datei": "theorie-02.js", "format": "theorie" },
+    { "typ": "file", "name": "Nominativ & Genus (Übungen)", "datei": "grammatik-02.js", "format": "grammatik" },
+
+    { "typ": "file", "name": "Personen & Orte (Vokabeln)", "datei": "vokabeln-03.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Nullkopula (Theorie)", "datei": "theorie-03.js", "format": "theorie" },
+    { "typ": "file", "name": "Nullkopula (Übungen)", "datei": "grammatik-03.js", "format": "grammatik" },
+    { "typ": "file", "name": "Это банк (Text)", "datei": "text-03.js", "format": "text" },
+    { "typ": "file", "name": "Это банк? (Dialog)", "datei": "dialog-03.js", "format": "dialog" },
+    { "typ": "file", "name": "Он студент (Hören)", "datei": "hoeren-03.js", "format": "hoeren" },
+
+    { "typ": "file", "name": "Orte & Dinge (Vokabeln)", "datei": "vokabeln-04.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Да, Нет & Не (Theorie)", "datei": "theorie-04.js", "format": "theorie" },
+    { "typ": "file", "name": "Да, Нет & Не (Übungen)", "datei": "grammatik-04.js", "format": "grammatik" },
+    { "typ": "file", "name": "Это не парк (Text)", "datei": "text-04.js", "format": "text" },
+    { "typ": "file", "name": "Нет, это не музей (Dialog)", "datei": "dialog-04.js", "format": "dialog" },
+    { "typ": "file", "name": "Это не школа (Hören)", "datei": "hoeren-04.js", "format": "hoeren" },
+
+    { "typ": "file", "name": "Familie & Alltag (Vokabeln)", "datei": "vokabeln-05.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Кто? & Что? (Theorie)", "datei": "theorie-05.js", "format": "theorie" },
+    { "typ": "file", "name": "Кто? & Что? (Übungen)", "datei": "grammatik-05.js", "format": "grammatik" },
+    { "typ": "file", "name": "Кто это? (Text)", "datei": "text-05.js", "format": "text" },
+    { "typ": "file", "name": "Кто он? (Dialog)", "datei": "dialog-05.js", "format": "dialog" },
+    { "typ": "file", "name": "Что это? (Hören)", "datei": "hoeren-05.js", "format": "hoeren" },
+
+    { "typ": "file", "name": "Familie & Wohnen (Vokabeln)", "datei": "vokabeln-06.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Possessivpronomen (Theorie)", "datei": "theorie-06.js", "format": "theorie" },
+    { "typ": "file", "name": "Possessivpronomen (Übungen)", "datei": "grammatik-06.js", "format": "grammatik" },
+    { "typ": "file", "name": "Моя квартира (Text)", "datei": "text-06.js", "format": "text" },
+    { "typ": "file", "name": "Это твой дом? (Dialog)", "datei": "dialog-06.js", "format": "dialog" },
+    { "typ": "file", "name": "Мой друг (Hören)", "datei": "hoeren-06.js", "format": "hoeren" },
+
+    { "typ": "file", "name": "Adjektive (Vokabeln)", "datei": "vokabeln-07.js", "format": "vokabeln" },
+    { "typ": "file", "name": "Adjektive im Nominativ (Theorie)", "datei": "theorie-07.js", "format": "theorie" },
+    { "typ": "file", "name": "Adjektive im Nominativ (Übungen)", "datei": "grammatik-07.js", "format": "grammatik" },
+    { "typ": "file", "name": "Новая квартира (Text)", "datei": "text-07.js", "format": "text" },
+    { "typ": "file", "name": "Новый или старый? (Dialog)", "datei": "dialog-07.js", "format": "dialog" },
+    { "typ": "file", "name": "Большой или маленький? (Hören)", "datei": "hoeren-07.js", "format": "hoeren" }
+  ]
+}
