@@ -26,16 +26,16 @@
         "nextReview": "2026-04-10T19:22:01.086Z"
       },
       "муж|Mann": {
-        "srs": 1,
-        "nextReview": "2026-04-09T23:21:06.990Z"
+        "srs": 2,
+        "nextReview": "2026-04-10T15:00:00.000Z"
       },
       "жена|Ehefrau": {
         "srs": 1,
-        "nextReview": "2026-04-09T23:23:13.176Z"
+        "nextReview": "2026-04-10T11:00:00.000Z"
       },
       "подруга|Freundin": {
-        "srs": 1,
-        "nextReview": "2026-04-09T23:00:00.000Z"
+        "srs": 2,
+        "nextReview": "2026-04-10T15:00:00.000Z"
       },
       "друг|Freund": {
         "srs": 3,
@@ -43,23 +43,23 @@
       },
       "мальчик|Junge": {
         "srs": 1,
-        "nextReview": "2026-04-09T23:20:23.843Z"
+        "nextReview": "2026-04-10T11:00:00.000Z"
       },
       "сын|Sohn": {
         "srs": 3,
         "nextReview": "2026-04-10T19:23:00.975Z"
       },
       "девочка|Mädchen": {
-        "srs": 1,
-        "nextReview": "2026-04-09T23:23:29.035Z"
+        "srs": 2,
+        "nextReview": "2026-04-10T15:00:00.000Z"
       },
       "дочь|Tochter": {
-        "srs": 1,
-        "nextReview": "2026-04-09T23:00:00.000Z"
+        "srs": 2,
+        "nextReview": "2026-04-10T15:00:00.000Z"
       },
       "ребёнок|Kind": {
-        "srs": 1,
-        "nextReview": "2026-04-09T23:21:15.550Z"
+        "srs": 2,
+        "nextReview": "2026-04-10T15:00:00.000Z"
       },
       "человек|Mensch": {
         "srs": 3,
@@ -70,16 +70,16 @@
         "nextReview": "2026-04-10T19:21:23.985Z"
       },
       "мужчина|Mann": {
-        "srs": 1,
-        "nextReview": "2026-04-09T23:20:57.467Z"
+        "srs": 2,
+        "nextReview": "2026-04-10T15:00:00.000Z"
       },
       "семья|Familie": {
         "srs": 3,
         "nextReview": "2026-04-10T19:22:53.104Z"
       },
       "девушка|junge Frau": {
-        "srs": 1,
-        "nextReview": "2026-04-09T23:00:00.000Z"
+        "srs": 2,
+        "nextReview": "2026-04-10T15:00:00.000Z"
       }
     },
     "unlockedLevel": 1
