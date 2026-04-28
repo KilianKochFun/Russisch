@@ -8,7 +8,7 @@ module.exports = {
     { ru: `ученик`, de: `Schüler`, m: `m. (Pers.)` },
     { ru: `учитель`, de: `Lehrer`, m: `m. (Pers.)` },
     { ru: `учительница`, de: `Lehrerin`, m: `f. (Pers.)` },
-    { ru: `учить`, de: `lernen`, m: `Verb` },
+    { ru: `учить`, de: `lernen`, m: `Wurzel уч- = Lehre, Wissen — gleiche Familie wie учи́тель (Lehrer), учени́к (Schüler), нау́ка (Wissenschaft). Doppeldeutig: учи́ть + Akk. = etw. auswendig lernen ODER jdn. lehren. Reflexiv учи́ться = studieren, sich bilden.` },
     { ru: `учиться`, de: `erlernen`, m: `Verb` },
     { ru: `учреждение`, de: `(öffentl.) Einrichtung`, m: `n.` },
     { ru: `учёный`, de: `gelehrt`, m: `m. (Pers.)` },

@@ -12,7 +12,7 @@ module.exports = {
     { ru: `немец`, de: `der Deutsche`, m: `m. (Pers.)` },
     { ru: `немецкий`, de: `Deutsch`, m: `Adj.` },
     { ru: `новость`, de: `Neuigkeit`, m: `f.` },
-    { ru: `новый`, de: `neu`, m: `Adj.` },
+    { ru: `новый`, de: `neu`, m: `Adj. — Urverwandt mit dt. „neu", engl. „new", lat. „novus", franz. „nouveau" — alle aus idg. *néwos. Verwandt: но́вость = Neuigkeit. С Но́вым го́дом! = Frohes neues Jahr! Gegenteil: ста́рый.` },
     { ru: `нога`, de: `Fuß`, m: `f.` },
     { ru: `нож`, de: `Messer`, m: `m.` },
     { ru: `номер`, de: `Nummer`, m: `m.` },
