@@ -8,6 +8,7 @@
 | `quizze.js` | Alte Fragendatenbank — bleibt als Fallback im Menü |
 | `server.js` | Node-Server + TTS-Proxy + `/api/kapitel` |
 | `LERNPLAN.md` | A1–B1 Lehrplan (Kapitel 1–12) mit Vokabeln/Grammatik |
+| `SPRACHE-HINZUFUEGEN.md` | **Workflow zum Anlegen neuer Sprachen** (Spanisch, Italienisch …) — Phasen 1–8 immer der Reihe nach durchgehen |
 | `data/` | Kapitel-Module (JS) — hier werden Inhalte editiert |
 | `scripts/` | Python-Hilfsskripte für Datengenerierung |
 
