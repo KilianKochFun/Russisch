@@ -1,0 +1,10 @@
+{
+  "name": "sprachen-lernapp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sprachlern-App (Russisch, Japanisch) — statisch, GitHub Pages + Supabase",
+  "scripts": {
+    "build:content": "node scripts/build_content.js",
+    "dev": "node server.js"
+  }
+}
