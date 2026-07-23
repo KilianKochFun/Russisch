@@ -20,6 +20,26 @@ Multi-User-App umgebaut:
 - **Technik:** Vanilla JS, kein Framework — aber die 3300-Zeilen-HTML in Module aufteilen
 - **Später:** Mandarin traditionell (Taiwan) mit Zhuyin + Pinyin
 
+## NEUAUSRICHTUNG (23.07.2026 — überschreibt Phase 3/5 unten)
+
+Kilians Entscheidung: Die App wird eine **reine Vokabeltrainer-Plattform** (WaniKani-Stil).
+
+1. **Raus:** Grammatik-, Dialog-, Text-, Hören-, Theorie-Einheiten + Kapitelbaum
+   (Daten bleiben in Git-History; `data/` wird nicht mehr im Menü angezeigt).
+2. **Herzstück:** SRS-Vokabeltrainer (wie bisher Russisch) — pro Sprache ein Dashboard
+   (Lessons, Reviews, Level, Forecast, Browse) als Startscreen nach Sprachwahl.
+3. **Neu: Mandarin-Trainer** (traditionell/Taiwan, Zhuyin + Pinyin + Tonfarben),
+   Struktur nach WaniKani-VORBILD (Level, Stufen, Lesson→Review) — aber eigene Inhalte
+   aus freien Quellen (TOCFL-Listen, CC-CEDICT). KEINE WaniKani-Inhalte kopieren
+   (Mnemonics etc. sind urheberrechtlich geschützt; das SYSTEM ist frei nachbaubar).
+4. **Vokabeln in Supabase-Tabelle** `vocab` (language, level, position, data jsonb),
+   RLS: nur eingeloggte Nutzer lesen → Inhalte sind nicht öffentlich, Repo bleibt sauber.
+5. **Login ist Pflicht** („Ohne Anmeldung weiter" wurde entfernt). ✅
+6. **Neues Design** — Rot fliegt raus; ruhige, helle Basis mit Dark-Mode,
+   Akzentfarbe pro Sprache, Tonfarben für Mandarin, Genusfarben für Russisch bleiben.
+7. **Eingabemodi** Touch / Tastatur+Maus / Pedal wie Phase 3 unten beschrieben.
+8. SRS-Fortschritt wandert von localStorage nach Supabase (Merge wie Phase 4).
+
 ## Kritische Regeln (IMMER einhalten)
 
 1. **Pedal-Modus:** braucht mit genau **3 Tasten** vollständig bedienbar zu sein — kein

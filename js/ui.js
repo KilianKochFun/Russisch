@@ -1871,6 +1871,10 @@ function srsStartLessonReview() {
   S.srsReviewFailed = new Set();
   S.srsSessionStats = { up: 0, down: 0, burned: 0 };
   S.srsLessonPhase = 'review';
+  // BUG-FIX: Reste einer früher abgebrochenen Review-Session löschen — sonst
+  // zeigt srsFinishBatch nach der Lesson fälschlich den Batch-Pause-Screen
+  S.srsBatchQueue = [];
+  S.srsBatchIdx = 0;
   srsPickNextReviewCard();
 }
 
@@ -2116,17 +2120,21 @@ function srsHideStageOverlay() {
 }
 
 async function srsFinishBatch() {
-  await srsSave();
+  // BUG-FIX: Level-Up VOR dem Speichern prüfen — vorher ging ein frisch
+  // freigeschaltetes Level beim nächsten Neuladen wieder verloren
   srsCheckLevelUp();
+  await srsSave();
+
+  if (S.srsLessonPhase === 'review') {
+    // Lesson review done — cards were already updated during review via srsUpdateCard
+    srsShowResult();
+    return;
+  }
 
   S.srsBatchIdx++;
   if (S.srsBatchIdx < S.srsBatchQueue.length) {
     // More batches — show pause screen
     srsShowPause();
-  } else if (S.srsLessonPhase === 'review') {
-    // Lesson review done — cards were already updated during review via srsUpdateCard
-    await srsSave();
-    srsShowResult();
   } else {
     srsShowResult();
   }

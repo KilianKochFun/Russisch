@@ -15,16 +15,16 @@ const SRS_LEVELS = [
 
   // ── Level 2: Grundverben (Alltag) ──
   [
-    'говорить|sprechen', 'делать|machen', 'знать|Adel', 'жить|leben',
+    'говорить|sprechen', 'делать|machen', 'знать|wissen', 'жить|leben',
     'думать|denken', 'видеть|sehen', 'идти|gehen', 'ехать|fahren',
     'давать|geben', 'брать|nehmen', 'есть|essen', 'пить|trinken',
     'спать|schlafen', 'работать|arbeiten', 'играть|spielen', 'любить|lieben',
-    'хотеть|wollen', 'мочь|Macht', 'учить|lernen', 'писать|schreiben',
+    'хотеть|wollen', 'мочь|können', 'учить|lernen', 'писать|schreiben',
   ],
 
   // ── Level 3: Haus & Wohnung ──
   [
-    'дом|Haus', 'квартира|Wohnung', 'комната|Zimmer', 'кухня|Die Küche',
+    'дом|Haus', 'квартира|Wohnung', 'комната|Zimmer', 'кухня|Küche',
     'окно|Fenster', 'дверь|Tür', 'стена|Wand', 'стол|Tisch',
     'стул|Stuhl', 'кресло|Sessel', 'шкаф|Schrank', 'лампа|Lampe',
     'мебель|Möbel', 'этаж|Stockwerk', 'сад|Garten', 'ключ|Schlüssel',

@@ -26,17 +26,18 @@ async function startApp(session) {
   renderSprachen();
 }
 
-function zeigeLogin() {
+function zeigeLogin(hinweis) {
   S.state = 'login';
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('login-screen').classList.add('active');
-  document.getElementById('login-offline').style.display = 'block';
 
   const fehler = document.getElementById('login-fehler');
   const submit = document.getElementById('login-submit');
+  if (hinweis) fehler.textContent = hinweis;
 
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!auth) { fehler.textContent = 'Keine Verbindung — bitte Internet prüfen und neu laden.'; return; }
     fehler.textContent = '';
     submit.disabled = true;
     try {
@@ -50,16 +51,16 @@ function zeigeLogin() {
       submit.disabled = false;
     }
   });
-
-  document.getElementById('login-ohne').addEventListener('click', () => startApp(null));
 }
 
+// Ohne Anmeldung geht nichts — die Session bleibt aber pro Gerät gespeichert,
+// d.h. einmal einloggen reicht (auch offline nutzbar, sobald Session existiert).
 async function init() {
   try {
     auth = await import('./supabase.js');
   } catch (e) {
-    console.warn('Supabase nicht erreichbar — Start ohne Login:', e.message);
-    await startApp(null);
+    console.warn('Supabase nicht erreichbar:', e.message);
+    zeigeLogin('Keine Verbindung — bitte Internet prüfen und neu laden.');
     return;
   }
   const session = await auth.getSession();
