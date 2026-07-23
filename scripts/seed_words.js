@@ -22,6 +22,17 @@ if (!KEY) { console.error('SUPABASE_SECRET_KEY fehlt in .env'); process.exit(1);
 const cedict = loadCedict(CEDICT);
 const { KANJI } = require('../content-private/wk-levels.js');
 
+// Level jedes gelernten Zeichens — Manifest aus seed_hanzi.js (inkl. TOCFL-Level 11+),
+// Fallback: nur WK-Zeichen
+let zeichenLevel = {};
+const manifest = path.join(__dirname, '..', 'content-private', 'zeichen-level.json');
+if (fs.existsSync(manifest)) {
+  zeichenLevel = JSON.parse(fs.readFileSync(manifest, 'utf-8'));
+} else {
+  for (const [lvl, glyph] of KANJI) zeichenLevel[trad(glyph)] = lvl;
+}
+const zeichenLevelVon = c => zeichenLevel[c];
+
 const rows = [];
 const vorhanden = new Set();
 const posProLevel = {};
@@ -31,13 +42,22 @@ function pushWort(level, data) {
   vorhanden.add(data.zeichen);
 }
 
+// Level immer aus den Zeichen ableiten: das Wort kommt dorthin, wo sein
+// zuletzt eingeführtes Zeichen gelernt wird (Manifest aus seed_hanzi.js)
+function wortLevel(zh) {
+  const levels = [...zh].map(c => zeichenLevelVon(c));
+  if (levels.some(l => l === undefined)) return null;
+  return Math.max(...levels);
+}
+
 let uebersprungen = 0;
-for (const [level, woerter] of WORDS) {
+for (const [, woerter] of WORDS) {
   for (const wort of woerter) {
     const zh = trad(wort);
     const eintraege = (cedict.get(zh) || []).sort((a, b) =>
       (a.py.endsWith('5') ? 1 : 0) - (b.py.endsWith('5') ? 1 : 0));
-    if (eintraege.length === 0 || vorhanden.has(zh)) { uebersprungen++; continue; }
+    const level = wortLevel(zh);
+    if (eintraege.length === 0 || vorhanden.has(zh) || level === null) { uebersprungen++; continue; }
     const e = eintraege[0];
     pushWort(level, {
       zeichen: zh,
@@ -48,7 +68,7 @@ for (const [level, woerter] of WORDS) {
     });
   }
 }
-console.log(`WK-Wörter: ${rows.length} (${uebersprungen} nicht in CEDICT/doppelt → übersprungen)`);
+console.log(`WK-Wörter: ${rows.length} (${uebersprungen} nicht in CEDICT/doppelt/ohne Zeichen → übersprungen)`);
 
 // ── TOCFL-Lückenfüller (Band 1–4) ───────────────────────────────────────────
 // WaniKani-Prinzip: Ein Wort kommt in das Level, in dem sein letztes Zeichen
@@ -56,15 +76,6 @@ console.log(`WK-Wörter: ${rows.length} (${uebersprungen} nicht in CEDICT/doppel
 const ZIEL_PRO_LEVEL = 25;
 const TOCFL_DIR = '/tmp/claude-1000/-home-kiliankoch-Dokumente-GitHubFun-Russisch/bbcf32d8-51ab-4364-bc97-d117e7c1b42b/scratchpad';
 
-// Level jedes gelernten Zeichens — Manifest aus seed_hanzi.js (inkl. TOCFL-Level 11+),
-// Fallback: nur WK-Zeichen
-let zeichenLevel = {};
-const manifest = path.join(__dirname, '..', 'content-private', 'zeichen-level.json');
-if (fs.existsSync(manifest)) {
-  zeichenLevel = JSON.parse(fs.readFileSync(manifest, 'utf-8'));
-} else {
-  for (const [lvl, glyph] of KANJI) zeichenLevel[trad(glyph)] = lvl;
-}
 
 function parseCsvZeile(zeile) {
   const felder = [];
@@ -91,10 +102,10 @@ for (let band = 1; band <= 4; band++) {
     const zhuyin = (f[5] || '').replace(/　/g, ' ').trim(); // offizielle Taiwan-Zhuyin
     if (wort.length < 2 || vorhanden.has(wort)) continue;
 
-    const levels = [...wort].map(c => zeichenLevel[c]);
-    if (levels.some(l => l === undefined)) { ohneZeichen++; continue; }
-    const level = Math.max(...levels);
-    if (posProLevel[level] >= ZIEL_PRO_LEVEL) continue;
+    let level = wortLevel(wort);
+    if (level === null) { ohneZeichen++; continue; }
+    // Level voll? → ins nächste überlaufen statt Wort zu verwerfen
+    while (posProLevel[level] >= ZIEL_PRO_LEVEL) level++;
 
     const eintraege = cedict.get(wort) || [];
     if (eintraege.length === 0) continue;

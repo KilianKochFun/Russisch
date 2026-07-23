@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Adaptiert die privaten Level-Listen (content-private/wk-levels.js) zu traditionellem
 // Chinesisch (Taiwan) und lädt sie nach Supabase (vocab_items, hinter RLS/Login).
+// Level-Schema: 1–2 vorgezogene TOCFL-Grundzeichen (我, 是, 你 …) · 3–12 WaniKani
+// (um +2 verschoben) · 13+ restliche TOCFL-Zeichen Band 1–4.
 // Lesungen (Pinyin) kommen aus CC-CEDICT (CC-BY-SA), Zhuyin wird daraus konvertiert.
 // Aufruf: node scripts/seed_hanzi.js   (braucht SUPABASE_SECRET_KEY in .env)
 
@@ -51,55 +53,32 @@ function push(item_type, level, data) {
   rows.push({ language: 'chinese-tw', item_type, level, position: posCounter[k]++, data });
 }
 
-for (const [level, glyph, name] of RADICALS) {
-  if (!glyph) { warnungen.push(`Radical „${name}" (L${level}): kein Zeichen — übersprungen`); continue; }
-  const zeichen = trad(glyph);
-  push('component', level, { zeichen, name });
-}
-
-for (const [level, glyph, meaning] of KANJI) {
-  if (glyph === '々') continue; // japanisches Wiederholungszeichen — kein Mandarin
-  const zeichen = trad(glyph);
-  const les = lesungen(zeichen);
-  if (les.length === 0) { warnungen.push(`Kanji ${glyph}→${zeichen} (L${level}, ${meaning}): nicht in CEDICT — übersprungen`); continue; }
-  push('character', level, {
-    zeichen,
-    meaning,
-    pinyin: les[0].pinyin,
-    zhuyin: les[0].zhuyin,
-    defs: les[0].defs,
-    weitere_lesungen: les.slice(1, 3).map(l => ({ pinyin: l.pinyin, zhuyin: l.zhuyin })),
-  });
-}
-
-// ── TOCFL-Grundzeichen als Level 11+ ────────────────────────────────────────
-// Zeichen aus TOCFL Band 1–2, die im WK-Deck fehlen (我, 是, 喝 …) — in
-// Erst-Vorkommens-Reihenfolge, 25 pro Level. Wort-Zuordnung via Manifest.
 const TOCFL_DIR = '/tmp/claude-1000/-home-kiliankoch-Dokumente-GitHubFun-Russisch/bbcf32d8-51ab-4364-bc97-d117e7c1b42b/scratchpad';
-const WK_MAX_LEVEL = 10;
+const WK_SHIFT = 2;        // WK-Level 1-10 → 3-12
+const VORZIEH_ANZAHL = 50; // wichtigste TOCFL-Zeichen als Level 1-2
 const PRO_LEVEL = 25;
 
-const zeichenLevel = {};
-for (const r of rows) if (r.item_type === 'character') zeichenLevel[r.data.zeichen] = r.level;
-
-const fehlend = [];
-for (let band = 1; band <= 2; band++) {
+// TOCFL-Zeichen in Erst-Vorkommens-Reihenfolge (Band 1-4)
+const wkZeichen = new Set(KANJI.filter(([, g]) => g !== '々').map(([, g]) => trad(g)));
+const tocflZeichenListe = [];
+for (let band = 1; band <= 4; band++) {
   const pfad = `${TOCFL_DIR}/tocfl-${band}.csv`;
   if (!fs.existsSync(pfad)) { console.warn(`⚠ ${pfad} fehlt`); continue; }
   for (const zeile of fs.readFileSync(pfad, 'utf-8').split('\n').slice(1)) {
     const wort = (zeile.split(',')[2] || '').trim();
     for (const c of wort) {
       if (!/\p{Script=Han}/u.test(c)) continue;
-      if (zeichenLevel[c] === undefined && !fehlend.includes(c)) fehlend.push(c);
+      if (!wkZeichen.has(c) && !tocflZeichenListe.includes(c) && (cedict.get(c) || []).length) {
+        tocflZeichenListe.push(c);
+      }
     }
   }
 }
+const vorgezogen = tocflZeichenListe.slice(0, VORZIEH_ANZAHL);
+const rest = tocflZeichenListe.slice(VORZIEH_ANZAHL);
 
-let tocflZeichen = 0;
-fehlend.forEach((zeichen, i) => {
+function pushTocflZeichen(zeichen, level) {
   const les = lesungen(zeichen);
-  if (les.length === 0) { warnungen.push(`TOCFL-Zeichen ${zeichen}: nicht in CEDICT`); return; }
-  const level = WK_MAX_LEVEL + 1 + Math.floor(tocflZeichen / PRO_LEVEL);
   push('character', level, {
     zeichen,
     meaning: les[0].defs[0] || '',
@@ -109,10 +88,38 @@ fehlend.forEach((zeichen, i) => {
     weitere_lesungen: les.slice(1, 3).map(l => ({ pinyin: l.pinyin, zhuyin: l.zhuyin })),
     herkunft: 'tocfl',
   });
-  zeichenLevel[zeichen] = level;
-  tocflZeichen++;
-});
-console.log(`TOCFL-Zeichen ergänzt: +${tocflZeichen} in Level ${WK_MAX_LEVEL + 1}–${WK_MAX_LEVEL + Math.ceil(tocflZeichen / PRO_LEVEL)}`);
+}
+
+// Level 1-2: vorgezogene Grundzeichen
+vorgezogen.forEach((z, i) => pushTocflZeichen(z, 1 + Math.floor(i / PRO_LEVEL)));
+
+// Level 3-12: WaniKani (Komponenten + Zeichen)
+for (const [level, glyph, name] of RADICALS) {
+  if (!glyph) { warnungen.push(`Radical „${name}" (L${level}): kein Zeichen — übersprungen`); continue; }
+  push('component', level + WK_SHIFT, { zeichen: trad(glyph), name });
+}
+for (const [level, glyph, meaning] of KANJI) {
+  if (glyph === '々') continue; // japanisches Wiederholungszeichen — kein Mandarin
+  const zeichen = trad(glyph);
+  const les = lesungen(zeichen);
+  if (les.length === 0) { warnungen.push(`Kanji ${glyph}→${zeichen}: nicht in CEDICT — übersprungen`); continue; }
+  push('character', level + WK_SHIFT, {
+    zeichen,
+    meaning,
+    pinyin: les[0].pinyin,
+    zhuyin: les[0].zhuyin,
+    defs: les[0].defs,
+    weitere_lesungen: les.slice(1, 3).map(l => ({ pinyin: l.pinyin, zhuyin: l.zhuyin })),
+  });
+}
+
+// Level 13+: restliche TOCFL-Zeichen (Band 1-4)
+const REST_START = 10 + WK_SHIFT + 1;
+rest.forEach((z, i) => pushTocflZeichen(z, REST_START + Math.floor(i / PRO_LEVEL)));
+console.log(`TOCFL: ${vorgezogen.length} vorgezogen (L1-2), ${rest.length} in L${REST_START}+`);
+
+const zeichenLevel = {};
+for (const r of rows) if (r.item_type === 'character') zeichenLevel[r.data.zeichen] = r.level;
 
 // Manifest für seed_words.js: Zeichen → Level
 fs.writeFileSync(path.join(__dirname, '..', 'content-private', 'zeichen-level.json'),
