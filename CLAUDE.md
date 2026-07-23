@@ -1,4 +1,4 @@
-# Sprachlern-App (Russisch + Japanisch) — Projektübersicht
+# Kilian lernt Sprachen — Vokabeltrainer-Plattform (Projektübersicht)
 
 Statische Web-App (Vanilla JS, ES Modules) — läuft ohne Server direkt von GitHub Pages.
 **Reine Vokabeltrainer-Plattform** (WaniKani-Stil): Russisch-SRS + Mandarin (Zhuyin,
@@ -6,10 +6,9 @@ Komponenten/Zeichen, Wörter). Der alte Kapitelbaum (Grammatik/Dialoge/Texte/Jap
 wurde entfernt — Code/Daten in Git-History (bis Commit 58632d3). Fahrplan: `PLAN.md`.
 
 **Login-Flow:** Beim Start prüft `main.js` die Supabase-Session → Login-Screen (E-Mail+Passwort,
-kein Registrieren) oder direkt App. „Ohne Anmeldung weiter" = kein Sync, nur lokal.
-Fortschritt: Tabelle `progress` (card_id = stabile ID, known/again, simples Intervall-SRS),
-Einstellungen (`lastEinheitId` u.a.) in `settings.data`. Menü bietet „Weiter lernen",
-„Fällige Karten" (due_date ≤ heute) und „Abmelden".
+kein Registrieren) oder direkt App. **Login ist Pflicht** — ohne Anmeldung keine Inhalte.
+Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschritt/Settings:
+`settings.data` (SRS-Stände `srs-russian`, `trainer-*`, `pedalKeys`) + localStorage-Spiegel.
 
 ## Dateien
 
@@ -80,22 +79,16 @@ data/
 (Vokabeln: Pfad+RU-Wort; Fragen: Pfad+Index). Daran hängt der gespeicherte Fortschritt —
 Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren**.
 
-## Einheiten-Typen
+## Trainer
 
-| typ | Lernmodus |
-|---|---|
-| `vokabeln` | Karteikarte (Richtung RU→DE / MC / DE→RU wählbar), 5er-Pakete |
-| `grammatik` | Multiple Choice (3 Optionen) |
-| `dialog` | Zeile für Zeile mit TTS, dann Verständnisfragen + Review |
-| `text` | TTS liest Text vor, dann Verständnisfragen + Review |
-| `hoeren` | Nur hören (TTS), dann Fragen |
-| `theorie` | Erklärkarten mit Tabellen/Beispielen |
-| `kapiteltest` | Phasen-Test über alle Einheiten des Unterkapitels |
-
-Außerdem: **SRS-Vokabeltrainer** (WaniKani-artig, Apprentice→Burned) — Level-Einteilung
-in `srs-levels.js`, Fortschritt in `localStorage` (`srs-russian`), beim ersten Start
-geseedet aus `srs-data.json` (Lernstand von Kilians altem Rechner, Mai 2026).
-Bleibt erhalten und wird später für Mandarin mitgenutzt.
+- **Russisch-SRS** (`js/ui.js`): Karten aus `content/sprachen.json` (nur noch `vokabeln`-
+  Einheiten relevant), Level aus `srs-levels.js`, beide Richtungen RU↔DE pro Karte.
+  Erststand aus `srs-data.json` (Mai 2026), danach localStorage + Cloud (`settings.data`).
+- **Mandarin** (`js/trainer.js`): Decks aus `vocab_items` — `zhuyin` (42, eigene Levels),
+  `component`+`character` (WK 1–10, traditionell), `word` (CC-CEDICT-gefiltert).
+  Item-Keys: `typ:zeichen` — Zeichen/Zhuyin nie ändern, sonst reißt der Fortschritt ab.
+  Inhalte pflegen: `scripts/seed_zhuyin.js` / `seed_hanzi.js` / `seed_words.js`
+  (WK-Daten in `content-private/`, gitignored — NIE committen!).
 
 ---
 
