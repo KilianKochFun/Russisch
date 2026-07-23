@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Russisch Quiz</title>
+<title>Kilian lernt Sprachen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -25,6 +25,26 @@
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
     --display: 'Unbounded', sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --border: #ddd8ce;
+      --text: #1c1b18;
+      --muted: #85817a;
+      --accent: #4a5fd0;
+      --accent-dim: #b9c2f2;
+      --blue: #1d6fd6;
+      --blue-dim: #bcd7f7;
+      --green: #1e9e57;
+      --green-dim: #b9e6cc;
+      --yellow: #a87c00;
+      --red-dim: #f0b3aa;
+    }
+    kbd { background: #eceae4; border-color: #ccc; color: #333; }
+    .merksatz-text { color: #555; }
+    .diff-stars .dim { color: #ddd; }
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html {
@@ -489,7 +509,6 @@
   <div id="login-fehler"></div>
 </div>
 
-<!-- MENU SCREEN -->
 <!-- SPRACHEN SCREEN -->
 <div id="sprachen-screen" class="screen">
   <div style="text-align:center; margin-bottom:32px;">
@@ -500,238 +519,6 @@
   </div>
   <div id="sprachen-list"></div>
   <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
-</div>
-
-<!-- KAPITEL SCREEN (ehemals MENU) -->
-<div id="menu-screen" class="screen">
-  <div id="breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
-    <span id="breadcrumb-text"></span>
-  </div>
-  <div style="text-align:center; margin-bottom:32px;">
-    <div class="star-badge" id="menu-sprache-badge"></div>
-    <h1>KAPITEL<br><span id="menu-sprache-name">auswählen</span></h1>
-    <p class="subtitle">// Wo möchtest du lernen?</p>
-  </div>
-  <div id="menu-list"></div>
-  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
-</div>
-
-<!-- PAKETE SCREEN -->
-<div id="pakete-screen" class="screen">
-  <div id="pakete-breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
-    <span id="pakete-breadcrumb-text"></span>
-  </div>
-  <div style="text-align:center; margin-bottom:32px;">
-    <div class="star-badge" id="pakete-einheit-name"></div>
-    <h1 style="font-family:var(--display);font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
-      PAKET<br><span style="color:var(--blue)">WÄHLEN</span>
-    </h1>
-    <p class="subtitle">// Welche Karten heute?</p>
-  </div>
-  <div id="pakete-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
-  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> starten</p>
-</div>
-
-<!-- EINHEITEN SCREEN -->
-<div id="einheiten-screen" class="screen">
-  <div id="einheiten-breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
-    <span id="einheiten-breadcrumb-text"></span>
-  </div>
-  <div style="text-align:center; margin-bottom:32px;">
-    <div class="star-badge" id="einheiten-kapitel-name"></div>
-    <h1 style="font-family:var(--display);font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
-      EINHEIT<br><span style="color:var(--blue)">WÄHLEN</span>
-    </h1>
-    <p class="subtitle">// Was möchtest du üben?</p>
-  </div>
-  <div id="einheiten-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
-  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> starten</p>
-</div>
-
-<!-- RICHTUNG SCREEN -->
-<div id="richtung-screen" class="screen" style="text-align:center;">
-  <button class="back-btn" onclick="zurueckZuEinheiten()" id="richtung-back-btn">← Einheiten</button>
-  <div style="margin-bottom:32px;">
-    <div class="star-badge">★ Karteikarten ★</div>
-    <h1 style="font-family:var(--display);font-size:clamp(28px,6vw,52px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
-      RICHTUNG<br><span style="color:var(--blue)">WÄHLEN</span>
-    </h1>
-    <p class="subtitle">// Wie willst du üben?</p>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:12px;text-align:left;">
-    <button class="karte-btn" onclick="startKarteikartenMitRichtung('ru-de')" style="padding:20px 24px;font-size:14px;border-color:var(--blue-dim);">
-      <kbd>A</kbd> &nbsp; <span style="color:var(--blue)">РУ → DE</span> &nbsp; Russisch sehen, Deutsch raten
-    </button>
-    <button class="karte-btn" onclick="startKarteikartenMitRichtung('mc')" style="padding:20px 24px;font-size:14px;border-color:#5a4a00;">
-      <kbd>B</kbd> &nbsp; <span style="color:var(--yellow)">MULTIPLE CHOICE</span> &nbsp; 3 Optionen, eine richtig
-    </button>
-    <button class="karte-btn" onclick="startKarteikartenMitRichtung('de-ru')" style="padding:20px 24px;font-size:14px;border-color:var(--green-dim);">
-      <kbd>C</kbd> &nbsp; <span style="color:var(--green)">DE → РУ</span> &nbsp; Deutsch sehen, Russisch raten
-    </button>
-  </div>
-</div>
-
-<!-- KARTEIKARTEN SCREEN -->
-<div id="karteikarten-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill blue" id="karte-progress"></div>
-  </div>
-  <div class="meta-row">
-    <span class="category-tag blue" id="karte-kapitel"></span>
-    <span class="q-counter" id="karte-counter"></span>
-  </div>
-  <div id="karte-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
-  <div id="karte-genus-badge" style="display:none;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;padding:3px 10px;border:1px solid;display:inline-block;margin-bottom:12px;"></div>
-  <div id="karte-front-side">
-    <div class="karte-wort" id="karte-front-wort"></div>
-    <div class="karte-flip-hint">
-      <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-bottom:16px;" id="karte-front-richtung"></p>
-      <p class="key-hint"><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> aufdecken</p>
-    </div>
-  </div>
-  <div id="karte-back-side" style="display:none">
-    <div class="karte-wort karte-back-klein" id="karte-back-oben"></div>
-    <div class="karte-de" id="karte-back-unten"></div>
-    <div class="karte-merksatz" id="karte-m"></div>
-    <div class="karte-buttons">
-      <button class="karte-btn gewusst" onclick="karteGewusst()"><kbd>A</kbd> &nbsp; gewusst ✓</button>
-      <button class="karte-btn nochmal" onclick="karteNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
-    </div>
-  </div>
-</div>
-
-<!-- DIALOG SCREEN -->
-<div id="dialog-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill blue" id="dialog-progress"></div>
-  </div>
-  <div class="meta-row">
-    <span class="category-tag blue" id="dialog-kapitel"></span>
-    <span class="q-counter" id="dialog-counter"></span>
-  </div>
-  <div id="dialog-titel"></div>
-  <div class="dialog-container" id="dialog-zeilen"></div>
-  <p class="key-hint" id="dialog-hint"><kbd>B</kbd> nächste Zeile &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
-</div>
-
-<!-- DIALOG-REVIEW SCREEN -->
-<div id="dialog-review-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="meta-row">
-    <span class="category-tag blue">REVIEW</span>
-    <span></span>
-  </div>
-  <h2 style="font-family: var(--display); font-size: clamp(20px, 4vw, 28px); margin-bottom: 32px;" id="dialog-review-titel"></h2>
-  <div class="dialog-container" id="dialog-review-zeilen"></div>
-  <p class="key-hint"><kbd>B</kbd> fertig &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
-</div>
-
-<!-- HÖREN SCREEN -->
-<div id="hoeren-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill" style="background:#34d399" id="hoeren-progress"></div>
-  </div>
-  <div class="meta-row">
-    <span class="category-tag" style="color:#34d399;border-color:#065f46;" id="hoeren-kapitel"></span>
-    <span class="q-counter" id="hoeren-counter"></span>
-  </div>
-
-  <!-- Phase 1: Lauschen -->
-  <div id="hoeren-lauschen-phase">
-    <div class="hoeren-lauschen-box">
-      <div class="hoeren-welle playing" id="hoeren-welle">♫ ♪ ♫</div>
-      <div class="hoeren-aufforderung">Bitte zuhören</div>
-      <div class="hoeren-nr" id="hoeren-aufgabe-nr"></div>
-    </div>
-    <p class="key-hint"><kbd>B</kbd> weiter zu den Antworten &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> nochmal abspielen</p>
-  </div>
-
-  <!-- Phase 2: Antworten -->
-  <div id="hoeren-frage-phase" style="display:none">
-    <div class="question-text" style="color:#34d399;font-size:clamp(14px,2.5vw,18px);margin-bottom:24px;">Was wurde gesagt?</div>
-    <div class="answers" id="hoeren-answers"></div>
-    <div class="merksatz-box" id="hoeren-merksatz-box">
-      <div class="merksatz-label">Merksatz</div>
-      <div class="merksatz-text" id="hoeren-merksatz"></div>
-    </div>
-    <div class="result-row" id="hoeren-result-row">
-      <span class="result-verdict" id="hoeren-result-verdict"></span>
-      <span class="next-hint"><kbd>B</kbd> weiter</span>
-    </div>
-  </div>
-</div>
-
-<!-- THEORIE SCREEN -->
-<div id="theorie-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill" style="background:#c084fc" id="theorie-progress"></div>
-  </div>
-  <div class="meta-row">
-    <span class="category-tag" style="color:#c084fc;border-color:#5b21b6;" id="theorie-kapitel"></span>
-    <span class="q-counter" id="theorie-counter"></span>
-  </div>
-  <div class="theorie-karte-titel" id="theorie-titel"></div>
-  <div class="theorie-erklaerung" id="theorie-erklaerung"></div>
-  <table class="theorie-tabelle" id="theorie-tabelle" style="display:none"></table>
-  <div class="theorie-beispiele" id="theorie-beispiele" style="display:none"></div>
-  <div class="merksatz-box" id="theorie-merksatz-box" style="display:none">
-    <div class="merksatz-label">Merksatz</div>
-    <div class="merksatz-text" id="theorie-merksatz"></div>
-  </div>
-  <div class="theorie-nav-hint">
-    <span><kbd>A</kbd> scrollen ↑</span>
-    <span id="theorie-hint-b"><kbd>B</kbd> nächste Karte</span>
-    <span><kbd>C</kbd> scrollen ↓</span>
-  </div>
-</div>
-
-<!-- TEXT SCREEN -->
-<div id="text-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="meta-row">
-    <span class="category-tag blue" id="text-kapitel"></span>
-  </div>
-  <div class="text-titel" id="text-titel"></div>
-  <div id="text-inhalt"></div>
-  <p class="key-hint"><kbd>B</kbd> zu den Fragen &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
-</div>
-
-<!-- TEXT-REVIEW SCREEN -->
-<div id="text-review-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="meta-row">
-    <span class="category-tag blue">REVIEW</span>
-    <span></span>
-  </div>
-  <h2 style="font-family: var(--display); font-size: clamp(20px, 4vw, 28px); margin-bottom: 32px;" id="text-review-titel"></h2>
-  <div id="text-review-absaetze" style="display: flex; flex-direction: column; gap: 32px;"></div>
-  <p class="key-hint"><kbd>B</kbd> fertig &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
-</div>
-
-<!-- QUIZ SCREEN -->
-<div id="quiz-screen" class="screen">
-  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill" id="progress-fill"></div>
-  </div>
-  <div class="meta-row">
-    <span class="category-tag" id="q-category"></span>
-    <span class="q-counter" id="q-counter"></span>
-  </div>
-  <div class="question-text" id="q-text"></div>
-  <div class="answers" id="answers-container"></div>
-  <div class="merksatz-box" id="merksatz-box">
-    <div class="merksatz-label">Merksatz</div>
-    <div class="merksatz-text" id="merksatz-text"></div>
-  </div>
-  <div class="result-row" id="result-row">
-    <span class="result-verdict" id="result-verdict"></span>
-    <span class="next-hint"><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> weiter</span>
-  </div>
 </div>
 
 <!-- SRS DASHBOARD SCREEN -->
@@ -877,6 +664,14 @@
   <p class="key-hint" style="margin-top:24px;position:sticky;bottom:0;background:var(--bg);padding:12px 0;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
 </div>
 
+<!-- PEDAL SETUP SCREEN -->
+<div id="pedal-setup-screen" class="screen" style="text-align:center;">
+  <div class="star-badge">EINSTELLUNGEN</div>
+  <h2 style="font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:900;margin-bottom:24px;">PEDAL-TASTEN BELEGEN</h2>
+  <p id="pedal-setup-text" style="font-family:var(--mono);font-size:14px;color:var(--muted);min-height:40px;"></p>
+  <p class="key-hint" style="margin-top:32px;">Jede beliebige Taste ist erlaubt — auch F-Tasten vom Fußpedal</p>
+</div>
+
 <!-- TRAINER DASHBOARD (generisch, z.B. Mandarin) -->
 <div id="tr-dashboard-screen" class="screen">
   <div style="text-align:center; margin-bottom:32px;">
@@ -932,27 +727,6 @@
     <p style="font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:24px;" id="tr-result-level"></p>
     <button class="karte-btn" onclick="trBackToDash()" style="padding:16px 32px;"><kbd>B</kbd> &nbsp; Zurück zum Dashboard</button>
   </div>
-</div>
-
-<!-- END SCREEN -->
-<div id="end-screen" class="screen">
-  <div class="star-badge">★ Fertig ★</div>
-  <h2 id="end-title">РЕЗУЛЬТАТ</h2>
-  <div class="score-display" id="end-score"></div>
-  <p class="score-pct" id="end-pct"></p>
-  <div class="cat-breakdown" id="cat-breakdown"></div>
-  <p class="message-text" id="end-message"></p>
-  <div id="end-options">
-    <div class="end-option selected" data-idx="0">
-      <span class="cursor-arrow">›</span>
-      <span class="end-option-label">Nochmal</span>
-    </div>
-    <div class="end-option" data-idx="1">
-      <span class="cursor-arrow">›</span>
-      <span class="end-option-label">Zurück zum Menü</span>
-    </div>
-  </div>
-  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
 </div>
 
 <script src="srs-levels.js"></script>

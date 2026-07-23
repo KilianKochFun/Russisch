@@ -11,6 +11,7 @@ const DECKS = {
   'chinese-tw': [
     { key: 'zhuyin', titel: 'ㄅㄆㄇ Zhuyin-Alphabet', typen: ['zhuyin'] },
     { key: 'hanzi', titel: '漢字 Komponenten & Zeichen', typen: ['component', 'character'] },
+    { key: 'woerter', titel: '詞 Wörter', typen: ['word'] },
   ],
 };
 
@@ -196,7 +197,7 @@ function backHtml(it) {
 function sprich(it) {
   const d = it.data;
   if (it.typ === 'zhuyin') { if (d.beispiel?.zh) speak(d.beispiel.zh, 'zh-TW'); }
-  else if (it.typ === 'character') speak(d.zeichen, 'zh-TW');
+  else if (it.typ === 'character' || it.typ === 'word') speak(d.zeichen, 'zh-TW');
 }
 
 function zeigeKarte(vorne) {

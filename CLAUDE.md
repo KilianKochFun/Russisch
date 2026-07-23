@@ -1,7 +1,9 @@
 # Sprachlern-App (Russisch + Japanisch) — Projektübersicht
 
 Statische Web-App (Vanilla JS, ES Modules) — läuft ohne Server direkt von GitHub Pages.
-Umbau-Fahrplan: siehe `PLAN.md` (Phase 1 ✅ statisch/Module · Phase 2 ✅ Supabase-Login/Fortschritt · Phase 3 Eingabemodi · Phase 4 PWA).
+**Reine Vokabeltrainer-Plattform** (WaniKani-Stil): Russisch-SRS + Mandarin (Zhuyin,
+Komponenten/Zeichen, Wörter). Der alte Kapitelbaum (Grammatik/Dialoge/Texte/Japanisch)
+wurde entfernt — Code/Daten in Git-History (bis Commit 58632d3). Fahrplan: `PLAN.md`.
 
 **Login-Flow:** Beim Start prüft `main.js` die Supabase-Session → Login-Screen (E-Mail+Passwort,
 kein Registrieren) oder direkt App. „Ohne Anmeldung weiter" = kein Sync, nur lokal.
@@ -16,8 +18,9 @@ Einstellungen (`lastEinheitId` u.a.) in `settings.data`. Menü bietet „Weiter 
 | `index.html` | Markup + CSS aller Screens |
 | `js/main.js` | Einstiegspunkt (lädt Inhalte, startet App) |
 | `js/state.js` | Zentrales State-Objekt `S` + SRS-Stufen |
-| `js/ui.js` | Alle Screens: Rendering + State-Übergänge |
-| `js/input.js` | Eingabe (A/B/C-Pedal-Handler) |
+| `js/ui.js` | Sprachen-Menü + Russisch-SRS-Trainer |
+| `js/trainer.js` + `js/decks.js` | Generischer Trainer für Supabase-Decks (Mandarin) |
+| `js/input.js` | Pedal-Handler (Tasten frei belegbar) + Pedal-Setup |
 | `js/content.js` | Lädt `content/sprachen.json` |
 | `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
 | `js/config.js` | Supabase-URL + Publishable Key (öffentlich OK) |
@@ -96,20 +99,21 @@ Bleibt erhalten und wird später für Mandarin mitgenutzt.
 
 ---
 
-## Steuerung (3-Tasten-Pedal — A, B, C)
+## Steuerung
 
-**KRITISCH:** Jeder Screen muss mit genau diesen 3 Tasten vollständig bedienbar sein.
-(Ab Phase 3 frei belegbar + zusätzliche Modi Touch und Tastatur+Maus — siehe `PLAN.md`.)
+**KRITISCH:** Jeder Screen muss mit genau 3 Pedal-Tasten vollständig bedienbar sein.
+Standard A/B/C, frei umbelegbar („⚙ Pedal-Tasten belegen" im Sprachen-Menü,
+gespeichert als `pedalKeys` in settings). Zusätzlich ist alles klick-/antippbar (Maus/Touch).
 
 | Screen | A | B | C |
 |---|---|---|---|
-| Menüs (Sprachen/Kapitel/Einheiten/Pakete) | hoch | auswählen | runter |
-| Karteikarte (vorne) | aufdecken | aufdecken | aufdecken |
-| Karteikarte (hinten) | gewusst ✓ | gewusst ✓ | nochmal ↩ |
-| Dialog/Text/Theorie lesen | scrollen ↑ | weiter | scrollen ↓ |
-| Quiz-Frage | Antwort A | Antwort B | Antwort C |
-| Nach Antwort | weiter | weiter | weiter |
-| Ergebnis | hoch | auswählen | runter |
+| Menüs/Dashboards | hoch | auswählen | runter |
+| Karte (vorne) | aufdecken | aufdecken | aufdecken |
+| Karte (hinten, Review) | gewusst ✓ | gewusst ✓ | nochmal ↩ |
+| Ergebnis | — | weiter | — |
+
+**Design:** Markenfarbe Indigo (`--accent`), Rot nur semantisch (falsch/nochmal).
+Light-/Dark-Mode automatisch via `prefers-color-scheme`.
 
 ## Text-to-Speech
 

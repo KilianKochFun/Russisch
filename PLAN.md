@@ -40,11 +40,15 @@ Kilians Entscheidung: Die App wird eine **reine Vokabeltrainer-Plattform** (Wani
    (気→氣, 学→學, 円→圓 …), Lesungen aus CC-CEDICT als Pinyin + Zhuyin.
    Pipeline: `scripts/seed_hanzi.js` + Daten in `content-private/` (**gitignored** —
    WK-Listen dürfen nie ins öffentliche Repo, nur nach Supabase hinter RLS!).
-   TODO: WK-Vokabellisten (Wörter) importieren; Level 11+ bei Bedarf nachliefern.
+   ✅ WK-Wörter Level 1–10: 333 echte Mandarin-Wörter (CC-CEDICT-gefiltert, 184
+   japanisch-exklusive verworfen), Pipeline `scripts/seed_words.js` + `scripts/zh_lib.js`.
+   TODO: Level 11+ bei Bedarf; Lücken mit TOCFL-Wörtern auffüllen.
 4. **Inhalte in Supabase-Tabelle `vocab_items`** ✅ (language, item_type, level,
    position, data jsonb; RLS: SELECT nur für Eingeloggte, Schreiben nur via Secret Key
    → Inhalte sind nicht öffentlich, Repo bleibt sauber).
 5. **Login ist Pflicht** („Ohne Anmeldung weiter" wurde entfernt). ✅
+   ✅ Alter Kapitelbaum-Code komplett entfernt (ui.js 2400→1035 Zeilen, 14 Screens raus)
+   ✅ Light-Mode (automatisch), ✅ Pedal-Tasten frei belegbar (Sprachen-Menü → ⚙)
 6. **Neues Design** — Rot fliegt raus; ruhige, helle Basis mit Dark-Mode,
    Akzentfarbe pro Sprache, Tonfarben für Mandarin, Genusfarben für Russisch bleiben.
 7. **Eingabemodi** Touch / Tastatur+Maus / Pedal wie Phase 3 unten beschrieben.

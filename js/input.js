@@ -1,19 +1,10 @@
-// Eingabe — Phase 1: nur der bestehende A/B/C-keydown-Handler (Pedal).
-// Phase 3 ergänzt hier die Aktions-Schicht + Touch- und Tastatur/Maus-Modi.
+// Eingabe: 3-Tasten-Pedal (frei belegbar) + Tastatur; Maus/Touch läuft über
+// die klickbaren Elemente in den Screens selbst.
+// Standard-Belegung A/B/C — umbelegen über "Pedal-Tasten belegen" im Sprachen-Menü.
 import { S } from './state.js';
-import { speak } from './tts.js';
+import { getSetting, setSetting } from './progress.js';
 import {
-  sprachenMove, sprachenSelect,
-  menuMove, menuSelect,
-  einheitenMenuMove, einheitenMenuSelect,
-  paketeMove, paketeSelect,
-  startKarteikartenMitRichtung, aufdecken, karteGewusst, karteNochmal,
-  zeigeHoerenFrage, selectHoerenAnswer, nextHoeren,
-  zeigeTheorieKarte,
-  zeigeDialogZeile,
-  startEinheitenQuiz, nextEinheit,
-  selectAnswer, nextQuestion,
-  endMove, endSelect,
+  sprachenMove, sprachenSelect, renderSprachen,
   srsShowDashboard, srsDashboardMove, srsDashboardSelect,
   srsLessonFlip, srsLessonNext,
   srsReviewFlip, srsReviewGewusst, srsReviewNochmal,
@@ -23,113 +14,75 @@ import {
   trainerDashMove, trainerDashSelect, trFlip, trNext, trGewusst, trNochmal, trBackToDash,
 } from './trainer.js';
 
+// ── Pedal-Belegung ──────────────────────────────────────────────────────────
+const STANDARD_PEDALE = { A: 'A', B: 'B', C: 'C' };
+
+function normKey(k) { return k.length === 1 ? k.toUpperCase() : k; }
+
+function pedalVon(key) {
+  const map = getSetting('pedalKeys') || STANDARD_PEDALE;
+  for (const pedal of ['A', 'B', 'C']) {
+    if (map[pedal] === key) return pedal;
+  }
+  return null;
+}
+
+// Setup-Modus: nacheinander Pedal 1/2/3 drücken
+let _setupSlot = 0;
+const _setupMap = {};
+
+export function startePedalSetup() {
+  S.state = 'pedal-setup';
+  _setupSlot = 0;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('pedal-setup-screen').classList.add('active');
+  zeigePedalSlot();
+}
+
+function zeigePedalSlot() {
+  const labels = ['Pedal A (hoch / gewusst)', 'Pedal B (auswählen / weiter)', 'Pedal C (runter / nochmal)'];
+  document.getElementById('pedal-setup-text').textContent =
+    _setupSlot < 3 ? `Drücke jetzt die Taste für ${labels[_setupSlot]} …` : '';
+}
+
+function pedalSetupKey(key) {
+  const pedal = ['A', 'B', 'C'][_setupSlot];
+  _setupMap[pedal] = key;
+  _setupSlot++;
+  if (_setupSlot >= 3) {
+    setSetting('pedalKeys', { ..._setupMap });
+    document.getElementById('pedal-setup-text').textContent =
+      `Gespeichert: A=${_setupMap.A} · B=${_setupMap.B} · C=${_setupMap.C}`;
+    setTimeout(() => renderSprachen(), 1200);
+  } else {
+    zeigePedalSlot();
+  }
+}
+
+window.startePedalSetup = startePedalSetup;
+
+// ── Tasten-Dispatcher ───────────────────────────────────────────────────────
 export function initInput() {
   document.addEventListener('keydown', (e) => {
     // In Formularfeldern (Login) normal tippen lassen
     if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
-    const key = e.key.toUpperCase();
-    if (key !== 'A' && key !== 'B' && key !== 'C') return;
+
+    const raw = normKey(e.key);
+
+    if (S.state === 'pedal-setup') {
+      e.preventDefault();
+      pedalSetupKey(raw);
+      return;
+    }
+
+    const key = pedalVon(raw);
+    if (!key) return;
     e.preventDefault();
 
     if (S.state === 'sprachen-menu') {
       if (key === 'A') sprachenMove(-1);
       else if (key === 'C') sprachenMove(1);
       else if (key === 'B') sprachenSelect();
-
-    } else if (S.state === 'menu') {
-      if (key === 'A') menuMove(-1);
-      else if (key === 'C') menuMove(1);
-      else if (key === 'B') menuSelect();
-
-    } else if (S.state === 'einheiten-menu') {
-      if (key === 'A') einheitenMenuMove(-1);
-      else if (key === 'C') einheitenMenuMove(1);
-      else if (key === 'B') einheitenMenuSelect();
-
-    } else if (S.state === 'pakete-menu') {
-      if (key === 'A') paketeMove(-1);
-      else if (key === 'C') paketeMove(1);
-      else if (key === 'B') paketeSelect();
-
-    } else if (S.state === 'richtung-wahl') {
-      if (key === 'A') startKarteikartenMitRichtung('ru-de');
-      else if (key === 'B') startKarteikartenMitRichtung('mc');
-      else if (key === 'C') startKarteikartenMitRichtung('de-ru');
-
-    } else if (S.state === 'karte-front') {
-      aufdecken();
-
-    } else if (S.state === 'karte-back') {
-      if (key === 'A') karteGewusst();
-      else if (key === 'C') karteNochmal();
-      else karteGewusst(); // B = auch als gewusst
-
-    } else if (S.state === 'hoeren-lauschen') {
-      if (key === 'B') zeigeHoerenFrage();
-      else speak(S.aktiveEinheit.aufgaben[S.hoerenIdx].audio);
-
-    } else if (S.state === 'hoeren-frage') {
-      if (key === 'A') selectHoerenAnswer(0);
-      else if (key === 'B') selectHoerenAnswer(1);
-      else if (key === 'C') selectHoerenAnswer(2);
-
-    } else if (S.state === 'hoeren-beantwortet') {
-      if (key === 'B') nextHoeren();
-
-    } else if (S.state === 'theorie') {
-      if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
-      else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
-      else if (key === 'B') {
-        if (S.theorieKarteIdx < S.aktiveEinheit.karten.length - 1) {
-          S.theorieKarteIdx++;
-          zeigeTheorieKarte();
-        } else {
-          nextEinheit();
-        }
-      }
-
-    } else if (S.state === 'dialog-lesen') {
-      if (key === 'B') zeigeDialogZeile();
-      else if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
-      else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
-
-    } else if (S.state === 'dialog-fertig') {
-      if (key === 'B') startEinheitenQuiz(S.aktiveEinheit.fragen);
-      else if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
-      else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
-
-    } else if (S.state === 'dialog-review') {
-      if (key === 'B') nextEinheit();
-      else if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
-      else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
-
-    } else if (S.state === 'text-review') {
-      if (key === 'B') nextEinheit();
-      else if (key === 'A') { window.scrollBy({ top: -120, behavior: 'smooth' }); }
-      else if (key === 'C') { window.scrollBy({ top: 120, behavior: 'smooth' }); }
-
-    } else if (S.state === 'text-lesen') {
-      if (key === 'B') {
-        if (S.aktiveEinheit.fragen && S.aktiveEinheit.fragen.length > 0) {
-          startEinheitenQuiz(S.aktiveEinheit.fragen);
-        } else {
-          nextEinheit();
-        }
-      } else if (key === 'A') { window.scrollBy({ top: -100, behavior: 'smooth' }); }
-      else if (key === 'C') { window.scrollBy({ top: 100, behavior: 'smooth' }); }
-
-    } else if (S.state === 'quiz-answering') {
-      if (key === 'A') selectAnswer(0);
-      else if (key === 'B') selectAnswer(1);
-      else if (key === 'C') selectAnswer(2);
-
-    } else if (S.state === 'quiz-answered') {
-      nextQuestion();
-
-    } else if (S.state === 'end') {
-      if (key === 'A') endMove(-1);
-      else if (key === 'C') endMove(1);
-      else if (key === 'B') endSelect();
 
     } else if (S.state === 'srs-dashboard') {
       if (key === 'A') srsDashboardMove(-1);
@@ -146,9 +99,8 @@ export function initInput() {
       srsReviewFlip();
 
     } else if (S.state === 'srs-review-back') {
-      if (key === 'A') srsReviewGewusst();
-      else if (key === 'C') srsReviewNochmal();
-      else srsReviewGewusst(); // B = gewusst
+      if (key === 'C') srsReviewNochmal();
+      else srsReviewGewusst(); // A und B = gewusst
 
     } else if (S.state === 'srs-pause') {
       if (key === 'A') srsPauseMove(-1);
