@@ -19,6 +19,9 @@ import {
   srsReviewFlip, srsReviewGewusst, srsReviewNochmal,
   srsPauseMove, srsPauseSelect, srsResultSelect,
 } from './ui.js';
+import {
+  trainerDashMove, trainerDashSelect, trFlip, trNext, trGewusst, trNochmal, trBackToDash,
+} from './trainer.js';
 
 export function initInput() {
   document.addEventListener('keydown', (e) => {
@@ -164,6 +167,24 @@ export function initInput() {
       if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
       else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
       else if (key === 'B') srsShowDashboard();
+
+    } else if (S.state === 'tr-dashboard') {
+      if (key === 'A') trainerDashMove(-1);
+      else if (key === 'C') trainerDashMove(1);
+      else if (key === 'B') trainerDashSelect();
+
+    } else if (S.state === 'tr-lesson-front' || S.state === 'tr-review-front') {
+      trFlip();
+
+    } else if (S.state === 'tr-lesson-back') {
+      trNext();
+
+    } else if (S.state === 'tr-review-back') {
+      if (key === 'C') trNochmal();
+      else trGewusst(); // A und B = gewusst
+
+    } else if (S.state === 'tr-result') {
+      trBackToDash();
     }
   });
 }

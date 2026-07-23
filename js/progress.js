@@ -14,6 +14,8 @@ export function progressInit(supabase, userId) {
   _userId = userId;
 }
 
+export function getClient() { return _sb; }
+
 export function istEingeloggt() { return !!_userId; }
 
 export async function abmelden() {

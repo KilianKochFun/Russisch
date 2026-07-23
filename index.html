@@ -11,8 +11,10 @@
     --bg: #0d0d0d;
     --surface: #161616;
     --border: #2a2a2a;
-    --red: #e63329;
-    --red-dim: #7a1a16;
+    --red: #e05340;          /* nur noch semantisch: falsch / nochmal */
+    --red-dim: #6e2018;
+    --accent: #7c93ff;        /* Markenfarbe statt Rot */
+    --accent-dim: #2b3a72;
     --green: #2ecc71;
     --green-dim: #145a32;
     --yellow: #f0c040;
@@ -37,8 +39,8 @@
     min-height: 100vh;
     padding: 48px 24px 80px;
     background-image:
-      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(230,51,41,0.07) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 80% 90%, rgba(230,51,41,0.04) 0%, transparent 70%);
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(124,147,255,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 90%, rgba(124,147,255,0.04) 0%, transparent 70%);
   }
 
   /* ── SHARED ── */
@@ -47,8 +49,8 @@
 
   .star-badge {
     font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em;
-    color: var(--red); text-transform: uppercase;
-    border: 1px solid var(--red-dim); display: inline-block; padding: 4px 12px; margin-bottom: 28px;
+    color: var(--accent); text-transform: uppercase;
+    border: 1px solid var(--accent-dim); display: inline-block; padding: 4px 12px; margin-bottom: 28px;
   }
   .key-hint { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 20px; text-align: center; }
   kbd { background: var(--border); padding: 2px 6px; font-family: var(--mono); font-size: 11px; border: 1px solid #444; color: var(--text); }
@@ -56,13 +58,13 @@
   /* ── MENU SCREEN ── */
   #menu-screen { text-align: center; }
   #menu-screen h1 { font-family: var(--display); font-size: clamp(36px, 8vw, 72px); font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em; }
-  #menu-screen h1 span { color: var(--red); }
+  #menu-screen h1 span { color: var(--accent); }
   .subtitle { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 36px; }
   #menu-list { display: flex; flex-direction: column; gap: 8px; text-align: left; }
   .menu-item { background: var(--surface); border: 1px solid var(--border); padding: 14px 18px; cursor: default; display: flex; align-items: center; gap: 14px; transition: border-color 0.15s, background 0.15s; position: relative; }
-  .menu-item.selected { border-color: var(--red); background: rgba(230,51,41,0.08); }
+  .menu-item.selected { border-color: var(--accent); background: rgba(124,147,255,0.08); }
   .menu-item.kapitel-item.selected { border-color: var(--blue); background: rgba(74,158,255,0.08); }
-  .menu-item .cursor-arrow { font-family: var(--mono); font-size: 13px; color: var(--red); width: 16px; flex-shrink: 0; opacity: 0; }
+  .menu-item .cursor-arrow { font-family: var(--mono); font-size: 13px; color: var(--accent); width: 16px; flex-shrink: 0; opacity: 0; }
   .menu-item.kapitel-item .cursor-arrow { color: var(--blue); }
   .menu-item.selected .cursor-arrow { opacity: 1; }
   .menu-item-body { flex: 1; }
@@ -76,12 +78,12 @@
 
   /* ── PROGRESS BAR ── */
   .progress-bar-track { width: 100%; height: 3px; background: var(--border); margin-bottom: 32px; }
-  .progress-bar-fill { height: 100%; background: var(--red); transition: width 0.4s ease; }
+  .progress-bar-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; }
   .progress-bar-fill.blue { background: var(--blue); }
 
   /* ── META ROW ── */
   .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .category-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--red); text-transform: uppercase; border: 1px solid var(--red-dim); padding: 3px 10px; }
+  .category-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; border: 1px solid var(--accent-dim); padding: 3px 10px; }
   .category-tag.blue { color: var(--blue); border-color: var(--blue-dim); }
   .q-counter { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 
@@ -95,13 +97,13 @@
     font-family: var(--sans); font-size: 15px; font-weight: 400; outline: none;
     position: relative; overflow: hidden; width: 100%;
   }
-  .answer-btn::before { content: ''; position: absolute; inset: 0; background: rgba(230,51,41,0.06); opacity: 0; transition: opacity 0.15s; }
+  .answer-btn::before { content: ''; position: absolute; inset: 0; background: rgba(124,147,255,0.06); opacity: 0; transition: opacity 0.15s; }
   .answer-btn:hover:not(:disabled)::before { opacity: 1; }
-  .answer-btn:hover:not(:disabled) { border-color: var(--red-dim); }
+  .answer-btn:hover:not(:disabled) { border-color: var(--accent-dim); }
   .key-badge { font-family: var(--mono); font-size: 13px; font-weight: 500; background: var(--border); border: 1px solid #3a3a3a; min-width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; }
   .answer-btn.correct { border-color: var(--green); background: rgba(46,204,113,0.1); }
   .answer-btn.correct .key-badge { background: var(--green); color: #000; border-color: var(--green); }
-  .answer-btn.wrong { border-color: var(--red); background: rgba(230,51,41,0.12); }
+  .answer-btn.wrong { border-color: var(--red); background: rgba(224,83,64,0.12); }
   .answer-btn.wrong .key-badge { background: var(--red); border-color: var(--red); }
   .answer-btn.dim { opacity: 0.35; cursor: default; }
   .answer-btn:disabled { cursor: default; }
@@ -163,7 +165,7 @@
   .karte-btn.gewusst { border-color: var(--green-dim); }
   .karte-btn.gewusst:hover { border-color: var(--green); background: rgba(46,204,113,0.1); }
   .karte-btn.nochmal { border-color: var(--red-dim); }
-  .karte-btn.nochmal:hover { border-color: var(--red); background: rgba(230,51,41,0.1); }
+  .karte-btn.nochmal:hover { border-color: var(--red); background: rgba(224,83,64,0.1); }
   .karte-flip-hint { text-align: center; margin-top: 60px; }
 
   /* ── DIALOG SCREEN ── */
@@ -185,7 +187,7 @@
   .dialog-sprecher {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--red);
+    color: var(--accent);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     min-width: 70px;
@@ -228,7 +230,7 @@
   /* ── END SCREEN ── */
   #end-screen { text-align: center; }
   #end-screen h2 { font-family: var(--display); font-size: clamp(28px, 6vw, 56px); font-weight: 900; margin-bottom: 8px; letter-spacing: -0.02em; }
-  .score-display { font-family: var(--display); font-size: clamp(52px, 14vw, 120px); font-weight: 900; color: var(--red); line-height: 1; margin: 20px 0; }
+  .score-display { font-family: var(--display); font-size: clamp(52px, 14vw, 120px); font-weight: 900; color: var(--accent); line-height: 1; margin: 20px 0; }
   .score-pct { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-bottom: 32px; letter-spacing: 0.1em; }
   .cat-breakdown { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
   .cat-row { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); padding: 12px 16px; text-align: left; }
@@ -238,12 +240,12 @@
   .cat-pass.pass { color: var(--green); }
   .cat-pass.fail { color: var(--red); }
   .cat-bar-track { flex: 2; height: 4px; background: var(--border); }
-  .cat-bar-fill { height: 100%; background: var(--red); }
+  .cat-bar-fill { height: 100%; background: var(--accent); }
   .message-text { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
   #end-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
   .end-option { background: var(--surface); border: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; transition: border-color 0.15s, background 0.15s; }
-  .end-option.selected { border-color: var(--red); background: rgba(230,51,41,0.08); }
-  .end-option .cursor-arrow { font-family: var(--mono); font-size: 13px; color: var(--red); width: 16px; flex-shrink: 0; opacity: 0; }
+  .end-option.selected { border-color: var(--accent); background: rgba(124,147,255,0.08); }
+  .end-option .cursor-arrow { font-family: var(--mono); font-size: 13px; color: var(--accent); width: 16px; flex-shrink: 0; opacity: 0; }
   .end-option.selected .cursor-arrow { opacity: 1; }
   .end-option-label { font-family: var(--display); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
 
@@ -359,7 +361,7 @@
 
   /* ── GENUS-FARBEN ── */
   .genus-m { color: var(--blue)  !important; }
-  .genus-f { color: var(--red)   !important; }
+  .genus-f { color: #e05080      !important; }
   .genus-n { color: #a78bfa      !important; }  /* Lila — besser sichtbar als Grün */
 
   .karte-back-klein {
@@ -417,7 +419,7 @@
   /* ── BATCH SCREEN ── */
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes slideUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-  ::selection { background: var(--red); color: #fff; }
+  ::selection { background: var(--accent); color: #fff; }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); }
@@ -431,9 +433,9 @@
     font-family: var(--sans); font-size: 16px; padding: 14px 16px; outline: none;
     transition: border-color 0.15s;
   }
-  .login-feld input:focus { border-color: var(--red); }
+  .login-feld input:focus { border-color: var(--accent); }
   .login-btn {
-    width: 100%; background: var(--red); border: none; color: #fff;
+    width: 100%; background: var(--accent); border: none; color: #fff;
     font-family: var(--display); font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
     padding: 16px; cursor: pointer; margin-top: 8px; transition: opacity 0.15s;
   }
@@ -443,6 +445,13 @@
   #login-offline { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 20px; line-height: 1.6; }
   #login-offline button { background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 11px; padding: 6px 12px; cursor: pointer; margin-top: 8px; }
   #login-offline button:hover { color: var(--text); border-color: #555; }
+
+  /* ── TRAINER ── */
+  .tr-beispiel {
+    font-family: var(--sans); font-size: 18px; margin-top: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 14px 18px; display: inline-block;
+  }
 
   /* ── SRS SYSTEM ── */
   .srs-stage-apprentice { background: #e05080; }
@@ -462,7 +471,7 @@
 <div id="login-screen" class="screen">
   <div style="margin-bottom:36px;">
     <h1 style="font-family: var(--display); font-size: clamp(32px, 7vw, 56px); font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em;">
-      KILIAN LERNT<br><span style="color: var(--red);">SPRACHEN</span>
+      KILIAN LERNT<br><span style="color: var(--accent);">SPRACHEN</span>
     </h1>
     <p class="subtitle">// Anmelden zum Synchronisieren</p>
   </div>
@@ -485,7 +494,7 @@
 <div id="sprachen-screen" class="screen">
   <div style="text-align:center; margin-bottom:32px;">
     <h1 style="font-family: var(--display); font-size: clamp(36px, 8vw, 72px); font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em;">
-      KILIAN LERNT<br><span style="color: var(--red);">SPRACHEN</span>
+      KILIAN LERNT<br><span style="color: var(--accent);">SPRACHEN</span>
     </h1>
     <p class="subtitle">// Welche Sprache heute?</p>
   </div>
@@ -756,11 +765,11 @@
     <span class="q-counter" id="srs-lesson-counter"></span>
   </div>
   <div id="srs-lesson-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
-  <div id="srs-lesson-front">
+  <div id="srs-lesson-front" onclick="srsLessonFlip()" style="cursor:pointer;">
     <div class="karte-wort" id="srs-lesson-ru" style="margin-bottom:24px;font-size:clamp(36px,8vw,64px);"></div>
     <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;">beliebige Taste → aufdecken</p>
   </div>
-  <div id="srs-lesson-back" style="display:none;">
+  <div id="srs-lesson-back" onclick="srsLessonNext()" style="display:none;cursor:pointer;">
     <div class="karte-wort karte-back-klein" id="srs-lesson-back-ru"></div>
     <div class="srs-card-image" style="display:none;"></div>
     <div class="karte-de" id="srs-lesson-back-de" style="font-size:clamp(28px,6vw,48px);"></div>
@@ -780,7 +789,7 @@
   </div>
   <div id="srs-review-srs-badge" style="position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:2px;"></div>
   <div id="srs-review-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
-  <div id="srs-review-front">
+  <div id="srs-review-front" onclick="srsReviewFlip()" style="cursor:pointer;">
     <div class="karte-wort" id="srs-review-front-wort" style="font-size:clamp(36px,8vw,64px);"></div>
     <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:20px;">beliebige Taste → aufdecken</p>
   </div>
@@ -866,6 +875,63 @@
   </div>
   <div id="srs-browse-content"></div>
   <p class="key-hint" style="margin-top:24px;position:sticky;bottom:0;background:var(--bg);padding:12px 0;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
+</div>
+
+<!-- TRAINER DASHBOARD (generisch, z.B. Mandarin) -->
+<div id="tr-dashboard-screen" class="screen">
+  <div style="text-align:center; margin-bottom:32px;">
+    <div class="star-badge">TRAINER</div>
+    <h1 style="font-family:var(--display);font-size:clamp(28px,6vw,52px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
+      中文<br><span style="color:var(--blue)">台灣</span>
+    </h1>
+    <p class="subtitle">// Zhuyin zuerst, dann Zeichen</p>
+  </div>
+  <div id="tr-dash-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen &nbsp;·&nbsp; oder tippen</p>
+</div>
+
+<!-- TRAINER KARTE (Lesson + Review) -->
+<div id="tr-card-screen" class="screen">
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill blue" id="tr-progress"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag blue" id="tr-tag"></span>
+    <span class="q-counter" id="tr-counter"></span>
+  </div>
+  <div id="tr-stage-badge" style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:2px;color:#fff;display:inline-block;margin-bottom:16px;"></div>
+  <div id="tr-front" onclick="trFlip()" style="cursor:pointer;text-align:center;">
+  </div>
+  <div id="tr-back" onclick="trNext()" style="display:none;cursor:pointer;text-align:center;"></div>
+  <div id="tr-review-buttons" class="karte-buttons" style="display:none;">
+    <button class="karte-btn gewusst" onclick="trGewusst()"><kbd>A</kbd> &nbsp; gewusst ✓</button>
+    <button class="karte-btn nochmal" onclick="trNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
+  </div>
+  <p class="key-hint" id="tr-weiter-hint" style="display:none;">Tippen oder Taste → weiter</p>
+</div>
+
+<!-- TRAINER ERGEBNIS -->
+<div id="tr-result-screen" class="screen">
+  <div style="text-align:center;">
+    <div class="star-badge">FERTIG</div>
+    <h2 style="font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:900;margin-bottom:24px;">SESSION FERTIG</h2>
+    <div style="display:flex;justify-content:center;gap:32px;margin-bottom:24px;">
+      <div style="text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--green);" id="tr-result-up">0</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">AUFGESTIEGEN</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--red);" id="tr-result-down">0</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">ABGESTIEGEN</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--yellow);" id="tr-result-burned">0</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">BURNED</div>
+      </div>
+    </div>
+    <p style="font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:24px;" id="tr-result-level"></p>
+    <button class="karte-btn" onclick="trBackToDash()" style="padding:16px 32px;"><kbd>B</kbd> &nbsp; Zurück zum Dashboard</button>
+  </div>
 </div>
 
 <!-- END SCREEN -->

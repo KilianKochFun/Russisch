@@ -20,7 +20,7 @@ if ('speechSynthesis' in window) {
 }
 
 function _ttsLang() {
-  const langMap = { russian: 'ru', japanese: 'ja' };
+  const langMap = { russian: 'ru', japanese: 'ja', 'chinese-tw': 'zh-TW' };
   return langMap[S.aktiveSprache?.id] || 'ru';
 }
 

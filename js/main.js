@@ -19,10 +19,10 @@ async function startApp(session) {
     console.warn('Sprachen nicht geladen:', e.message);
   }
   srsBuildCardMap();
-  await srsLoad();
   if (session) {
     await Promise.all([ladeProgress(), ladeSettings()]);
   }
+  await srsLoad(); // nach ladeSettings — Cloud-Stand hat Vorrang
   renderSprachen();
 }
 

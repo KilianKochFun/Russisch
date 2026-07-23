@@ -7,7 +7,7 @@ import {
   getSetting, setSetting, istEingeloggt, abmelden,
 } from './progress.js';
 
-const GENUS_FARBEN = { m: 'var(--blue)', f: 'var(--red)', n: '#a78bfa' };
+const GENUS_FARBEN = { m: 'var(--blue)', f: '#e05080', n: '#a78bfa' };
 
 // Breadcrumb: Icon + Sprache + Hierarchie-Pfad + aktuelle Ebene (+ optionale Extras)
 function baueBreadcrumb(...extra) {
@@ -50,9 +50,26 @@ function show(id) {
 }
 
 // ── Sprachen Menu ──────────────────────────────────────────────────────────
+// Neuausrichtung: reine Trainer-Plattform. Der alte Kapitelbaum (Grammatik,
+// Dialoge, Texte) ist nicht mehr erreichbar — jede Sprache führt direkt in
+// ihr Trainer-Dashboard.
 function getSprachenItems() {
-  const items = S.sprachenData.map(sprache => ({ sprache }));
-  if (istEingeloggt()) items.push({ isLogout: true });
+  const items = [];
+  const russisch = S.sprachenData.find(s => s.id === 'russian');
+  if (russisch) {
+    const due = srsGetDueCards().length;
+    items.push({
+      trainer: 'russisch-srs', sprache: russisch,
+      name: '🇷🇺 Русский — Vokabeltrainer',
+      desc: (due > 0 ? `${due} Reviews fällig` : 'Keine Reviews fällig') + ' · Level ' + S.srsData.unlockedLevel,
+    });
+  }
+  items.push({
+    trainer: 'chinese-tw', sprache: { id: 'chinese-tw', sprache: '中文（台灣）', icon: '🇹🇼' },
+    name: '🇹🇼 中文 — Mandarin (traditionell)',
+    desc: 'Zhuyin ㄅㄆㄇ · Zeichen · Wörter',
+  });
+  if (istEingeloggt()) items.push({ isLogout: true, name: 'Abmelden', desc: 'Fortschritt bleibt gespeichert' });
   return items;
 }
 
@@ -66,19 +83,14 @@ function renderSprachen() {
   getSprachenItems().forEach((item, i) => {
     const div = document.createElement('div');
     div.className = 'menu-item' + (i === S.sprachenCursor ? ' selected' : '');
-    div.innerHTML = item.isLogout
-      ? `
+    div.innerHTML = `
       <span class="cursor-arrow">›</span>
       <span class="menu-item-body">
-        <span class="menu-item-name" style="color:var(--muted)">Abmelden</span>
-        <span class="menu-item-desc">Fortschritt bleibt gespeichert</span>
-      </span>`
-      : `
-      <span class="cursor-arrow">›</span>
-      <span class="menu-item-body">
-        <span class="menu-item-name">${item.sprache.icon} ${item.sprache.sprache}</span>
-        <span class="menu-item-desc">${item.sprache.kapitel?.length || 0} Kapitel</span>
+        <span class="menu-item-name"${item.isLogout ? ' style="color:var(--muted)"' : ''}>${item.name}</span>
+        <span class="menu-item-desc">${item.desc}</span>
       </span>`;
+    div.onclick = () => { S.sprachenCursor = i; sprachenSelect(); };
+    div.style.cursor = 'pointer';
     list.appendChild(div);
   });
 }
@@ -94,10 +106,12 @@ function sprachenSelect() {
   if (!item) return;
   if (item.isLogout) { abmelden(); return; }
   S.aktiveSprache = item.sprache;
-  S.hierarchiePfad = [];
-  S.aktiveKapitelEbene = S.aktiveSprache;
-  S.menuCursor = 0;
-  renderMenu();
+  if (item.trainer === 'russisch-srs') {
+    srsShowDashboard();
+  } else {
+    // Mandarin-Trainer (js/trainer.js hängt sich an window, um Zyklen zu vermeiden)
+    window.trainerShowDashboard?.('chinese-tw');
+  }
 }
 
 // ── Menu ───────────────────────────────────────────────────────────────────
@@ -1479,11 +1493,14 @@ function srsBuildCardMap() {
 
 async function srsLoad() {
   try {
+    // Reihenfolge: Cloud (settings) → localStorage → Seed-Datei (Mai 2026)
+    const cloud = getSetting('srs-russian');
     const raw = localStorage.getItem('srs-russian');
-    if (raw) {
+    if (cloud && cloud.cards) {
+      S.srsData = cloud;
+    } else if (raw) {
       S.srsData = JSON.parse(raw);
     } else {
-      // Erster Start auf diesem Gerät: Lernstand aus srs-data.json übernehmen (Stand Mai 2026)
       const res = await fetch('srs-data.json');
       const seed = res.ok ? await res.json() : {};
       S.srsData = seed.russian || { cards: {}, unlockedLevel: 1 };
@@ -1499,6 +1516,8 @@ async function srsLoad() {
 async function srsSave() {
   try {
     localStorage.setItem('srs-russian', JSON.stringify(S.srsData));
+    // Cloud-Sync: kompletter Stand in settings.data → synct zwischen Geräten
+    setSetting('srs-russian', S.srsData);
   } catch (e) {
     console.error('SRS-Speichern fehlgeschlagen:', e.message);
   }
@@ -1746,6 +1765,10 @@ function srsRenderDashboard() {
         <span class="menu-item-name">${item.label}</span>
         ${item.desc ? `<span class="menu-item-desc">${item.desc}</span>` : ''}
       </span>`;
+    if (item.enabled) {
+      div.onclick = () => { S.srsDashboardCursor = i; srsDashboardSelect(); };
+      div.style.cursor = 'pointer';
+    }
     list.appendChild(div);
   });
 
@@ -1792,7 +1815,7 @@ function srsDashboardSelect() {
   } else if (S.srsDashboardCursor === 3) {
     srsShowBrowse();
   } else {
-    renderMenu();
+    renderSprachen();
   }
 }
 
@@ -2327,6 +2350,10 @@ Object.assign(window, {
   karteNochmal,
   srsReviewGewusst,
   srsReviewNochmal,
+  srsLessonFlip,
+  srsLessonNext,
+  srsReviewFlip,
+  renderSprachenGlobal: renderSprachen,
 });
 
 export {
