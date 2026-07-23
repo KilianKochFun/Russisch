@@ -184,7 +184,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Statische Dateien
-  const url = req.url === '/' ? '/russisch_quiz.html' : req.url;
+  const url = req.url === '/' ? '/index.html' : req.url;
   const file = path.join(DIR, url);
 
   if (!file.startsWith(DIR)) {

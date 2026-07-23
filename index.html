@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Russisch Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --red: #e63329;
+    --red-dim: #7a1a16;
+    --green: #2ecc71;
+    --green-dim: #145a32;
+    --yellow: #f0c040;
+    --blue: #4a9eff;
+    --blue-dim: #1a3a6a;
+    --text: #f0ece4;
+    --muted: #888;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Unbounded', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    width: 100%; min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+  }
+  body {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(230,51,41,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 90%, rgba(230,51,41,0.04) 0%, transparent 70%);
+  }
+
+  /* ── SHARED ── */
+  .screen { display: none; width: 100%; max-width: 680px; animation: fadeIn 0.3s ease; margin: auto 0; }
+  .screen.active { display: block; }
+
+  .star-badge {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em;
+    color: var(--red); text-transform: uppercase;
+    border: 1px solid var(--red-dim); display: inline-block; padding: 4px 12px; margin-bottom: 28px;
+  }
+  .key-hint { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 20px; text-align: center; }
+  kbd { background: var(--border); padding: 2px 6px; font-family: var(--mono); font-size: 11px; border: 1px solid #444; color: var(--text); }
+
+  /* ── MENU SCREEN ── */
+  #menu-screen { text-align: center; }
+  #menu-screen h1 { font-family: var(--display); font-size: clamp(36px, 8vw, 72px); font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em; }
+  #menu-screen h1 span { color: var(--red); }
+  .subtitle { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 36px; }
+  #menu-list { display: flex; flex-direction: column; gap: 8px; text-align: left; }
+  .menu-item { background: var(--surface); border: 1px solid var(--border); padding: 14px 18px; cursor: default; display: flex; align-items: center; gap: 14px; transition: border-color 0.15s, background 0.15s; position: relative; }
+  .menu-item.selected { border-color: var(--red); background: rgba(230,51,41,0.08); }
+  .menu-item.kapitel-item.selected { border-color: var(--blue); background: rgba(74,158,255,0.08); }
+  .menu-item .cursor-arrow { font-family: var(--mono); font-size: 13px; color: var(--red); width: 16px; flex-shrink: 0; opacity: 0; }
+  .menu-item.kapitel-item .cursor-arrow { color: var(--blue); }
+  .menu-item.selected .cursor-arrow { opacity: 1; }
+  .menu-item-body { flex: 1; }
+  .menu-item-name { font-family: var(--display); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+  .menu-item-desc { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.05em; margin-top: 3px; }
+  .menu-item-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .diff-stars { font-size: 11px; letter-spacing: 0.05em; color: var(--yellow); }
+  .diff-stars .dim { color: #333; }
+  .q-count { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .menu-separator { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-track { width: 100%; height: 3px; background: var(--border); margin-bottom: 32px; }
+  .progress-bar-fill { height: 100%; background: var(--red); transition: width 0.4s ease; }
+  .progress-bar-fill.blue { background: var(--blue); }
+
+  /* ── META ROW ── */
+  .meta-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .category-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.15em; color: var(--red); text-transform: uppercase; border: 1px solid var(--red-dim); padding: 3px 10px; }
+  .category-tag.blue { color: var(--blue); border-color: var(--blue-dim); }
+  .q-counter { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  /* ── QUIZ SCREEN ── */
+  .question-text { font-family: var(--display); font-size: clamp(18px, 3.5vw, 26px); font-weight: 700; line-height: 1.3; margin-bottom: 36px; letter-spacing: -0.01em; }
+  .answers { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .answer-btn {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    cursor: pointer; display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px; text-align: left; transition: border-color 0.15s, background 0.15s, transform 0.08s;
+    font-family: var(--sans); font-size: 15px; font-weight: 400; outline: none;
+    position: relative; overflow: hidden; width: 100%;
+  }
+  .answer-btn::before { content: ''; position: absolute; inset: 0; background: rgba(230,51,41,0.06); opacity: 0; transition: opacity 0.15s; }
+  .answer-btn:hover:not(:disabled)::before { opacity: 1; }
+  .answer-btn:hover:not(:disabled) { border-color: var(--red-dim); }
+  .key-badge { font-family: var(--mono); font-size: 13px; font-weight: 500; background: var(--border); border: 1px solid #3a3a3a; min-width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; }
+  .answer-btn.correct { border-color: var(--green); background: rgba(46,204,113,0.1); }
+  .answer-btn.correct .key-badge { background: var(--green); color: #000; border-color: var(--green); }
+  .answer-btn.wrong { border-color: var(--red); background: rgba(230,51,41,0.12); }
+  .answer-btn.wrong .key-badge { background: var(--red); border-color: var(--red); }
+  .answer-btn.dim { opacity: 0.35; cursor: default; }
+  .answer-btn:disabled { cursor: default; }
+  .merksatz-box { display: none; background: var(--surface); border-left: 3px solid var(--yellow); padding: 16px 20px; margin-bottom: 24px; animation: slideUp 0.3s ease; }
+  .merksatz-box.show { display: block; }
+  .merksatz-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; color: var(--yellow); text-transform: uppercase; margin-bottom: 8px; }
+  .merksatz-text { font-size: 14px; line-height: 1.6; color: #ccc; font-style: italic; }
+  .result-row { display: none; align-items: center; justify-content: space-between; gap: 12px; }
+  .result-row.show { display: flex; }
+  .result-verdict { font-family: var(--display); font-size: 16px; font-weight: 700; letter-spacing: 0.05em; }
+  .result-verdict.ok { color: var(--green); }
+  .result-verdict.fail { color: var(--red); }
+  .next-hint { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* ── KARTEIKARTEN SCREEN ── */
+  #karteikarten-screen .karte-wort {
+    font-family: var(--display);
+    font-size: clamp(32px, 7vw, 64px);
+    font-weight: 900;
+    text-align: center;
+    letter-spacing: -0.02em;
+    margin: 40px 0 20px;
+    color: var(--text);
+  }
+  .karte-de {
+    font-family: var(--sans);
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 300;
+    text-align: center;
+    color: var(--blue);
+    margin-bottom: 12px;
+  }
+  .karte-merksatz {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 48px;
+    padding: 0 20px;
+  }
+  .karte-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .karte-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 16px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .karte-btn.gewusst { border-color: var(--green-dim); }
+  .karte-btn.gewusst:hover { border-color: var(--green); background: rgba(46,204,113,0.1); }
+  .karte-btn.nochmal { border-color: var(--red-dim); }
+  .karte-btn.nochmal:hover { border-color: var(--red); background: rgba(230,51,41,0.1); }
+  .karte-flip-hint { text-align: center; margin-top: 60px; }
+
+  /* ── DIALOG SCREEN ── */
+  #dialog-screen .dialog-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 24px;
+    padding: 4px;
+  }
+  .dialog-zeile {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.2s ease;
+  }
+  .dialog-zeile:last-child { border-bottom: none; }
+  .dialog-sprecher {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--red);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    min-width: 70px;
+    flex-shrink: 0;
+  }
+  .dialog-text {
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 300;
+  }
+  #dialog-titel {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+  }
+
+  /* ── TEXT SCREEN ── */
+  #text-screen .text-titel {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+  }
+  #text-inhalt {
+    font-size: 17px;
+    line-height: 1.8;
+    font-weight: 300;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  /* ── END SCREEN ── */
+  #end-screen { text-align: center; }
+  #end-screen h2 { font-family: var(--display); font-size: clamp(28px, 6vw, 56px); font-weight: 900; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .score-display { font-family: var(--display); font-size: clamp(52px, 14vw, 120px); font-weight: 900; color: var(--red); line-height: 1; margin: 20px 0; }
+  .score-pct { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-bottom: 32px; letter-spacing: 0.1em; }
+  .cat-breakdown { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+  .cat-row { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); padding: 12px 16px; text-align: left; }
+  .cat-name { font-family: var(--mono); font-size: 12px; flex: 1; color: var(--muted); letter-spacing: 0.05em; }
+  .cat-score { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--text); }
+  .cat-pass { font-family: var(--mono); font-size: 11px; font-weight: 700; min-width: 48px; text-align: right; }
+  .cat-pass.pass { color: var(--green); }
+  .cat-pass.fail { color: var(--red); }
+  .cat-bar-track { flex: 2; height: 4px; background: var(--border); }
+  .cat-bar-fill { height: 100%; background: var(--red); }
+  .message-text { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+  #end-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .end-option { background: var(--surface); border: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; gap: 14px; transition: border-color 0.15s, background 0.15s; }
+  .end-option.selected { border-color: var(--red); background: rgba(230,51,41,0.08); }
+  .end-option .cursor-arrow { font-family: var(--mono); font-size: 13px; color: var(--red); width: 16px; flex-shrink: 0; opacity: 0; }
+  .end-option.selected .cursor-arrow { opacity: 1; }
+  .end-option-label { font-family: var(--display); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+
+  /* ── EINHEITEN SCREEN ── */
+  #einheiten-screen { text-align: center; }
+  .einheit-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: left;
+  }
+  .einheit-item.selected { border-color: var(--blue); background: rgba(74,158,255,0.08); }
+  .einheit-item .cursor-arrow { font-family: var(--mono); font-size: 13px; color: var(--blue); width: 16px; flex-shrink: 0; opacity: 0; }
+  .einheit-item.selected .cursor-arrow { opacity: 1; }
+  .einheit-back { border-color: transparent; background: transparent; margin-bottom: 4px; cursor: pointer; }
+  .einheit-back.selected { border-color: var(--border); background: rgba(255,255,255,0.03); }
+  .einheit-back .cursor-arrow { color: var(--muted); }
+  .einheit-typ-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+  .typ-vokabeln  { color: var(--blue);   border-color: var(--blue-dim); }
+  .typ-grammatik { color: var(--yellow); border-color: #5a4a00; }
+  .typ-dialog    { color: var(--green);  border-color: var(--green-dim); }
+  .typ-text      { color: var(--muted);  border-color: var(--border); }
+  .typ-theorie   { color: #c084fc;       border-color: #5b21b6; }
+  .typ-hoeren    { color: #34d399;       border-color: #065f46; }
+  .einheit-info { flex: 1; }
+  .einheit-titel { font-family: var(--display); font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+  .einheit-meta  { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  /* ── THEORIE SCREEN ── */
+  .theorie-karte-titel {
+    font-family: var(--display);
+    font-size: clamp(20px, 4vw, 32px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #c084fc;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .theorie-erklaerung {
+    font-size: 16px;
+    line-height: 1.7;
+    font-weight: 300;
+    color: var(--text);
+    margin-bottom: 24px;
+    background: var(--surface);
+    border-left: 3px solid #5b21b6;
+    padding: 16px 20px;
+  }
+  .theorie-tabelle {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  .theorie-tabelle th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #c084fc;
+    border-bottom: 1px solid #5b21b6;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  .theorie-tabelle td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .theorie-tabelle tr:last-child td { border-bottom: none; }
+  .theorie-tabelle td:first-child { font-family: var(--mono); font-size: 13px; color: #c084fc; }
+  .theorie-beispiele {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .theorie-beispiel {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--yellow);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    letter-spacing: 0.02em;
+  }
+  .theorie-nav-hint {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .theorie-nav-hint .nav-inactive { opacity: 0.25; }
+
+  /* ── GENUS-FARBEN ── */
+  .genus-m { color: var(--blue)  !important; }
+  .genus-f { color: var(--red)   !important; }
+  .genus-n { color: #a78bfa      !important; }  /* Lila — besser sichtbar als Grün */
+
+  .karte-back-klein {
+    font-size: clamp(16px, 3vw, 24px);
+    margin-bottom: 8px;
+    opacity: 0.65;
+  }
+
+  /* ── WORTFAMILIEN-HIGHLIGHT im Merksatz ── */
+  .ru-wort { color: var(--yellow); font-weight: 500; }
+
+  /* ── HÖREN SCREEN ── */
+  .hoeren-lauschen-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    background: var(--surface);
+    border: 1px solid #065f46;
+    margin-bottom: 32px;
+    gap: 16px;
+  }
+  .hoeren-welle {
+    font-size: 48px;
+    letter-spacing: 4px;
+    opacity: 0.8;
+  }
+  .hoeren-aufforderung {
+    font-family: var(--display);
+    font-size: clamp(18px, 3.5vw, 26px);
+    font-weight: 900;
+    color: #34d399;
+    letter-spacing: 0.05em;
+  }
+  .hoeren-nr {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+  @keyframes pulse { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
+  .hoeren-welle.playing { animation: pulse 1.2s ease-in-out infinite; }
+
+  /* ── BACK BUTTON ── */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--muted); background: none; border: 1px solid var(--border);
+    padding: 6px 12px; cursor: pointer; margin-bottom: 24px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .back-btn:hover { color: var(--text); border-color: #555; }
+
+  /* ── BATCH SCREEN ── */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  ::selection { background: var(--red); color: #fff; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+
+  /* ── SRS SYSTEM ── */
+  .srs-stage-apprentice { background: #e05080; }
+  .srs-stage-guru { background: #9b59b6; }
+  .srs-stage-master { background: #3498db; }
+  .srs-stage-enlightened { background: #2ecc71; }
+  .srs-stage-burned { background: #95a5a6; }
+  #srs-stage-overlay { transition: opacity 0.3s; }
+  #srs-stage-overlay.show { display: flex !important; opacity: 1; }
+  @keyframes srsArrowUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes srsArrowDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+</head>
+<body>
+
+<!-- MENU SCREEN -->
+<!-- SPRACHEN SCREEN -->
+<div id="sprachen-screen" class="screen">
+  <div style="text-align:center; margin-bottom:32px;">
+    <h1 style="font-family: var(--display); font-size: clamp(36px, 8vw, 72px); font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em;">
+      KILIAN LERNT<br><span style="color: var(--red);">SPRACHEN</span>
+    </h1>
+    <p class="subtitle">// Welche Sprache heute?</p>
+  </div>
+  <div id="sprachen-list"></div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
+</div>
+
+<!-- KAPITEL SCREEN (ehemals MENU) -->
+<div id="menu-screen" class="screen">
+  <div id="breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
+    <span id="breadcrumb-text"></span>
+  </div>
+  <div style="text-align:center; margin-bottom:32px;">
+    <div class="star-badge" id="menu-sprache-badge"></div>
+    <h1>KAPITEL<br><span id="menu-sprache-name">auswählen</span></h1>
+    <p class="subtitle">// Wo möchtest du lernen?</p>
+  </div>
+  <div id="menu-list"></div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
+</div>
+
+<!-- PAKETE SCREEN -->
+<div id="pakete-screen" class="screen">
+  <div id="pakete-breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
+    <span id="pakete-breadcrumb-text"></span>
+  </div>
+  <div style="text-align:center; margin-bottom:32px;">
+    <div class="star-badge" id="pakete-einheit-name"></div>
+    <h1 style="font-family:var(--display);font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
+      PAKET<br><span style="color:var(--blue)">WÄHLEN</span>
+    </h1>
+    <p class="subtitle">// Welche Karten heute?</p>
+  </div>
+  <div id="pakete-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> starten</p>
+</div>
+
+<!-- EINHEITEN SCREEN -->
+<div id="einheiten-screen" class="screen">
+  <div id="einheiten-breadcrumb-wrapper" style="margin-bottom:16px; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:0.05em; text-align:left; display:none;">
+    <span id="einheiten-breadcrumb-text"></span>
+  </div>
+  <div style="text-align:center; margin-bottom:32px;">
+    <div class="star-badge" id="einheiten-kapitel-name"></div>
+    <h1 style="font-family:var(--display);font-size:clamp(24px,5vw,42px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
+      EINHEIT<br><span style="color:var(--blue)">WÄHLEN</span>
+    </h1>
+    <p class="subtitle">// Was möchtest du üben?</p>
+  </div>
+  <div id="einheiten-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> starten</p>
+</div>
+
+<!-- RICHTUNG SCREEN -->
+<div id="richtung-screen" class="screen" style="text-align:center;">
+  <button class="back-btn" onclick="zurueckZuEinheiten()" id="richtung-back-btn">← Einheiten</button>
+  <div style="margin-bottom:32px;">
+    <div class="star-badge">★ Karteikarten ★</div>
+    <h1 style="font-family:var(--display);font-size:clamp(28px,6vw,52px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
+      RICHTUNG<br><span style="color:var(--blue)">WÄHLEN</span>
+    </h1>
+    <p class="subtitle">// Wie willst du üben?</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:12px;text-align:left;">
+    <button class="karte-btn" onclick="startKarteikartenMitRichtung('ru-de')" style="padding:20px 24px;font-size:14px;border-color:var(--blue-dim);">
+      <kbd>A</kbd> &nbsp; <span style="color:var(--blue)">РУ → DE</span> &nbsp; Russisch sehen, Deutsch raten
+    </button>
+    <button class="karte-btn" onclick="startKarteikartenMitRichtung('mc')" style="padding:20px 24px;font-size:14px;border-color:#5a4a00;">
+      <kbd>B</kbd> &nbsp; <span style="color:var(--yellow)">MULTIPLE CHOICE</span> &nbsp; 3 Optionen, eine richtig
+    </button>
+    <button class="karte-btn" onclick="startKarteikartenMitRichtung('de-ru')" style="padding:20px 24px;font-size:14px;border-color:var(--green-dim);">
+      <kbd>C</kbd> &nbsp; <span style="color:var(--green)">DE → РУ</span> &nbsp; Deutsch sehen, Russisch raten
+    </button>
+  </div>
+</div>
+
+<!-- KARTEIKARTEN SCREEN -->
+<div id="karteikarten-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill blue" id="karte-progress"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag blue" id="karte-kapitel"></span>
+    <span class="q-counter" id="karte-counter"></span>
+  </div>
+  <div id="karte-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
+  <div id="karte-genus-badge" style="display:none;font-family:var(--mono);font-size:11px;letter-spacing:0.15em;padding:3px 10px;border:1px solid;display:inline-block;margin-bottom:12px;"></div>
+  <div id="karte-front-side">
+    <div class="karte-wort" id="karte-front-wort"></div>
+    <div class="karte-flip-hint">
+      <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-bottom:16px;" id="karte-front-richtung"></p>
+      <p class="key-hint"><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> aufdecken</p>
+    </div>
+  </div>
+  <div id="karte-back-side" style="display:none">
+    <div class="karte-wort karte-back-klein" id="karte-back-oben"></div>
+    <div class="karte-de" id="karte-back-unten"></div>
+    <div class="karte-merksatz" id="karte-m"></div>
+    <div class="karte-buttons">
+      <button class="karte-btn gewusst" onclick="karteGewusst()"><kbd>A</kbd> &nbsp; gewusst ✓</button>
+      <button class="karte-btn nochmal" onclick="karteNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
+    </div>
+  </div>
+</div>
+
+<!-- DIALOG SCREEN -->
+<div id="dialog-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill blue" id="dialog-progress"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag blue" id="dialog-kapitel"></span>
+    <span class="q-counter" id="dialog-counter"></span>
+  </div>
+  <div id="dialog-titel"></div>
+  <div class="dialog-container" id="dialog-zeilen"></div>
+  <p class="key-hint" id="dialog-hint"><kbd>B</kbd> nächste Zeile &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
+</div>
+
+<!-- DIALOG-REVIEW SCREEN -->
+<div id="dialog-review-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="meta-row">
+    <span class="category-tag blue">REVIEW</span>
+    <span></span>
+  </div>
+  <h2 style="font-family: var(--display); font-size: clamp(20px, 4vw, 28px); margin-bottom: 32px;" id="dialog-review-titel"></h2>
+  <div class="dialog-container" id="dialog-review-zeilen"></div>
+  <p class="key-hint"><kbd>B</kbd> fertig &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
+</div>
+
+<!-- HÖREN SCREEN -->
+<div id="hoeren-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" style="background:#34d399" id="hoeren-progress"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag" style="color:#34d399;border-color:#065f46;" id="hoeren-kapitel"></span>
+    <span class="q-counter" id="hoeren-counter"></span>
+  </div>
+
+  <!-- Phase 1: Lauschen -->
+  <div id="hoeren-lauschen-phase">
+    <div class="hoeren-lauschen-box">
+      <div class="hoeren-welle playing" id="hoeren-welle">♫ ♪ ♫</div>
+      <div class="hoeren-aufforderung">Bitte zuhören</div>
+      <div class="hoeren-nr" id="hoeren-aufgabe-nr"></div>
+    </div>
+    <p class="key-hint"><kbd>B</kbd> weiter zu den Antworten &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> nochmal abspielen</p>
+  </div>
+
+  <!-- Phase 2: Antworten -->
+  <div id="hoeren-frage-phase" style="display:none">
+    <div class="question-text" style="color:#34d399;font-size:clamp(14px,2.5vw,18px);margin-bottom:24px;">Was wurde gesagt?</div>
+    <div class="answers" id="hoeren-answers"></div>
+    <div class="merksatz-box" id="hoeren-merksatz-box">
+      <div class="merksatz-label">Merksatz</div>
+      <div class="merksatz-text" id="hoeren-merksatz"></div>
+    </div>
+    <div class="result-row" id="hoeren-result-row">
+      <span class="result-verdict" id="hoeren-result-verdict"></span>
+      <span class="next-hint"><kbd>B</kbd> weiter</span>
+    </div>
+  </div>
+</div>
+
+<!-- THEORIE SCREEN -->
+<div id="theorie-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" style="background:#c084fc" id="theorie-progress"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag" style="color:#c084fc;border-color:#5b21b6;" id="theorie-kapitel"></span>
+    <span class="q-counter" id="theorie-counter"></span>
+  </div>
+  <div class="theorie-karte-titel" id="theorie-titel"></div>
+  <div class="theorie-erklaerung" id="theorie-erklaerung"></div>
+  <table class="theorie-tabelle" id="theorie-tabelle" style="display:none"></table>
+  <div class="theorie-beispiele" id="theorie-beispiele" style="display:none"></div>
+  <div class="merksatz-box" id="theorie-merksatz-box" style="display:none">
+    <div class="merksatz-label">Merksatz</div>
+    <div class="merksatz-text" id="theorie-merksatz"></div>
+  </div>
+  <div class="theorie-nav-hint">
+    <span><kbd>A</kbd> scrollen ↑</span>
+    <span id="theorie-hint-b"><kbd>B</kbd> nächste Karte</span>
+    <span><kbd>C</kbd> scrollen ↓</span>
+  </div>
+</div>
+
+<!-- TEXT SCREEN -->
+<div id="text-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="meta-row">
+    <span class="category-tag blue" id="text-kapitel"></span>
+  </div>
+  <div class="text-titel" id="text-titel"></div>
+  <div id="text-inhalt"></div>
+  <p class="key-hint"><kbd>B</kbd> zu den Fragen &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
+</div>
+
+<!-- TEXT-REVIEW SCREEN -->
+<div id="text-review-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="meta-row">
+    <span class="category-tag blue">REVIEW</span>
+    <span></span>
+  </div>
+  <h2 style="font-family: var(--display); font-size: clamp(20px, 4vw, 28px); margin-bottom: 32px;" id="text-review-titel"></h2>
+  <div id="text-review-absaetze" style="display: flex; flex-direction: column; gap: 32px;"></div>
+  <p class="key-hint"><kbd>B</kbd> fertig &nbsp;·&nbsp; <kbd>A</kbd>/<kbd>C</kbd> scrollen</p>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen" class="screen">
+  <button class="back-btn" onclick="zurueckZuEinheiten()">← Einheiten</button>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag" id="q-category"></span>
+    <span class="q-counter" id="q-counter"></span>
+  </div>
+  <div class="question-text" id="q-text"></div>
+  <div class="answers" id="answers-container"></div>
+  <div class="merksatz-box" id="merksatz-box">
+    <div class="merksatz-label">Merksatz</div>
+    <div class="merksatz-text" id="merksatz-text"></div>
+  </div>
+  <div class="result-row" id="result-row">
+    <span class="result-verdict" id="result-verdict"></span>
+    <span class="next-hint"><kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> weiter</span>
+  </div>
+</div>
+
+<!-- SRS DASHBOARD SCREEN -->
+<div id="srs-dashboard-screen" class="screen">
+  <div style="text-align:center; margin-bottom:32px;">
+    <div class="star-badge" style="border-color:var(--green);color:var(--green);">SRS VOKABELTRAINER</div>
+    <h1 style="font-family:var(--display);font-size:clamp(28px,6vw,52px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
+      VOKABELN<br><span style="color:var(--green)">LERNEN</span>
+    </h1>
+  </div>
+  <div id="srs-level-info" style="text-align:center;margin-bottom:24px;">
+    <div style="font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.1em;margin-bottom:8px;" id="srs-level-label">LEVEL 1</div>
+    <div class="progress-bar-track" style="margin-bottom:8px;">
+      <div class="progress-bar-fill" id="srs-level-progress" style="background:var(--green);width:0%"></div>
+    </div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);" id="srs-level-stats"></div>
+  </div>
+  <div id="srs-stage-bars" style="display:flex;gap:4px;height:24px;margin-bottom:16px;border-radius:2px;overflow:hidden;"></div>
+  <div id="srs-forecast" style="margin-bottom:24px;"></div>
+  <div id="srs-dashboard-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
+</div>
+
+<!-- SRS LESSON SCREEN (Phase 1: Anschauen) -->
+<div id="srs-lesson-screen" class="screen">
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="srs-lesson-progress" style="background:var(--green);width:0%"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag" style="color:var(--green);border-color:var(--green-dim);">NEUE KARTE</span>
+    <span class="q-counter" id="srs-lesson-counter"></span>
+  </div>
+  <div id="srs-lesson-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
+  <div id="srs-lesson-front">
+    <div class="karte-wort" id="srs-lesson-ru" style="margin-bottom:24px;font-size:clamp(36px,8vw,64px);"></div>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;">beliebige Taste → aufdecken</p>
+  </div>
+  <div id="srs-lesson-back" style="display:none;">
+    <div class="karte-wort karte-back-klein" id="srs-lesson-back-ru"></div>
+    <div class="srs-card-image" style="display:none;"></div>
+    <div class="karte-de" id="srs-lesson-back-de" style="font-size:clamp(28px,6vw,48px);"></div>
+    <div class="karte-merksatz" id="srs-lesson-m"></div>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:20px;">beliebige Taste → weiter</p>
+  </div>
+</div>
+
+<!-- SRS REVIEW SCREEN (Karteikarte) -->
+<div id="srs-review-screen" class="screen">
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="srs-review-progress" style="background:var(--green);width:0%"></div>
+  </div>
+  <div class="meta-row">
+    <span class="category-tag" style="color:var(--green);border-color:var(--green-dim);" id="srs-review-direction">РУ → DE</span>
+    <span class="q-counter" id="srs-review-counter"></span>
+  </div>
+  <div id="srs-review-srs-badge" style="position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:2px;"></div>
+  <div id="srs-review-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
+  <div id="srs-review-front">
+    <div class="karte-wort" id="srs-review-front-wort" style="font-size:clamp(36px,8vw,64px);"></div>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:20px;">beliebige Taste → aufdecken</p>
+  </div>
+  <div id="srs-review-back" style="display:none;">
+    <div class="karte-wort karte-back-klein" id="srs-review-back-oben"></div>
+    <div class="srs-card-image" style="display:none;"></div>
+    <div class="karte-de" id="srs-review-back-unten" style="font-size:clamp(28px,6vw,48px);"></div>
+    <div id="srs-review-merksatz" class="karte-merksatz" style="display:none;"></div>
+    <div class="karte-buttons">
+      <button class="karte-btn gewusst" onclick="srsReviewGewusst()"><kbd>A</kbd> &nbsp; gewusst ✓</button>
+      <button class="karte-btn nochmal" onclick="srsReviewNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
+    </div>
+  </div>
+</div>
+
+<!-- SRS STAGE CHANGE OVERLAY -->
+<div id="srs-stage-overlay" style="display:none;position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;pointer-events:none;">
+  <div id="srs-stage-overlay-inner" style="text-align:center;">
+    <div id="srs-stage-arrow" style="font-size:72px;line-height:1;"></div>
+    <div id="srs-stage-label" style="font-family:var(--mono);font-size:14px;margin-top:8px;"></div>
+  </div>
+</div>
+
+<!-- SRS RESULT SCREEN -->
+<div id="srs-result-screen" class="screen">
+  <div style="text-align:center;">
+    <div class="star-badge" style="border-color:var(--green);color:var(--green);">SRS ERGEBNIS</div>
+    <h2 style="font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:900;margin-bottom:24px;" id="srs-result-title">FERTIG</h2>
+    <div id="srs-result-stats" style="display:flex;justify-content:center;gap:32px;margin-bottom:32px;">
+      <div style="text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--green);" id="srs-result-up">0</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">AUFGESTIEGEN</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--red);" id="srs-result-down">0</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">ABGESTIEGEN</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:36px;font-weight:900;color:var(--yellow);" id="srs-result-burned">0</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">BURNED</div>
+      </div>
+    </div>
+    <div id="srs-result-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
+    <p class="key-hint" style="margin-top:24px;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
+  </div>
+</div>
+
+<!-- SRS BATCH PAUSE SCREEN -->
+<div id="srs-pause-screen" class="screen">
+  <div style="text-align:center;">
+    <div class="star-badge" style="border-color:var(--green);color:var(--green);">ZWISCHENSTAND</div>
+    <h2 style="font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:900;margin-bottom:16px;">BATCH FERTIG</h2>
+    <div style="font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:32px;" id="srs-pause-info"></div>
+    <div id="srs-pause-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
+    <p class="key-hint" style="margin-top:24px;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
+  </div>
+</div>
+
+<!-- SRS FORECAST DETAIL SCREEN -->
+<div id="srs-forecast-screen" class="screen" style="max-width:600px;">
+  <div style="text-align:center;margin-bottom:24px;">
+    <div style="font-family:var(--display);font-size:20px;font-weight:900;">REVIEW-ZEITPLAN</div>
+  </div>
+  <div id="srs-forecast-content" style="display:flex;flex-direction:column;gap:4px;"></div>
+  <p class="key-hint" style="margin-top:24px;position:sticky;bottom:0;background:var(--bg);padding:12px 0;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
+</div>
+
+<!-- SRS BROWSE SCREEN -->
+<div id="srs-browse-screen" class="screen" style="max-width:780px;">
+  <div id="srs-browse-header" style="position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <span style="font-family:var(--display);font-size:16px;font-weight:900;">VOKABEL-ÜBERSICHT</span>
+      <span style="font-family:var(--mono);font-size:10px;color:var(--muted);" id="srs-browse-summary"></span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:9px;">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#444;border-radius:2px;display:inline-block;"></span> Neu</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#e05080;border-radius:2px;display:inline-block;"></span> Apprentice</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#9b59b6;border-radius:2px;display:inline-block;"></span> Guru</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#3498db;border-radius:2px;display:inline-block;"></span> Master</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#2ecc71;border-radius:2px;display:inline-block;"></span> Enlightened</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#95a5a6;border-radius:2px;display:inline-block;"></span> Burned</span>
+    </div>
+  </div>
+  <div id="srs-browse-content"></div>
+  <p class="key-hint" style="margin-top:24px;position:sticky;bottom:0;background:var(--bg);padding:12px 0;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
+</div>
+
+<!-- END SCREEN -->
+<div id="end-screen" class="screen">
+  <div class="star-badge">★ Fertig ★</div>
+  <h2 id="end-title">РЕЗУЛЬТАТ</h2>
+  <div class="score-display" id="end-score"></div>
+  <p class="score-pct" id="end-pct"></p>
+  <div class="cat-breakdown" id="cat-breakdown"></div>
+  <p class="message-text" id="end-message"></p>
+  <div id="end-options">
+    <div class="end-option selected" data-idx="0">
+      <span class="cursor-arrow">›</span>
+      <span class="end-option-label">Nochmal</span>
+    </div>
+    <div class="end-option" data-idx="1">
+      <span class="cursor-arrow">›</span>
+      <span class="end-option-label">Zurück zum Menü</span>
+    </div>
+  </div>
+  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
+</div>
+
+<script src="srs-levels.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
