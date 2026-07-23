@@ -44,7 +44,10 @@ Kilians Entscheidung: Die App wird eine **reine Vokabeltrainer-Plattform** (Wani
    ✅ TOCFL-Erweiterung: 177 fehlende Grundzeichen (我, 是, 個 …) als Zeichen-Level 11–18,
    +167 TOCFL-Wörter (Band 1–4) — jedes Wort im Level seines zuletzt gelernten Zeichens.
    Gesamt: 1312 Items. Pipeline: `seed_hanzi.js` (schreibt zeichen-level.json) → `seed_words.js`.
-   TODO: TOCFL Band 3–4 Zeichen (304 Wörter warten darauf); ggf. Grundzeichen vorziehen.
+   ✅ Curriculum umgebaut: L1–2 Grundzeichen (我,是,你…), L3–12 WK (+2), L13–31 TOCFL-Rest;
+   869 Wörter je am Level ihres letzten Zeichens. Gesamt 2024 Items.
+   ✅ WaniKani-Gating (Komponenten→Zeichen→Wörter), Tonfarben, Übersichts-Screen,
+   PWA (Manifest+SW+Offline-Decks), Strichfolge-Animationen (Hanzi Writer, vendored).
 4. **Inhalte in Supabase-Tabelle `vocab_items`** ✅ (language, item_type, level,
    position, data jsonb; RLS: SELECT nur für Eingeloggte, Schreiben nur via Secret Key
    → Inhalte sind nicht öffentlich, Repo bleibt sauber).

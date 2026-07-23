@@ -85,7 +85,12 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   Einheiten relevant), Level aus `srs-levels.js`, beide Richtungen RU↔DE pro Karte.
   Erststand aus `srs-data.json` (Mai 2026), danach localStorage + Cloud (`settings.data`).
 - **Mandarin** (`js/trainer.js`): Decks aus `vocab_items` — `zhuyin` (42, eigene Levels),
-  `component`+`character` (WK 1–10, traditionell), `word` (CC-CEDICT-gefiltert).
+  `component`+`character` (L1–2 TOCFL-Basics, L3–12 WK, L13+ TOCFL), `word` (869).
+  Gating: Komponenten vor Zeichen; Wörter erst, wenn alle ihre Zeichen gelernt sind.
+  Tonfarben (1 orange/2 grün/3 blau/4 violett/neutral grau) auf Rückseiten + Lessons.
+  Strichfolge via `vendor/hanzi-writer.min.js` (Zeichendaten vom CDN, offline still).
+  PWA: `manifest.json` + `sw.js` (stale-while-revalidate; bei Shell-Änderungen VERSION
+  in sw.js NICHT nötig zu bumpen — Updates greifen beim nächsten Start).
   Item-Keys: `typ:zeichen` — Zeichen/Zhuyin nie ändern, sonst reißt der Fortschritt ab.
   Inhalte pflegen: `scripts/seed_zhuyin.js` / `seed_hanzi.js` / `seed_words.js`
   (WK-Daten in `content-private/`, gitignored — NIE committen!).

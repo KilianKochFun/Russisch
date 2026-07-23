@@ -56,11 +56,33 @@ function faellig(items) {
   });
 }
 
+// Lesson-Reihenfolge: erst Komponenten, dann Zeichen (WaniKani-Gating);
+// Wörter erst, wenn alle ihre Zeichen im Hanzi-Deck gelernt sind (srs ≥ 1).
+const TYP_RANG = { component: 0, zhuyin: 0, word: 0, character: 1 };
+
 function neue(items) {
-  return items.filter(it => {
+  let kandidaten = items.filter(it => {
     const c = T.srs.cards[it.key];
     return it.level <= T.srs.unlockedLevel && (!c || c.srs === 0);
   });
+  kandidaten.sort((a, b) =>
+    a.level - b.level || TYP_RANG[a.typ] - TYP_RANG[b.typ] || a.position - b.position);
+
+  if (T.deck.key === 'hanzi') {
+    kandidaten = kandidaten.filter(it => {
+      if (it.typ !== 'character') return true;
+      const komponenten = items.filter(k => k.typ === 'component' && k.level === it.level);
+      return komponenten.every(k => (T.srs.cards[k.key]?.srs || 0) >= 1);
+    });
+  }
+  if (T.deck.key === 'woerter') {
+    const hanzi = getSetting(`trainer-${T.lang}-hanzi`);
+    const gelernt = new Set(Object.entries(hanzi?.cards || {})
+      .filter(([k, c]) => k.startsWith('character:') && c.srs >= 1)
+      .map(([k]) => k.split(':')[1]));
+    kandidaten = kandidaten.filter(it => [...it.data.zeichen].every(c => gelernt.has(c)));
+  }
+  return kandidaten;
 }
 
 function levelStats(items, lvl) {
@@ -110,6 +132,7 @@ function dashItems() {
       desc: `${Math.min(5, frisch)} von ${frisch} · Level ${T.srs.unlockedLevel}/${maxLevel(items)} (${stats.pct}% Guru+)`,
     });
   }
+  eintraege.push({ art: 'browse', enabled: true, label: 'Übersicht', desc: 'Alle Level & Fortschritt' });
   eintraege.push({ art: 'zurueck', enabled: true, label: '← Sprachen', desc: '' });
   return eintraege;
 }
@@ -147,6 +170,7 @@ export function trainerDashSelect() {
   const item = dashItems()[T.cursor];
   if (!item || !item.enabled) return;
   if (item.art === 'zurueck') { window.renderSprachenGlobal?.(); return; }
+  if (item.art === 'browse') { trainerShowBrowse(); return; }
   T.deck = item.deck;
   ladeSrs();
   const items = deckItems(item.deck);
@@ -163,12 +187,35 @@ export function trainerDashSelect() {
   }
 }
 
+// ── Tonfarben (1 orange · 2 grün · 3 blau · 4 violett · neutral grau) ──────
+const TON_FARBEN = { 1: '#d98a3d', 2: '#3fa34d', 3: '#3b7fd4', 4: '#a05fd4', 5: 'var(--muted)' };
+
+function tonVon(silbe) {
+  if (silbe.includes('˙')) return 5;
+  if (silbe.includes('ˊ')) return 2;
+  if (silbe.includes('ˇ')) return 3;
+  if (silbe.includes('ˋ')) return 4;
+  return 1;
+}
+
+function mitTonfarben(zeichen, zhuyin) {
+  const silben = (zhuyin || '').trim().split(/\s+/);
+  const chars = [...zeichen];
+  if (silben.length !== chars.length) return zeichen;
+  return chars.map((c, i) => `<span style="color:${TON_FARBEN[tonVon(silben[i])]}">${c}</span>`).join('');
+}
+
+function zhuyinFarbig(zhuyin) {
+  return (zhuyin || '').trim().split(/\s+/)
+    .map(s => `<span style="color:${TON_FARBEN[tonVon(s)]}">${s}</span>`).join(' ');
+}
+
 // ── Karten-Rendering ───────────────────────────────────────────────────────
-function frontHtml(it) {
+function frontHtml(it, farben) {
   const d = it.data;
   if (it.typ === 'zhuyin') return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zhuyin}</div>`;
-  if (it.typ === 'component') return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zeichen}</div>`;
-  return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zeichen}</div>`;
+  const anzeige = farben ? mitTonfarben(d.zeichen, d.zhuyin) : d.zeichen;
+  return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${anzeige}</div>`;
 }
 
 function backHtml(it) {
@@ -184,14 +231,40 @@ function backHtml(it) {
   if (it.typ === 'component') {
     return `
       <div class="karte-wort karte-back-klein">${d.zeichen}</div>
+      <div class="tr-strokes"></div>
       <div class="karte-de" style="font-size:clamp(28px,6vw,48px);">${d.name}</div>
       <div class="karte-merksatz">Komponente</div>`;
   }
   return `
-    <div class="karte-wort karte-back-klein">${d.zeichen}</div>
-    <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${d.zhuyin} &nbsp;·&nbsp; ${d.pinyin}</div>
+    <div class="karte-wort karte-back-klein">${mitTonfarben(d.zeichen, d.zhuyin)}</div>
+    ${[...d.zeichen].length === 1 ? '<div class="tr-strokes"></div>' : ''}
+    <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${zhuyinFarbig(d.zhuyin)} &nbsp;·&nbsp; ${d.pinyin}</div>
     <div class="karte-de" style="font-size:clamp(20px,4vw,32px);">${d.meaning}</div>
     <div class="karte-merksatz">${(d.defs || []).join(' · ')}</div>`;
+}
+
+// Strichfolge-Animation (Hanzi Writer, vendored; Zeichendaten vom CDN —
+// offline schlägt das leise fehl und der Container bleibt unsichtbar)
+function malStrichfolge(it) {
+  const ziel = el('tr-back').querySelector('.tr-strokes');
+  if (!ziel || !window.HanziWriter) return;
+  const zeichen = it.data.zeichen;
+  if (!zeichen || [...zeichen].length !== 1) return;
+  ziel.innerHTML = '';
+  ziel.style.cssText = 'display:flex;justify-content:center;margin:8px 0;';
+  try {
+    const writer = window.HanziWriter.create(ziel, zeichen, {
+      width: 110, height: 110, padding: 4,
+      strokeColor: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f0ece4',
+      delayBetweenStrokes: 120,
+      strokeAnimationSpeed: 1.6,
+      onLoadCharDataError: () => { ziel.style.display = 'none'; },
+    });
+    writer.animateCharacter();
+    ziel.onclick = (ev) => { ev.stopPropagation(); writer.animateCharacter(); };
+  } catch (e) {
+    ziel.style.display = 'none';
+  }
 }
 
 function sprich(it) {
@@ -215,7 +288,7 @@ function zeigeLessonKarte() {
   el('tr-tag').textContent = 'NEU · ' + T.deck.titel;
   el('tr-counter').textContent = `${T.lessonIdx + 1} / ${T.lessonCards.length}`;
   el('tr-progress').style.width = (T.lessonIdx / T.lessonCards.length * 100) + '%';
-  el('tr-front').innerHTML = frontHtml(it);
+  el('tr-front').innerHTML = frontHtml(it, true);
   el('tr-back').innerHTML = backHtml(it);
   zeigeKarte(true);
   sprich(it);
@@ -227,6 +300,7 @@ export function trFlip() {
   else return;
   zeigeKarte(false);
   const it = T.phase === 'lesson' ? T.lessonCards[T.lessonIdx] : T.current;
+  malStrichfolge(it);
   sprich(it);
 }
 
@@ -263,7 +337,7 @@ function naechsteReviewKarte() {
   const stage = SRS_STAGES[c?.srs || 0];
   el('tr-stage-badge').textContent = stage.name;
   el('tr-stage-badge').style.background = stage.color;
-  el('tr-front').innerHTML = frontHtml(T.current);
+  el('tr-front').innerHTML = frontHtml(T.current, false);
   el('tr-back').innerHTML = backHtml(T.current);
   zeigeKarte(true);
   if (T.current.typ !== 'zhuyin') sprich(T.current); // Zhuyin: Ton erst beim Aufdecken (wäre sonst die Lösung)
@@ -319,9 +393,40 @@ function beendeSession() {
     `Level ${T.srs.unlockedLevel} — ${stats.guru}/${stats.total} auf Guru+ (${stats.pct}%, 80% schalten frei)`;
 }
 
+export function trainerShowBrowse() {
+  S.state = 'tr-browse';
+  show('tr-browse-screen');
+  const c = el('tr-browse-content');
+  let html = '';
+  for (const deck of (DECKS[T.lang] || [])) {
+    T.deck = deck; ladeSrs();
+    const items = deckItems(deck);
+    const max = maxLevel(items);
+    html += `<div style="font-family:var(--display);font-weight:900;font-size:16px;margin:28px 0 4px;">${deck.titel}</div>`;
+    for (let lvl = 1; lvl <= max; lvl++) {
+      const level = items.filter(i => i.level === lvl);
+      if (!level.length) continue;
+      const locked = lvl > T.srs.unlockedLevel;
+      const stats = levelStats(items, lvl);
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin:12px 0 6px;">Level ${lvl}${locked ? ' 🔒' : ` — ${stats.guru}/${stats.total} Guru+`}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">`;
+      for (const it of level) {
+        const srs = T.srs.cards[it.key]?.srs ?? -1;
+        const farbe = (locked || srs < 1) ? 'var(--border)' : SRS_STAGES[srs].color;
+        const glyph = it.data.zeichen || it.data.zhuyin;
+        const tip = `${it.data.pinyin || ''} ${it.data.meaning || it.data.name || ''}`.trim();
+        html += `<span title="${tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};font-size:16px;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
+      }
+      html += '</div>';
+    }
+  }
+  c.innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
 export function trBackToDash() {
   trainerShowDashboard(T.lang);
 }
 
 // Für ui.js (Sprachauswahl) und inline-onclick ohne Import-Zyklus:
-Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash });
+Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash, trainerShowBrowse });

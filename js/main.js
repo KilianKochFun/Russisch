@@ -9,6 +9,11 @@ import { progressInit, ladeProgress, ladeSettings } from './progress.js';
 
 initInput();
 
+// PWA: Service Worker für Offline-Betrieb (App-Shell + Inhalte)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW nicht registriert:', e.message));
+}
+
 let auth = null; // Modul js/supabase.js (oder null im Offline-Fallback)
 
 async function startApp(session) {

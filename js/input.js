@@ -137,6 +137,11 @@ export function initInput() {
 
     } else if (S.state === 'tr-result') {
       trBackToDash();
+
+    } else if (S.state === 'tr-browse') {
+      if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
+      else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
+      else if (key === 'B') trBackToDash();
     }
   });
 }

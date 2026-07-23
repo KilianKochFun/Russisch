@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kilian lernt Sprachen</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0d0d">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -705,6 +708,16 @@
   <p class="key-hint" id="tr-weiter-hint" style="display:none;">Tippen oder Taste → weiter</p>
 </div>
 
+<!-- TRAINER ÜBERSICHT -->
+<div id="tr-browse-screen" class="screen" style="max-width:780px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);padding:12px 0;z-index:10;border-bottom:1px solid var(--border);">
+    <span style="font-family:var(--display);font-size:16px;font-weight:900;">ÜBERSICHT</span>
+    <button class="back-btn" style="margin:0;" onclick="trBackToDash()">← Dashboard</button>
+  </div>
+  <div id="tr-browse-content"></div>
+  <p class="key-hint" style="position:sticky;bottom:0;background:var(--bg);padding:12px 0;"><kbd>A</kbd>/<kbd>C</kbd> scrollen &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
+</div>
+
 <!-- TRAINER ERGEBNIS -->
 <div id="tr-result-screen" class="screen">
   <div style="text-align:center;">
@@ -730,6 +743,7 @@
 </div>
 
 <script src="srs-levels.js"></script>
+<script src="vendor/hanzi-writer.min.js"></script>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
