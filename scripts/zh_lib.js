@@ -37,8 +37,8 @@ const INITIALS = [
 const FINALS = {
   'iong':'ㄩㄥ','iang':'ㄧㄤ','uang':'ㄨㄤ','ueng':'ㄨㄥ',
   'iao':'ㄧㄠ','ian':'ㄧㄢ','ing':'ㄧㄥ','uai':'ㄨㄞ','uan':'ㄨㄢ','ang':'ㄤ','eng':'ㄥ',
-  'ia':'ㄧㄚ','ie':'ㄧㄝ','iu':'ㄧㄡ','in':'ㄧㄣ','io':'ㄧㄛ',
-  'ua':'ㄨㄚ','uo':'ㄨㄛ','ui':'ㄨㄟ','un':'ㄨㄣ','ue':'ㄩㄝ','ve':'ㄩㄝ',
+  'ia':'ㄧㄚ','ie':'ㄧㄝ','iu':'ㄧㄡ','iou':'ㄧㄡ','in':'ㄧㄣ','io':'ㄧㄛ',
+  'ua':'ㄨㄚ','uo':'ㄨㄛ','ui':'ㄨㄟ','uei':'ㄨㄟ','un':'ㄨㄣ','uen':'ㄨㄣ','ue':'ㄩㄝ','ve':'ㄩㄝ',
   'van':'ㄩㄢ','vn':'ㄩㄣ','ong':'ㄨㄥ',
   'ai':'ㄞ','ei':'ㄟ','ao':'ㄠ','ou':'ㄡ','an':'ㄢ','en':'ㄣ','er':'ㄦ',
   'a':'ㄚ','o':'ㄛ','e':'ㄜ','i':'ㄧ','u':'ㄨ','v':'ㄩ',
@@ -50,6 +50,7 @@ function pinyinToZhuyin(py) {
   if (!m) return null;
   let [, syl, tone] = m;
   syl = syl.replace('u:', 'v').replace('ü', 'v');
+  if (syl === 'r') return 'ㄦ' + (tone === '5' ? '' : TONES[tone]); // 兒化 (na3 r5)
 
   let ini = '', rest = syl;
   for (const [p, z] of INITIALS) {
@@ -64,7 +65,8 @@ function pinyinToZhuyin(py) {
     else if (rest.startsWith('y')) { rest = rest.slice(1); if (!rest.startsWith('i')) rest = 'i' + rest; }
     else if (rest.startsWith('w')) { rest = rest.slice(1); if (!rest.startsWith('u')) rest = 'u' + rest; }
   }
-  if ('ㄐㄑㄒ'.includes(ini) && rest.startsWith('u')) rest = 'v' + rest.slice(1);
+  // Achtung: includes('') wäre immer true — deshalb ini-Check zuerst!
+  if (ini && 'ㄐㄑㄒ'.includes(ini) && rest.startsWith('u')) rest = 'v' + rest.slice(1);
 
   let fin = '';
   if (rest) {

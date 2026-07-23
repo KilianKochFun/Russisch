@@ -58,6 +58,7 @@ for (const [level, glyph, name] of RADICALS) {
 }
 
 for (const [level, glyph, meaning] of KANJI) {
+  if (glyph === '々') continue; // japanisches Wiederholungszeichen — kein Mandarin
   const zeichen = trad(glyph);
   const les = lesungen(zeichen);
   if (les.length === 0) { warnungen.push(`Kanji ${glyph}→${zeichen} (L${level}, ${meaning}): nicht in CEDICT — übersprungen`); continue; }
@@ -70,6 +71,52 @@ for (const [level, glyph, meaning] of KANJI) {
     weitere_lesungen: les.slice(1, 3).map(l => ({ pinyin: l.pinyin, zhuyin: l.zhuyin })),
   });
 }
+
+// ── TOCFL-Grundzeichen als Level 11+ ────────────────────────────────────────
+// Zeichen aus TOCFL Band 1–2, die im WK-Deck fehlen (我, 是, 喝 …) — in
+// Erst-Vorkommens-Reihenfolge, 25 pro Level. Wort-Zuordnung via Manifest.
+const TOCFL_DIR = '/tmp/claude-1000/-home-kiliankoch-Dokumente-GitHubFun-Russisch/bbcf32d8-51ab-4364-bc97-d117e7c1b42b/scratchpad';
+const WK_MAX_LEVEL = 10;
+const PRO_LEVEL = 25;
+
+const zeichenLevel = {};
+for (const r of rows) if (r.item_type === 'character') zeichenLevel[r.data.zeichen] = r.level;
+
+const fehlend = [];
+for (let band = 1; band <= 2; band++) {
+  const pfad = `${TOCFL_DIR}/tocfl-${band}.csv`;
+  if (!fs.existsSync(pfad)) { console.warn(`⚠ ${pfad} fehlt`); continue; }
+  for (const zeile of fs.readFileSync(pfad, 'utf-8').split('\n').slice(1)) {
+    const wort = (zeile.split(',')[2] || '').trim();
+    for (const c of wort) {
+      if (!/\p{Script=Han}/u.test(c)) continue;
+      if (zeichenLevel[c] === undefined && !fehlend.includes(c)) fehlend.push(c);
+    }
+  }
+}
+
+let tocflZeichen = 0;
+fehlend.forEach((zeichen, i) => {
+  const les = lesungen(zeichen);
+  if (les.length === 0) { warnungen.push(`TOCFL-Zeichen ${zeichen}: nicht in CEDICT`); return; }
+  const level = WK_MAX_LEVEL + 1 + Math.floor(tocflZeichen / PRO_LEVEL);
+  push('character', level, {
+    zeichen,
+    meaning: les[0].defs[0] || '',
+    pinyin: les[0].pinyin,
+    zhuyin: les[0].zhuyin,
+    defs: les[0].defs,
+    weitere_lesungen: les.slice(1, 3).map(l => ({ pinyin: l.pinyin, zhuyin: l.zhuyin })),
+    herkunft: 'tocfl',
+  });
+  zeichenLevel[zeichen] = level;
+  tocflZeichen++;
+});
+console.log(`TOCFL-Zeichen ergänzt: +${tocflZeichen} in Level ${WK_MAX_LEVEL + 1}–${WK_MAX_LEVEL + Math.ceil(tocflZeichen / PRO_LEVEL)}`);
+
+// Manifest für seed_words.js: Zeichen → Level
+fs.writeFileSync(path.join(__dirname, '..', 'content-private', 'zeichen-level.json'),
+  JSON.stringify(zeichenLevel));
 
 console.log(`Gebaut: ${rows.length} Zeilen (${rows.filter(r=>r.item_type==='component').length} Komponenten, ${rows.filter(r=>r.item_type==='character').length} Zeichen)`);
 warnungen.forEach(w => console.log('⚠', w));
