@@ -28,12 +28,16 @@ Kilians Entscheidung: Die App wird eine **reine Vokabeltrainer-Plattform** (Wani
    (Daten bleiben in Git-History; `data/` wird nicht mehr im Menü angezeigt).
 2. **Herzstück:** SRS-Vokabeltrainer (wie bisher Russisch) — pro Sprache ein Dashboard
    (Lessons, Reviews, Level, Forecast, Browse) als Startscreen nach Sprachwahl.
-3. **Neu: Mandarin-Trainer** (traditionell/Taiwan, Zhuyin + Pinyin + Tonfarben),
-   Struktur nach WaniKani-VORBILD (Level, Stufen, Lesson→Review) — aber eigene Inhalte
-   aus freien Quellen (TOCFL-Listen, CC-CEDICT). KEINE WaniKani-Inhalte kopieren
-   (Mnemonics etc. sind urheberrechtlich geschützt; das SYSTEM ist frei nachbaubar).
-4. **Vokabeln in Supabase-Tabelle** `vocab` (language, level, position, data jsonb),
-   RLS: nur eingeloggte Nutzer lesen → Inhalte sind nicht öffentlich, Repo bleibt sauber.
+3. **Neu: Mandarin-Trainer** (traditionell/Taiwan) in WaniKani-Dreistufung:
+   **Komponenten → Zeichen → Wörter**, Level-basiert, Lesson→Review.
+   Inhalte aus freien Quellen (TOCFL-Listen, CC-CEDICT) — WaniKani-Mnemonics/-Namen
+   nicht kopieren (geschützt); das SYSTEM ist frei nachbaubar.
+   **Zuerst kommt ein eigener Zhuyin-Trainer** (ㄅㄆㄇㄈ, unabhängig von Vokabeln):
+   ✅ Deck fertig in Supabase — 42 Items in 7 Leveln (Anlaute×3, Vokale, Doppelvokale,
+   Nasale, 5 Töne an der ma-Reihe), Seed-Skript `scripts/seed_zhuyin.js`.
+4. **Inhalte in Supabase-Tabelle `vocab_items`** ✅ (language, item_type, level,
+   position, data jsonb; RLS: SELECT nur für Eingeloggte, Schreiben nur via Secret Key
+   → Inhalte sind nicht öffentlich, Repo bleibt sauber).
 5. **Login ist Pflicht** („Ohne Anmeldung weiter" wurde entfernt). ✅
 6. **Neues Design** — Rot fliegt raus; ruhige, helle Basis mit Dark-Mode,
    Akzentfarbe pro Sprache, Tonfarben für Mandarin, Genusfarben für Russisch bleiben.
