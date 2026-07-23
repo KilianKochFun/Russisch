@@ -22,6 +22,8 @@ import {
 
 export function initInput() {
   document.addEventListener('keydown', (e) => {
+    // In Formularfeldern (Login) normal tippen lassen
+    if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
     const key = e.key.toUpperCase();
     if (key !== 'A' && key !== 'B' && key !== 'C') return;
     e.preventDefault();
@@ -118,7 +120,7 @@ export function initInput() {
       else if (key === 'B') selectAnswer(1);
       else if (key === 'C') selectAnswer(2);
 
-    } else if (S.state === 'quiz-S.answered') {
+    } else if (S.state === 'quiz-answered') {
       nextQuestion();
 
     } else if (S.state === 'end') {

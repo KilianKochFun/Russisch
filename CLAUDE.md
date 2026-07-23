@@ -1,7 +1,13 @@
 # Sprachlern-App (Russisch + Japanisch) — Projektübersicht
 
 Statische Web-App (Vanilla JS, ES Modules) — läuft ohne Server direkt von GitHub Pages.
-Umbau-Fahrplan: siehe `PLAN.md` (Phase 1 ✅ statisch/Module · Phase 2 Supabase · Phase 3 Eingabemodi · Phase 4 PWA).
+Umbau-Fahrplan: siehe `PLAN.md` (Phase 1 ✅ statisch/Module · Phase 2 ✅ Supabase-Login/Fortschritt · Phase 3 Eingabemodi · Phase 4 PWA).
+
+**Login-Flow:** Beim Start prüft `main.js` die Supabase-Session → Login-Screen (E-Mail+Passwort,
+kein Registrieren) oder direkt App. „Ohne Anmeldung weiter" = kein Sync, nur lokal.
+Fortschritt: Tabelle `progress` (card_id = stabile ID, known/again, simples Intervall-SRS),
+Einstellungen (`lastEinheitId` u.a.) in `settings.data`. Menü bietet „Weiter lernen",
+„Fällige Karten" (due_date ≤ heute) und „Abmelden".
 
 ## Dateien
 
@@ -15,6 +21,9 @@ Umbau-Fahrplan: siehe `PLAN.md` (Phase 1 ✅ statisch/Module · Phase 2 Supabase
 | `js/content.js` | Lädt `content/sprachen.json` |
 | `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
 | `js/config.js` | Supabase-URL + Publishable Key (öffentlich OK) |
+| `js/supabase.js` | Supabase-Client + Auth (dynamisch importiert, Offline-Fallback) |
+| `js/progress.js` | Fortschritt/SRS-Upserts + Settings (Weiter lernen, Fällige Karten) |
+| `supabase/schema.sql` | DB-Schema (progress, settings, RLS) — im SQL-Editor ausführen |
 | `content/sprachen.json` | **Generiert** aus `data/` — wird committet |
 | `data/` | Inhalte als CommonJS-Module — hier wird editiert |
 | `scripts/` | Build- und Generator-Skripte |

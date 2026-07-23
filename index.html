@@ -422,6 +422,28 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); }
 
+  /* ── LOGIN SCREEN ── */
+  #login-screen { max-width: 420px; text-align: center; }
+  .login-feld { text-align: left; margin-bottom: 16px; }
+  .login-feld label { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .login-feld input {
+    width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    font-family: var(--sans); font-size: 16px; padding: 14px 16px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .login-feld input:focus { border-color: var(--red); }
+  .login-btn {
+    width: 100%; background: var(--red); border: none; color: #fff;
+    font-family: var(--display); font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 16px; cursor: pointer; margin-top: 8px; transition: opacity 0.15s;
+  }
+  .login-btn:hover { opacity: 0.9; }
+  .login-btn:disabled { opacity: 0.5; cursor: default; }
+  #login-fehler { font-family: var(--mono); font-size: 12px; color: var(--red); margin-top: 16px; min-height: 18px; }
+  #login-offline { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 20px; line-height: 1.6; }
+  #login-offline button { background: none; border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 11px; padding: 6px 12px; cursor: pointer; margin-top: 8px; }
+  #login-offline button:hover { color: var(--text); border-color: #555; }
+
   /* ── SRS SYSTEM ── */
   .srs-stage-apprentice { background: #e05080; }
   .srs-stage-guru { background: #9b59b6; }
@@ -435,6 +457,32 @@
 </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="screen">
+  <div style="margin-bottom:36px;">
+    <h1 style="font-family: var(--display); font-size: clamp(32px, 7vw, 56px); font-weight: 900; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em;">
+      KILIAN LERNT<br><span style="color: var(--red);">SPRACHEN</span>
+    </h1>
+    <p class="subtitle">// Anmelden zum Synchronisieren</p>
+  </div>
+  <form id="login-form" autocomplete="on">
+    <div class="login-feld">
+      <label for="login-email">E-Mail</label>
+      <input id="login-email" type="email" autocomplete="username" required>
+    </div>
+    <div class="login-feld">
+      <label for="login-passwort">Passwort</label>
+      <input id="login-passwort" type="password" autocomplete="current-password" required>
+    </div>
+    <button class="login-btn" id="login-submit" type="submit">ANMELDEN</button>
+  </form>
+  <div id="login-fehler"></div>
+  <div id="login-offline" style="display:none;">
+    Kein Konto zur Hand?<br>
+    <button type="button" id="login-ohne">Ohne Anmeldung weiter (kein Sync)</button>
+  </div>
+</div>
 
 <!-- MENU SCREEN -->
 <!-- SPRACHEN SCREEN -->

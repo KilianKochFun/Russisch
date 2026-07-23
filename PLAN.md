@@ -79,7 +79,7 @@ Ziel: Die App läuft ohne Node-Server als rein statische Seite (Voraussetzung f�
 - [x] `js/config.js` anlegen: `export const SUPABASE_URL = '...'; export const SUPABASE_ANON_KEY = '...';`
       (Werte von Kilian; dürfen ins öffentliche Repo). Supabase-JS v2 als ES-Modul-Import
       von esm.sh o.ä. — kein Bundler nötig.
-- [ ] SQL (im Supabase SQL-Editor ausführen, Skript unter `supabase/schema.sql` ins Repo):
+- [ ] SQL ausführen (⚠ liegt bereit unter `supabase/schema.sql` — noch im SQL-Editor ausführen oder via `supabase db push --db-url`, sobald DB-Zugang in `.env`):
 
 ```sql
 create table public.progress (
@@ -108,15 +108,15 @@ create policy "own settings" on public.settings
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 ```
 
-- [ ] Login-Screen (E-Mail + Passwort, "eingeloggt bleiben" = Standard-Session-Persistenz
+- [x] Login-Screen (E-Mail + Passwort, "eingeloggt bleiben" = Standard-Session-Persistenz
       von Supabase). Kein Registrieren-Button. Logout im Menü.
-- [ ] `js/progress.js`: nach jeder Karteikarten-Antwort (`gewusst`/`nochmal`) und jeder
+- [x] `js/progress.js`: nach jeder Karteikarten-Antwort (`gewusst`/`nochmal`) und jeder
       Quiz-Antwort Fortschritt per Upsert schreiben (`known_count`/`again_count`,
       simples SRS: gewusst → `interval_days` verdoppeln (min. 1), `due_date` setzen;
       nochmal → Intervall zurück auf 0/heute).
-- [ ] In `settings.data`: zuletzt geöffnete Sprache/Kapitel/Einheit + bevorzugter
+- [x] In `settings.data`: zuletzt geöffnete Sprache/Kapitel/Einheit + bevorzugter
       Eingabemodus → beim Login dort weitermachen ("Weiter lernen"-Eintrag im Menü).
-- [ ] Neuer Menüpunkt "Fällige Karten" (SRS-Wiederholung): alle Karten mit
+- [x] Neuer Menüpunkt "Fällige Karten" (SRS-Wiederholung): alle Karten mit
       `due_date <= heute` über alle Kapitel einer Sprache.
 
 ## Phase 3 — Eingabemodi: Touch / Tastatur+Maus / Pedal (umschaltbar)

@@ -2,6 +2,10 @@
 // Reines Umsortieren aus russisch_quiz.html (Phase 1), Verhalten unverändert.
 import { S, SRS_STAGES } from './state.js';
 import { speak, enqueueTTSQueue, extractRussian } from './tts.js';
+import {
+  recordAnswer, getFaelligeKarten, einheitFortschritt,
+  getSetting, setSetting, istEingeloggt, abmelden,
+} from './progress.js';
 
 const GENUS_FARBEN = { m: 'var(--blue)', f: 'var(--red)', n: '#a78bfa' };
 
@@ -46,6 +50,12 @@ function show(id) {
 }
 
 // ── Sprachen Menu ──────────────────────────────────────────────────────────
+function getSprachenItems() {
+  const items = S.sprachenData.map(sprache => ({ sprache }));
+  if (istEingeloggt()) items.push({ isLogout: true });
+  return items;
+}
+
 function renderSprachen() {
   S.state = 'sprachen-menu';
   show('sprachen-screen');
@@ -53,26 +63,37 @@ function renderSprachen() {
   list.innerHTML = '';
   S.menuCursor = 0;
 
-  S.sprachenData.forEach((sprache, i) => {
+  getSprachenItems().forEach((item, i) => {
     const div = document.createElement('div');
     div.className = 'menu-item' + (i === S.sprachenCursor ? ' selected' : '');
-    div.innerHTML = `
+    div.innerHTML = item.isLogout
+      ? `
       <span class="cursor-arrow">›</span>
       <span class="menu-item-body">
-        <span class="menu-item-name">${sprache.icon} ${sprache.sprache}</span>
-        <span class="menu-item-desc">${sprache.kapitel?.length || 0} Kapitel</span>
+        <span class="menu-item-name" style="color:var(--muted)">Abmelden</span>
+        <span class="menu-item-desc">Fortschritt bleibt gespeichert</span>
+      </span>`
+      : `
+      <span class="cursor-arrow">›</span>
+      <span class="menu-item-body">
+        <span class="menu-item-name">${item.sprache.icon} ${item.sprache.sprache}</span>
+        <span class="menu-item-desc">${item.sprache.kapitel?.length || 0} Kapitel</span>
       </span>`;
     list.appendChild(div);
   });
 }
 
 function sprachenMove(dir) {
-  S.sprachenCursor = (S.sprachenCursor + dir + S.sprachenData.length) % S.sprachenData.length;
+  const n = getSprachenItems().length;
+  S.sprachenCursor = (S.sprachenCursor + dir + n) % n;
   renderSprachen();
 }
 
 function sprachenSelect() {
-  S.aktiveSprache = S.sprachenData[S.sprachenCursor];
+  const item = getSprachenItems()[S.sprachenCursor];
+  if (!item) return;
+  if (item.isLogout) { abmelden(); return; }
+  S.aktiveSprache = item.sprache;
   S.hierarchiePfad = [];
   S.aktiveKapitelEbene = S.aktiveSprache;
   S.menuCursor = 0;
@@ -110,6 +131,28 @@ function getMenuItems() {
       kapitel: null,
       itemCount: 0
     });
+  }
+
+  // "Weiter lernen" + "Fällige Karten" at top level (Phase 2)
+  if (S.hierarchiePfad.length === 0 && S.aktiveSprache) {
+    const letzte = findeEinheitPfad(getSetting('lastEinheitId'));
+    if (letzte && letzte.sprache.id === S.aktiveSprache.id) {
+      items.push({
+        id: '__weiter__',
+        name: '▶ Weiter lernen',
+        beschreibung: `${letzte.uk.name} · ${letzte.uk.einheiten[letzte.idx].titel}`,
+        schwierigkeit: null, isKapitel: false, isWeiter: true, kapitel: null, itemCount: 0
+      });
+    }
+    const faellig = getFaelligeKarten(S.aktiveSprache).length;
+    if (faellig > 0) {
+      items.push({
+        id: '__faellig__',
+        name: 'Fällige Karten',
+        beschreibung: `${faellig} Karten zur Wiederholung`,
+        schwierigkeit: null, isKapitel: false, isFaellig: true, kapitel: null, itemCount: faellig
+      });
+    }
   }
 
   // SRS entry at top level (right after back button)
@@ -237,6 +280,9 @@ function menuSelect() {
     return;
   }
 
+  if (chosen.isWeiter) { weiterLernen(); return; }
+  if (chosen.isFaellig) { starteFaelligeKarten(); return; }
+
   // If item has children (folder), navigate deeper
   if (chosen.isKapitel && (chosen.kapitel.kapitel || chosen.kapitel.unterkapitel)) {
     // Speichere aktuellen Cursor bevor wir runter navigieren
@@ -272,7 +318,54 @@ function zurueckZumMenu() {
 }
 
 function zurueckZuEinheiten() {
+  // In einer "Fällige Karten"-Session gibt es kein echtes Einheiten-Menü
+  if (S.dueSession) {
+    S.dueSession = false;
+    S.einheitenModus = false;
+    renderMenu();
+    return;
+  }
   showEinheitenMenu();
+}
+
+// ── Weiter lernen & Fällige Karten (Phase 2) ───────────────────────────────
+function findeEinheitPfad(einheitId) {
+  if (!einheitId) return null;
+  for (const sprache of S.sprachenData) {
+    for (const kap of (sprache.kapitel || [])) {
+      for (const uk of (kap.unterkapitel || [])) {
+        const idx = (uk.einheiten || []).findIndex(e => e.id === einheitId);
+        if (idx >= 0) return { sprache, kap, uk, idx };
+      }
+    }
+  }
+  return null;
+}
+
+function weiterLernen() {
+  const ziel = findeEinheitPfad(getSetting('lastEinheitId'));
+  if (!ziel) return;
+  S.aktiveSprache = ziel.sprache;
+  S.hierarchiePfad = [ziel.sprache];
+  S.aktiveKapitelEbene = ziel.kap;
+  S.cursorStack = [0, 0];
+  S.aktivesKapitel = ziel.uk;
+  S.einheitenCursor = ziel.idx;
+  S.einheitenModus = false;
+  showEinheitenMenu();
+}
+
+function starteFaelligeKarten() {
+  const karten = getFaelligeKarten(S.aktiveSprache);
+  if (!karten.length) return;
+  S.aktiveEinheit = { typ: 'vokabeln', titel: 'Fällige Karten', karten };
+  S.aktivesKapitel = { name: 'Wiederholung', einheiten: [S.aktiveEinheit] };
+  S.dueSession = true;
+  S.einheitenModus = true;
+  S.aktivesPaket = karten;
+  S.state = 'richtung-wahl';
+  show('richtung-screen');
+  document.getElementById('richtung-back-btn').textContent = '← Menü';
 }
 
 // ── Kapitel-Modus ──────────────────────────────────────────────────────────
@@ -328,6 +421,12 @@ function showEinheitenMenu() {
           ? `${einheit.zeilen.length} Zeilen`
           : '';
 
+    // Fortschritt: wie viele Items dieser Einheit wurden schon mal gewusst (Phase 2)
+    const f = einheitFortschritt(einheit);
+    const fortschrittHtml = (istEingeloggt() && f.total > 0 && f.gelernt > 0)
+      ? `<span class="q-count" style="color:${f.gelernt >= f.total ? 'var(--green)' : 'var(--yellow)'}">${f.gelernt}/${f.total} ✓</span>`
+      : '';
+
     const div = document.createElement('div');
     div.className = 'menu-item kapitel-item' + (i === S.einheitenCursor ? ' selected' : '');
     div.innerHTML = `
@@ -337,6 +436,7 @@ function showEinheitenMenu() {
         <span class="menu-item-desc">${TYP_LABELS[einheit.typ] || einheit.typ}</span>
       </span>
       <span class="menu-item-meta">
+        ${fortschrittHtml}
         <span class="q-count">${itemCount}</span>
       </span>`;
     list.appendChild(div);
@@ -375,6 +475,9 @@ function zurueckVonEinheiten() {
 function startEinheit(idx) {
   S.einheitIdx = idx;
   S.aktiveEinheit = S.aktivesKapitel.einheiten[idx];
+
+  // "Weiter lernen"-Position merken (Phase 2)
+  if (S.aktiveEinheit.id) setSetting('lastEinheitId', S.aktiveEinheit.id);
 
   switch (S.aktiveEinheit.typ) {
     case 'vokabeln':    startKarteikarten(S.aktiveEinheit); break;
@@ -451,6 +554,11 @@ function nextEinheit() {
     S._kapiteltestScoreKey = null; // Reset für nächste Einheit
     // Gehe zur nächsten Einheit
     startKapiteltestUnit();
+  } else if (S.dueSession) {
+    // "Fällige Karten"-Session fertig → zurück ins Kapitel-Menü
+    S.dueSession = false;
+    S.einheitenModus = false;
+    renderMenu();
   } else {
     // Nach jeder Einheit: zurück zum Einheiten-Menü, nicht auto-weiter
     S.einheitenModus = false;
@@ -701,12 +809,14 @@ function aufdecken() {
 function karteGewusst() {
   if (S.state !== 'karte-back') return;
   S.karteiGewusst++;
+  recordAnswer(S.aktiveKarte.id, true);
   zeigeKarte();
 }
 
 function karteNochmal() {
   if (S.state !== 'karte-back') return;
   S.nochmalStapel.push(S.aktiveKarte);
+  recordAnswer(S.aktiveKarte.id, false);
   zeigeKarte();
 }
 
@@ -772,6 +882,7 @@ function selectHoerenAnswer(idx) {
   });
 
   const correct = idx === aufgabe.c;
+  recordAnswer(aufgabe.id, correct);
   const verdict = document.getElementById('hoeren-result-verdict');
   verdict.textContent = correct ? '✓ Richtig!' : '✗ Falsch';
   verdict.className = 'result-verdict ' + (correct ? 'ok' : 'fail');
@@ -1005,7 +1116,7 @@ function renderQuestion() {
 function selectAnswer(idx) {
   if (S.answered) return;
   S.answered = true;
-  S.state = 'quiz-S.answered';
+  S.state = 'quiz-answered';
   const q = S.shuffled[S.current];
   const btns = document.querySelectorAll('.answer-btn');
 
@@ -1019,6 +1130,9 @@ function selectAnswer(idx) {
   const correct = idx === q.c;
   const key = q.cat || q._quizName;
   if (correct) S.scores[key]++;
+
+  // Fortschritt speichern: MC-Vokabelmodus → Karten-ID, sonst Fragen-ID (Phase 2)
+  recordAnswer(q._karte ? q._karte.id : q.id, correct);
 
   const verdict = document.getElementById('result-verdict');
   verdict.textContent = correct ? '✓ Richtig!' : '✗ Falsch';

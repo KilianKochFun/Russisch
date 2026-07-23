@@ -62,6 +62,7 @@ export const S = {
   totals: {},
   isDialogQuiz: false,
   isTextQuiz: false,
+  dueSession: false,        // "Fällige Karten"-Wiederholung läuft (Phase 2)
 
   // SRS
   srsData: { cards: {}, unlockedLevel: 1 },
