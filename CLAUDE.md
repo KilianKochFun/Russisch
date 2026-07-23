@@ -25,9 +25,11 @@ Einstellungen (`lastEinheitId` u.a.) in `settings.data`. Menü bietet „Weiter 
 | `js/progress.js` | Fortschritt/SRS-Upserts + Settings (Weiter lernen, Fällige Karten) |
 | `supabase/schema.sql` | DB-Schema (progress, settings, RLS) — im SQL-Editor ausführen |
 | `content/sprachen.json` | **Generiert** aus `data/` — wird committet |
+| `srs-levels.js` + `srs-data.json` | SRS-Level-Einteilung + gespeicherter Lernstand (Seed) |
+| `SPRACHE-HINZUFUEGEN.md` | **Workflow zum Anlegen neuer Sprachen** (Spanisch, Italienisch …) — Phasen 1–8 immer der Reihe nach durchgehen |
 | `data/` | Inhalte als CommonJS-Module — hier wird editiert |
 | `scripts/` | Build- und Generator-Skripte |
-| `server.js` | Nur für lokale Entwicklung (TTS-Proxy) |
+| `server.js` | Nur lokale Entwicklung (TTS-Proxy, `/api/image`-Bildproxy, SRS-API) |
 | `LERNPLAN.md` | A1–B1 Lehrplan mit Vokabeln/Grammatik |
 
 ## Starten & Bauen
@@ -87,10 +89,10 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
 | `theorie` | Erklärkarten mit Tabellen/Beispielen |
 | `kapiteltest` | Phasen-Test über alle Einheiten des Unterkapitels |
 
-Außerdem: **SRS-Vokabeltrainer** (WaniKani-artig, Apprentice→Burned) — Fortschritt aktuell
-in `localStorage` (`srs-russian`), ab Phase 2 in Supabase. Achtung: `srs-levels.js`
-(Level-Einteilung `SRS_LEVELS`) wurde in Commit 42198cf gelöscht — ohne die Datei sind
-im SRS keine neuen Karten lernbar, Rest der App läuft normal.
+Außerdem: **SRS-Vokabeltrainer** (WaniKani-artig, Apprentice→Burned) — Level-Einteilung
+in `srs-levels.js`, Fortschritt in `localStorage` (`srs-russian`), beim ersten Start
+geseedet aus `srs-data.json` (Lernstand von Kilians altem Rechner, Mai 2026).
+Bleibt erhalten und wird später für Mandarin mitgenutzt.
 
 ---
 

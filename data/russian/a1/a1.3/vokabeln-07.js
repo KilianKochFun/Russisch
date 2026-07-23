@@ -9,7 +9,7 @@ module.exports = {
     { ru: `профессия`, de: `Beruf`, m: `f.` },
     { ru: `пятница`, de: `Freitag`, m: `f.` },
     { ru: `работа`, de: `Arbeit`, m: `f.` },
-    { ru: `работать`, de: `arbeiten`, m: `Verb` },
+    { ru: `работать`, de: `arbeiten`, m: `Wurzel: раб = Sklave/Knecht (urslawisch *orbъ, urverwandt mit dt. „Arbeit"!). Robot (Roboter) ist tschechisch von derselben Wurzel — der „Arbeiter aus Metall". я рабо́таю, ты рабо́таешь — regelmäßig 1. Konjugation.` },
     { ru: `рад`, de: `froh`, m: `Adj.` },
     { ru: `раз`, de: `Mal`, m: `m.` },
     { ru: `разговаривать`, de: `sprechen`, m: `Verb` },

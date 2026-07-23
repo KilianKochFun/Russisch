@@ -2,6 +2,7 @@
   "sprache": "Русский",
   "icon": "🇷🇺",
   "ordnung": [
+    { "typ": "folder", "name": "A1 (überarbeitet)", "ordner": "a1-rev" },
     { "typ": "folder", "name": "A1", "ordner": "a1" }
   ]
 }
