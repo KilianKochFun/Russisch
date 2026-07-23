@@ -211,6 +211,8 @@ function zhuyinFarbig(zhuyin) {
 }
 
 // ── Karten-Rendering ───────────────────────────────────────────────────────
+const TYP_LABEL = { component: 'Komponente 部', character: 'Zeichen 字', word: 'Wort 詞', zhuyin: 'Zhuyin ㄅ' };
+
 function frontHtml(it, farben) {
   const d = it.data;
   if (it.typ === 'zhuyin') return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zhuyin}</div>`;
@@ -285,7 +287,7 @@ function zeigeLessonKarte() {
   const it = T.lessonCards[T.lessonIdx];
   S.state = 'tr-lesson-front';
   show('tr-card-screen');
-  el('tr-tag').textContent = 'NEU · ' + T.deck.titel;
+  el('tr-tag').textContent = 'NEU · ' + (TYP_LABEL[it.typ] || T.deck.titel);
   el('tr-counter').textContent = `${T.lessonIdx + 1} / ${T.lessonCards.length}`;
   el('tr-progress').style.width = (T.lessonIdx / T.lessonCards.length * 100) + '%';
   el('tr-front').innerHTML = frontHtml(it, true);
@@ -330,7 +332,7 @@ function naechsteReviewKarte() {
   T.current = T.pool[Math.floor(Math.random() * T.pool.length)];
   S.state = 'tr-review-front';
   show('tr-card-screen');
-  el('tr-tag').textContent = 'REVIEW · ' + T.deck.titel;
+  el('tr-tag').textContent = 'REVIEW · ' + (TYP_LABEL[T.current.typ] || T.deck.titel);
   el('tr-counter').textContent = `noch ${T.pool.length} · ${T.done} ✓`;
   el('tr-progress').style.width = (T.done / T.total * 100) + '%';
   const c = T.srs.cards[T.current.key];
@@ -404,7 +406,8 @@ export function trainerShowBrowse() {
     const max = maxLevel(items);
     html += `<div style="font-family:var(--display);font-weight:900;font-size:16px;margin:28px 0 4px;">${deck.titel}</div>`;
     for (let lvl = 1; lvl <= max; lvl++) {
-      const level = items.filter(i => i.level === lvl);
+      const level = items.filter(i => i.level === lvl)
+        .sort((a, b) => TYP_RANG[a.typ] - TYP_RANG[b.typ] || a.position - b.position);
       if (!level.length) continue;
       const locked = lvl > T.srs.unlockedLevel;
       const stats = levelStats(items, lvl);
@@ -415,7 +418,8 @@ export function trainerShowBrowse() {
         const farbe = (locked || srs < 1) ? 'var(--border)' : SRS_STAGES[srs].color;
         const glyph = it.data.zeichen || it.data.zhuyin;
         const tip = `${it.data.pinyin || ''} ${it.data.meaning || it.data.name || ''}`.trim();
-        html += `<span title="${tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};font-size:16px;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
+        const strich = it.typ === 'component' ? 'border-style:dashed;' : '';
+        html += `<span title="${(it.typ === 'component' ? 'Komponente: ' : '') + tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};${strich}font-size:16px;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
       }
       html += '</div>';
     }
