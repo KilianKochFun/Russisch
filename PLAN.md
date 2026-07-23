@@ -39,7 +39,7 @@ Multi-User-App umgebaut:
       Projekt** anlegen (Name z.B. `sprachen`), Region EU
 - [x] Projekt-URL + Anon-Key (Public Key) der KI geben bzw. in `js/config.js` eintragen
 - [ ] Supabase Dashboard → Authentication → Sign-ups **deaktivieren**
-- [ ] 2–3 Accounts manuell anlegen (Dashboard → Authentication → Add user, E-Mail + Passwort)
+- [x] Account keko0100@outlook.de angelegt (via Admin-API; weitere jederzeit möglich) (Dashboard → Authentication → Add user, E-Mail + Passwort)
 - [ ] GitHub: Settings → Pages → Deploy from branch `master`, Ordner `/ (root)` aktivieren
 
 ---
@@ -79,7 +79,7 @@ Ziel: Die App läuft ohne Node-Server als rein statische Seite (Voraussetzung f�
 - [x] `js/config.js` anlegen: `export const SUPABASE_URL = '...'; export const SUPABASE_ANON_KEY = '...';`
       (Werte von Kilian; dürfen ins öffentliche Repo). Supabase-JS v2 als ES-Modul-Import
       von esm.sh o.ä. — kein Bundler nötig.
-- [ ] SQL ausführen (⚠ liegt bereit unter `supabase/schema.sql` — noch im SQL-Editor ausführen oder via `supabase db push --db-url`, sobald DB-Zugang in `.env`):
+- [x] SQL ausführen (via `supabase db push` erledigt, 23.07.2026 — RLS end-to-end getestet):
 
 ```sql
 create table public.progress (
