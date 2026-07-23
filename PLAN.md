@@ -35,6 +35,12 @@ Kilians Entscheidung: Die App wird eine **reine Vokabeltrainer-Plattform** (Wani
    **Zuerst kommt ein eigener Zhuyin-Trainer** (ㄅㄆㄇㄈ, unabhängig von Vokabeln):
    ✅ Deck fertig in Supabase — 42 Items in 7 Leveln (Anlaute×3, Vokale, Doppelvokale,
    Nasale, 5 Töne an der ma-Reihe), Seed-Skript `scripts/seed_zhuyin.js`.
+   ✅ **WaniKani Level 1–10 importiert** (Kilians Entscheidung: Original-Inhalte, privat):
+   236 Komponenten + 358 Zeichen, zu traditionellem Chinesisch adaptiert
+   (気→氣, 学→學, 円→圓 …), Lesungen aus CC-CEDICT als Pinyin + Zhuyin.
+   Pipeline: `scripts/seed_hanzi.js` + Daten in `content-private/` (**gitignored** —
+   WK-Listen dürfen nie ins öffentliche Repo, nur nach Supabase hinter RLS!).
+   TODO: WK-Vokabellisten (Wörter) importieren; Level 11+ bei Bedarf nachliefern.
 4. **Inhalte in Supabase-Tabelle `vocab_items`** ✅ (language, item_type, level,
    position, data jsonb; RLS: SELECT nur für Eingeloggte, Schreiben nur via Secret Key
    → Inhalte sind nicht öffentlich, Repo bleibt sauber).
