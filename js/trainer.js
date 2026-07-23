@@ -94,8 +94,9 @@ function levelStats(items, lvl) {
 function maxLevel(items) { return items.reduce((m, it) => Math.max(m, it.level), 1); }
 
 function checkLevelUp(items) {
-  if (T.srs.unlockedLevel >= maxLevel(items)) return;
-  if (levelStats(items, T.srs.unlockedLevel).pct >= 80) T.srs.unlockedLevel++;
+  if (T.srs.unlockedLevel >= maxLevel(items)) return false;
+  if (levelStats(items, T.srs.unlockedLevel).pct >= 80) { T.srs.unlockedLevel++; return true; }
+  return false;
 }
 
 // ── Dashboard ──────────────────────────────────────────────────────────────
@@ -137,7 +138,32 @@ function dashItems() {
   return eintraege;
 }
 
+function trainerForecast() {
+  const jetzt = Date.now();
+  const tagesende = new Date(); tagesende.setHours(23, 59, 59, 999);
+  const morgenende = tagesende.getTime() + 86400000;
+  const wochenende = tagesende.getTime() + 7 * 86400000;
+  let heute = 0, morgen = 0, woche = 0;
+  for (const deck of (DECKS[T.lang] || [])) {
+    T.deck = deck; ladeSrs();
+    for (const c of Object.values(T.srs.cards)) {
+      if (!c.nextReview || c.srs < 1 || c.srs >= 9) continue;
+      const due = new Date(c.nextReview).getTime();
+      if (due <= tagesende.getTime()) heute++;
+      else if (due <= morgenende) morgen++;
+      else if (due <= wochenende) woche++;
+    }
+  }
+  el('tr-dash-forecast').innerHTML = (heute + morgen + woche) === 0 ? '' : `
+    <div style="display:flex;gap:24px;justify-content:center;margin-bottom:20px;font-family:var(--mono);font-size:11px;color:var(--muted);">
+      <span>Heute <b style="color:var(--text)">${heute}</b></span>
+      <span>Morgen <b style="color:var(--text)">${morgen}</b></span>
+      <span>Nächste 7 Tage <b style="color:var(--text)">${woche}</b></span>
+    </div>`;
+}
+
 function trainerRenderDashboard() {
+  trainerForecast();
   const list = el('tr-dash-list');
   list.innerHTML = '';
   dashItems().forEach((item, i) => {
@@ -237,12 +263,14 @@ function backHtml(it) {
       <div class="karte-de" style="font-size:clamp(28px,6vw,48px);">${d.name}</div>
       <div class="karte-merksatz">Komponente</div>`;
   }
+  const b = d.beispiel_de;
   return `
     <div class="karte-wort karte-back-klein">${mitTonfarben(d.zeichen, d.zhuyin)}</div>
     ${[...d.zeichen].length === 1 ? '<div class="tr-strokes"></div>' : ''}
     <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${zhuyinFarbig(d.zhuyin)} &nbsp;·&nbsp; ${d.pinyin}</div>
-    <div class="karte-de" style="font-size:clamp(20px,4vw,32px);">${d.meaning}</div>
-    <div class="karte-merksatz">${(d.defs || []).join(' · ')}</div>`;
+    <div class="karte-de" style="font-size:clamp(20px,4vw,32px);">${d.de || d.meaning}</div>
+    <div class="karte-merksatz">${[d.de ? d.meaning : null, ...(d.defs_de || d.defs || []).slice(1)].filter(Boolean).join(' · ')}</div>
+    ${b ? `<div class="tr-beispiel">${b.zh} — <span style="color:var(--muted)">${b.de}</span></div>` : ''}`;
 }
 
 // Strichfolge-Animation (Hanzi Writer, vendored; Zeichendaten vom CDN —
@@ -383,8 +411,9 @@ export function trNochmal() {
 
 function beendeSession() {
   const items = deckItems(T.deck);
-  checkLevelUp(items);
+  const aufstieg = checkLevelUp(items);
   speichereSrs();
+  el('tr-result-levelup').textContent = aufstieg ? `🎉 Level ${T.srs.unlockedLevel} freigeschaltet!` : '';
   S.state = 'tr-result';
   show('tr-result-screen');
   el('tr-result-up').textContent = T.stats.up;
@@ -428,9 +457,15 @@ export function trainerShowBrowse() {
   window.scrollTo(0, 0);
 }
 
+export function trAbbrechen() {
+  if (!S.state.startsWith('tr-lesson') && !S.state.startsWith('tr-review')) return;
+  if (T.phase === 'review') speichereSrs(); // beantwortete Karten behalten ihren Fortschritt
+  trainerShowDashboard(T.lang);
+}
+
 export function trBackToDash() {
   trainerShowDashboard(T.lang);
 }
 
 // Für ui.js (Sprachauswahl) und inline-onclick ohne Import-Zyklus:
-Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash, trainerShowBrowse });
+Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash, trainerShowBrowse, trAbbrechen });

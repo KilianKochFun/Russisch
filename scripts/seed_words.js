@@ -5,7 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { trad, loadCedict, pinyinToZhuyin } = require('./zh_lib.js');
+const { trad, loadCedict, pinyinToZhuyin, deutschVon } = require('./zh_lib.js');
 const { WORDS } = require('../content-private/wk-vocab.js');
 
 const SUPA_URL = 'https://qqvmovinqupunbsexiev.supabase.co';
@@ -20,6 +20,7 @@ const KEY = env.SUPABASE_SECRET_KEY;
 if (!KEY) { console.error('SUPABASE_SECRET_KEY fehlt in .env'); process.exit(1); }
 
 const cedict = loadCedict(CEDICT);
+const handedict = loadCedict(CEDICT.replace('cedict.txt', 'handedict.u8'));
 const { KANJI } = require('../content-private/wk-levels.js');
 
 // Level jedes gelernten Zeichens — Manifest aus seed_hanzi.js (inkl. TOCFL-Level 11+),
@@ -61,6 +62,7 @@ for (const [, woerter] of WORDS) {
     const e = eintraege[0];
     pushWort(level, {
       zeichen: zh,
+      ...deutschVon(handedict, zh),
       pinyin: e.py,
       zhuyin: e.py.split(' ').map(pinyinToZhuyin).join(' '),
       meaning: e.defs[0] || '',
@@ -111,6 +113,7 @@ for (let band = 1; band <= 4; band++) {
     if (eintraege.length === 0) continue;
     pushWort(level, {
       zeichen: wort,
+      ...deutschVon(handedict, wort),
       pinyin: pinyin || eintraege[0].py,
       zhuyin: zhuyin || eintraege[0].py.split(' ').map(pinyinToZhuyin).join(' '),
       meaning: eintraege[0].defs[0] || '',

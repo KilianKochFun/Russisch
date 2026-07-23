@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const { KANJI, RADICALS } = require('../content-private/wk-levels.js');
-const { trad, loadCedict, pinyinToZhuyin } = require('./zh_lib.js');
+const { trad, loadCedict, pinyinToZhuyin, deutschVon } = require('./zh_lib.js');
 
 const SUPA_URL = 'https://qqvmovinqupunbsexiev.supabase.co';
 const CEDICT = '/tmp/claude-1000/-home-kiliankoch-Dokumente-GitHubFun-Russisch/bbcf32d8-51ab-4364-bc97-d117e7c1b42b/scratchpad/cedict.txt';
@@ -23,6 +23,7 @@ const KEY = env.SUPABASE_SECRET_KEY;
 if (!KEY) { console.error('SUPABASE_SECRET_KEY fehlt in .env'); process.exit(1); }
 
 const cedict = loadCedict(CEDICT);
+const handedict = loadCedict(CEDICT.replace('cedict.txt', 'handedict.u8'));
 
 // Bei Mehrfachlesungen: die zur Lern-Bedeutung passende Lesung erzwingen
 const PRIMAER = {
@@ -81,6 +82,7 @@ function pushTocflZeichen(zeichen, level) {
   const les = lesungen(zeichen);
   push('character', level, {
     zeichen,
+    ...deutschVon(handedict, zeichen),
     meaning: les[0].defs[0] || '',
     pinyin: les[0].pinyin,
     zhuyin: les[0].zhuyin,
@@ -105,6 +107,7 @@ for (const [level, glyph, meaning] of KANJI) {
   if (les.length === 0) { warnungen.push(`Kanji ${glyph}→${zeichen}: nicht in CEDICT — übersprungen`); continue; }
   push('character', level + WK_SHIFT, {
     zeichen,
+    ...deutschVon(handedict, zeichen),
     meaning,
     pinyin: les[0].pinyin,
     zhuyin: les[0].zhuyin,

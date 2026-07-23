@@ -77,4 +77,17 @@ function pinyinToZhuyin(py) {
   return tone === '5' ? TONES[5] + kern : kern + TONES[tone];
 }
 
-module.exports = { TRAD, trad, loadCedict, pinyinToZhuyin };
+// Deutsche Bedeutung + Beispielsatz aus HanDeDict (gleiche Datei-Struktur wie CEDICT)
+function deutschVon(handedict, zh) {
+  const e = (handedict.get(zh) || [])[0];
+  if (!e) return {};
+  const defs_de = e.defs.slice(0, 2).map(d => d.split('; Bsp.:')[0].trim()).filter(Boolean);
+  let beispiel = null;
+  for (const d of e.defs) {
+    const m = d.match(/Bsp\.: (\S+) \S+ -- ([^;/]+)/);
+    if (m) { beispiel = { zh: m[1], de: m[2].trim() }; break; }
+  }
+  return { de: defs_de[0], defs_de, beispiel_de: beispiel };
+}
+
+module.exports = { TRAD, trad, loadCedict, pinyinToZhuyin, deutschVon };

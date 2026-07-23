@@ -684,12 +684,14 @@
     </h1>
     <p class="subtitle">// Zhuyin zuerst, dann Zeichen</p>
   </div>
+  <div id="tr-dash-forecast"></div>
   <div id="tr-dash-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
   <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen &nbsp;·&nbsp; oder tippen</p>
 </div>
 
 <!-- TRAINER KARTE (Lesson + Review) -->
 <div id="tr-card-screen" class="screen">
+  <button class="back-btn" onclick="trAbbrechen()">✕ Abbrechen</button>
   <div class="progress-bar-track">
     <div class="progress-bar-fill blue" id="tr-progress"></div>
   </div>
@@ -737,6 +739,7 @@
         <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">BURNED</div>
       </div>
     </div>
+    <p style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--green);margin-bottom:12px;" id="tr-result-levelup"></p>
     <p style="font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:24px;" id="tr-result-level"></p>
     <button class="karte-btn" onclick="trBackToDash()" style="padding:16px 32px;"><kbd>B</kbd> &nbsp; Zurück zum Dashboard</button>
   </div>
