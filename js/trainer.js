@@ -10,7 +10,8 @@ import { ladeDeckItems } from './decks.js';
 const DECKS = {
   'chinese-tw': [
     { key: 'zhuyin', titel: 'ㄅㄆㄇ Zhuyin-Alphabet', typen: ['zhuyin'] },
-    { key: 'hanzi', titel: '漢字 Komponenten & Zeichen', typen: ['component', 'character'] },
+    { key: 'radikale', titel: '部首 Radikale', typen: ['component'] },
+    { key: 'hanzi', titel: '漢字 Zeichen', typen: ['character'] },
     { key: 'woerter', titel: '詞 Wörter', typen: ['word'] },
   ],
 };
@@ -36,7 +37,17 @@ const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin ||
 function srsKey() { return `trainer-${T.lang}-${T.deck.key}`; }
 
 function ladeSrs() {
-  const gespeichert = getSetting(srsKey());
+  let gespeichert = getSetting(srsKey());
+  // Migration: Radikale steckten früher mit im Hanzi-Deck
+  if ((!gespeichert || !gespeichert.cards) && T.deck.key === 'radikale') {
+    const altKombi = getSetting(`trainer-${T.lang}-hanzi`);
+    if (altKombi?.cards) {
+      gespeichert = {
+        cards: Object.fromEntries(Object.entries(altKombi.cards).filter(([k]) => k.startsWith('component:'))),
+        unlockedLevel: altKombi.unlockedLevel || 1,
+      };
+    }
+  }
   T.srs = (gespeichert && gespeichert.cards) ? gespeichert : { cards: {}, unlockedLevel: 1 };
 }
 
@@ -69,10 +80,12 @@ function neue(items) {
     a.level - b.level || TYP_RANG[a.typ] - TYP_RANG[b.typ] || a.position - b.position);
 
   if (T.deck.key === 'hanzi') {
+    const radikale = getSetting(`trainer-${T.lang}-radikale`);
+    const gelernt = new Set(Object.entries(radikale?.cards || {})
+      .filter(([, c]) => c.srs >= 1).map(([k]) => k));
     kandidaten = kandidaten.filter(it => {
-      if (it.typ !== 'character') return true;
-      const komponenten = items.filter(k => k.typ === 'component' && k.level === it.level);
-      return komponenten.every(k => (T.srs.cards[k.key]?.srs || 0) >= 1);
+      const komponenten = T.items.filter(k => k.item_type === 'component' && k.level === it.level);
+      return komponenten.every(k => gelernt.has('component:' + k.data.zeichen));
     });
   }
   if (T.deck.key === 'woerter') {
@@ -94,9 +107,15 @@ function levelStats(items, lvl) {
 function maxLevel(items) { return items.reduce((m, it) => Math.max(m, it.level), 1); }
 
 function checkLevelUp(items) {
-  if (T.srs.unlockedLevel >= maxLevel(items)) return false;
-  if (levelStats(items, T.srs.unlockedLevel).pct >= 80) { T.srs.unlockedLevel++; return true; }
-  return false;
+  let aufstieg = false;
+  const max = maxLevel(items);
+  while (T.srs.unlockedLevel < max) {
+    const s = levelStats(items, T.srs.unlockedLevel);
+    if (s.total === 0) { T.srs.unlockedLevel++; continue; }  // leeres Level überspringen
+    if (s.pct >= 80) { T.srs.unlockedLevel++; aufstieg = true; continue; }
+    break;
+  }
+  return aufstieg;
 }
 
 // ── Dashboard ──────────────────────────────────────────────────────────────
@@ -120,6 +139,7 @@ function dashItems() {
   for (const deck of (DECKS[T.lang] || [])) {
     T.deck = deck; ladeSrs();
     const items = deckItems(deck);
+    checkLevelUp(items); // überspringt u.a. leere Anfangslevel
     const due = faellig(items).length;
     const frisch = neue(items).length;
     const stats = levelStats(items, T.srs.unlockedLevel);
@@ -200,6 +220,7 @@ export function trainerDashSelect() {
   T.deck = item.deck;
   ladeSrs();
   const items = deckItems(item.deck);
+  checkLevelUp(items);
   T.stats = { up: 0, down: 0, burned: 0 };
   T.failed = new Set();
   if (item.art === 'lesson') {
@@ -432,6 +453,7 @@ export function trainerShowBrowse() {
   for (const deck of (DECKS[T.lang] || [])) {
     T.deck = deck; ladeSrs();
     const items = deckItems(deck);
+    checkLevelUp(items);
     const max = maxLevel(items);
     html += `<div style="font-family:var(--display);font-weight:900;font-size:16px;margin:28px 0 4px;">${deck.titel}</div>`;
     for (let lvl = 1; lvl <= max; lvl++) {

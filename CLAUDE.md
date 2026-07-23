@@ -84,8 +84,9 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
 - **Russisch-SRS** (`js/ui.js`): Karten aus `content/sprachen.json` (nur noch `vokabeln`-
   Einheiten relevant), Level aus `srs-levels.js`, beide Richtungen RU↔DE pro Karte.
   Erststand aus `srs-data.json` (Mai 2026), danach localStorage + Cloud (`settings.data`).
-- **Mandarin** (`js/trainer.js`): Decks aus `vocab_items` — `zhuyin` (42, eigene Levels),
-  `component`+`character` (L1–2 TOCFL-Basics, L3–12 WK, L13+ TOCFL), `word` (869).
+- **Mandarin** (`js/trainer.js`): 4 Decks aus `vocab_items` — `zhuyin` (42), `radikale`
+  (236, Level 3–12), `hanzi` (877: L1–2 TOCFL-Basics, L3–12 WK, L13+ TOCFL), `word` (869).
+  Leere Level werden automatisch übersprungen (checkLevelUp).
   Gating: Komponenten vor Zeichen; Wörter erst, wenn alle ihre Zeichen gelernt sind.
   Tonfarben (1 orange/2 grün/3 blau/4 violett/neutral grau) auf Rückseiten + Lessons.
   Strichfolge via `vendor/hanzi-writer.min.js` (Zeichendaten vom CDN, offline still).
