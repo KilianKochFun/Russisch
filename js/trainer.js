@@ -297,16 +297,16 @@ function backHtml(it) {
 
 // Strichfolge-Animation (Hanzi Writer, vendored; Zeichendaten vom CDN —
 // offline schlägt das leise fehl und der Container bleibt unsichtbar)
-function malStrichfolge(it) {
-  const ziel = el('tr-back').querySelector('.tr-strokes');
-  if (!ziel || !window.HanziWriter) return;
-  const zeichen = it.data.zeichen;
-  if (!zeichen || [...zeichen].length !== 1) return;
+function animiereZeichen(ziel, zeichen, groesse = 110) {
+  if (!ziel || !window.HanziWriter || !zeichen || [...zeichen].length !== 1) {
+    if (ziel) ziel.style.display = 'none';
+    return;
+  }
   ziel.innerHTML = '';
   ziel.style.cssText = 'display:flex;justify-content:center;margin:8px 0;';
   try {
     const writer = window.HanziWriter.create(ziel, zeichen, {
-      width: 110, height: 110, padding: 4,
+      width: groesse, height: groesse, padding: 4,
       strokeColor: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f0ece4',
       delayBetweenStrokes: 120,
       strokeAnimationSpeed: 1.6,
@@ -317,6 +317,10 @@ function malStrichfolge(it) {
   } catch (e) {
     ziel.style.display = 'none';
   }
+}
+
+function malStrichfolge(it) {
+  animiereZeichen(el('tr-back').querySelector('.tr-strokes'), it.data.zeichen);
 }
 
 function sprich(it) {
@@ -463,7 +467,9 @@ export function trainerShowBrowse() {
       if (!level.length) continue;
       const locked = lvl > T.srs.unlockedLevel;
       const stats = levelStats(items, lvl);
-      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin:12px 0 6px;">Level ${lvl}${locked ? ' 🔒' : ` — ${stats.guru}/${stats.total} Guru+`}</div>
+      const striche = level.map(i => i.data.striche).filter(Boolean);
+      const strichInfo = striche.length ? ` · ${Math.min(...striche)}–${Math.max(...striche)} Striche` : '';
+      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin:12px 0 6px;">Level ${lvl}${locked ? ' 🔒' : ` — ${stats.guru}/${stats.total} Guru+`} · ${level.length} Items${strichInfo}</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;">`;
       for (const it of level) {
         const srs = T.srs.cards[it.key]?.srs ?? -1;
@@ -471,13 +477,95 @@ export function trainerShowBrowse() {
         const glyph = it.data.zeichen || it.data.zhuyin;
         const tip = `${it.data.pinyin || ''} ${it.data.meaning || it.data.name || ''}`.trim();
         const strich = it.typ === 'component' ? 'border-style:dashed;' : '';
-        html += `<span title="${(it.typ === 'component' ? 'Komponente: ' : '') + tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};${strich}font-size:16px;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
+        html += `<span data-deck="${deck.key}" data-key="${it.key.replace(/"/g, '&quot;')}" title="${(it.typ === 'component' ? 'Komponente: ' : '') + tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};${strich}font-size:16px;cursor:pointer;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
       }
       html += '</div>';
     }
   }
   c.innerHTML = html;
+  c.onclick = (e) => {
+    const box = e.target.closest('[data-key]');
+    if (box) trainerShowDetail(box.dataset.deck, box.dataset.key);
+  };
   window.scrollTo(0, 0);
+}
+
+// ── Detail-Ansicht (Klick in der Übersicht) ────────────────────────────────
+function formatNaechstesReview(c) {
+  if (!c || !c.srs) return 'Noch nicht gelernt';
+  if (c.srs >= 9) return 'Burned — für immer gemeistert 🎉';
+  if (!c.nextReview) return '—';
+  const diff = new Date(c.nextReview).getTime() - Date.now();
+  if (diff <= 0) return 'jetzt fällig!';
+  const stunden = Math.round(diff / 3600000);
+  if (stunden < 1) return 'in weniger als 1 Stunde';
+  if (stunden < 48) return `in ${stunden} Stunde${stunden === 1 ? '' : 'n'}`;
+  const dat = new Date(c.nextReview);
+  return `${dat.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}, ${dat.getHours()} Uhr`;
+}
+
+const zeile = (label, inhalt) => inhalt ? `
+  <div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);text-align:left;">
+    <span style="font-family:var(--mono);font-size:10px;color:var(--muted);min-width:110px;padding-top:3px;text-transform:uppercase;letter-spacing:0.1em;">${label}</span>
+    <span style="flex:1;">${inhalt}</span>
+  </div>` : '';
+
+export function trainerShowDetail(deckKey, key) {
+  const deck = (DECKS[T.lang] || []).find(dk => dk.key === deckKey);
+  if (!deck) return;
+  T.deck = deck; ladeSrs();
+  const it = deckItems(deck).find(i => i.key === key);
+  if (!it) return;
+  T.browseScroll = window.scrollY;
+  S.state = 'tr-detail';
+  show('tr-detail-screen');
+
+  const d = it.data;
+  const c = T.srs.cards[it.key];
+  const stage = (c && c.srs >= 1) ? SRS_STAGES[Math.min(c.srs, 9)] : null;
+
+  let html = `<div style="text-align:center;">
+    <span class="category-tag blue">${TYP_LABEL[it.typ] || it.typ} · Level ${it.level}</span>
+    <div class="karte-wort" style="font-size:clamp(56px,14vw,96px);margin:16px 0 4px;">${(it.typ === 'character' || it.typ === 'word') ? mitTonfarben(d.zeichen, d.zhuyin) : (d.zeichen || d.zhuyin)}</div>
+    ${it.typ !== 'zhuyin' && [...(d.zeichen || '')].length === 1 ? '<div id="tr-detail-strokes"></div>' : ''}
+  </div>`;
+
+  if (d.zhuyin || d.pinyin) html += zeile('Lesung', `${zhuyinFarbig(d.zhuyin || '')} &nbsp;·&nbsp; ${d.pinyin || ''}`);
+  html += zeile('Bedeutung', d.de || d.name || d.meaning || '');
+  if (d.defs_de && d.defs_de.length > 1) html += zeile('Auch', d.defs_de.slice(1).join(' · '));
+  if (d.meaning && d.de) html += zeile('Englisch', [d.meaning, ...(d.defs || []).slice(1)].join(' · '));
+  if (d.zerlegung) html += zeile('Zerlegung', d.zerlegung.map(z => `<b>${z.z}</b> ${z.name}`).join(' &nbsp;+&nbsp; '));
+  if (d.striche) html += zeile('Striche', `${d.striche} — Animation oben antippen zum Wiederholen`);
+  if (d.hinweis) html += zeile('Aussprache', d.hinweis);
+  if (d.beispiel) html += zeile('Beispiel', `${d.beispiel.zh} &nbsp;${d.beispiel.zy || ''} &nbsp;<span style="color:var(--muted)">${d.beispiel.py || ''} — ${d.beispiel.de || ''}</span>`);
+  if (d.beispiel_de) html += zeile('Beispielsatz', `${d.beispiel_de.zh} — <span style="color:var(--muted)">${d.beispiel_de.de}</span>`);
+
+  // Wo kommt das vor?
+  if (it.typ === 'component') {
+    const nutzer = T.items.filter(x => x.item_type === 'character' && (x.data.zerlegung || []).some(z => z.z === d.zeichen))
+      .map(x => x.data.zeichen).slice(0, 15);
+    if (nutzer.length) html += zeile('Baustein von', nutzer.join(' '));
+  }
+  if (it.typ === 'character') {
+    const woerter = T.items.filter(x => x.item_type === 'word' && [...x.data.zeichen].includes(d.zeichen))
+      .map(x => x.data.zeichen).slice(0, 15);
+    if (woerter.length) html += zeile('In Wörtern', woerter.join(' · '));
+  }
+
+  // SRS-Status + nächster Termin
+  html += zeile('SRS-Stufe', stage
+    ? `<span style="background:${stage.color};color:#fff;padding:2px 10px;border-radius:3px;font-family:var(--mono);font-size:11px;">${stage.name}</span>`
+    : '<span style="color:var(--muted)">Noch nicht gelernt</span>');
+  html += zeile('Nächstes Review', formatNaechstesReview(c));
+
+  el('tr-detail-content').innerHTML = html;
+  animiereZeichen(el('tr-detail-strokes'), it.typ !== 'zhuyin' ? d.zeichen : null, 130);
+  sprich(it);
+}
+
+export function trZurueckZurUebersicht() {
+  trainerShowBrowse();
+  requestAnimationFrame(() => window.scrollTo(0, T.browseScroll || 0));
 }
 
 export function trAbbrechen() {
@@ -491,4 +579,4 @@ export function trBackToDash() {
 }
 
 // Für ui.js (Sprachauswahl) und inline-onclick ohne Import-Zyklus:
-Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash, trainerShowBrowse, trAbbrechen });
+Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash, trainerShowBrowse, trAbbrechen, trainerShowDetail, trZurueckZurUebersicht });

@@ -12,6 +12,7 @@ import {
 } from './ui.js';
 import {
   trainerDashMove, trainerDashSelect, trFlip, trNext, trGewusst, trNochmal, trBackToDash,
+  trZurueckZurUebersicht,
 } from './trainer.js';
 
 // ── Pedal-Belegung ──────────────────────────────────────────────────────────
@@ -142,6 +143,11 @@ export function initInput() {
       if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
       else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
       else if (key === 'B') trBackToDash();
+
+    } else if (S.state === 'tr-detail') {
+      if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
+      else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
+      else if (key === 'B') trZurueckZurUebersicht();
     }
   });
 }
