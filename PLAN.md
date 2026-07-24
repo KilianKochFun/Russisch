@@ -20,6 +20,22 @@ Multi-User-App umgebaut:
 - **Technik:** Vanilla JS, kein Framework — aber die 3300-Zeilen-HTML in Module aufteilen
 - **Später:** Mandarin traditionell (Taiwan) mit Zhuyin + Pinyin
 
+## MANDARIN-CURRICULUM V2 (24.07.2026 — Taiwanerin-Feedback: „zu japanisch")
+
+WaniKani-STRUKTUR bleibt, WaniKani-INHALTE sind raus. Neues Prinzip:
+**strukturell einfach → schwer** (Ziel: lesen können, gute Basis — kein Prüfungslehrplan).
+
+- Zeichen-VORRAT: TOCFL Band 1–4 (779 Zeichen) — aber Reihenfolge rein strukturell:
+  Atome zuerst (一人八力…), dann Zusammengesetztes; ein Zeichen kommt erst, wenn
+  alle seine Bausteine bekannt sind (Zerlegung: makemeahanzi, Strichzahl-Sortierung).
+- Radikale mit DEUTSCHEN Namen (氵 Wasser, 亻 Mensch …, Tabelle NAMEN in seed_hanzi.js),
+  eingeführt im Level ihres ersten Gebrauchs; Zerlegungs-Hinweis auf Zeichen-Rückseite.
+- Wörter: nur TOCFL (WK-Wortlisten komplett raus), am Level ihres letzten Zeichens.
+- **Bewusst klein gestartet: nur Level 1–3 (60 Zeichen, 18 Radikale, 10 Wörter).**
+  Erweitern = MAX_LEVEL in scripts/seed_hanzi.js erhöhen, beide Seeds laufen lassen.
+  719 Zeichen + 627 Wörter warten im Vorrat.
+- Wörterbuch-Caches liegen jetzt dauerhaft in content-private/ (gitignored).
+
 ## NEUAUSRICHTUNG (23.07.2026 — überschreibt Phase 3/5 unten)
 
 Kilians Entscheidung: Die App wird eine **reine Vokabeltrainer-Plattform** (WaniKani-Stil).

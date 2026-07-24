@@ -290,6 +290,7 @@ function backHtml(it) {
     ${[...d.zeichen].length === 1 ? '<div class="tr-strokes"></div>' : ''}
     <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${zhuyinFarbig(d.zhuyin)} &nbsp;·&nbsp; ${d.pinyin}</div>
     <div class="karte-de" style="font-size:clamp(20px,4vw,32px);">${d.de || d.meaning}</div>
+    ${d.zerlegung ? `<div class="karte-merksatz" style="font-size:14px;">= ${d.zerlegung.map(t => `<b>${t.z}</b> ${t.name}`).join(' &nbsp;+&nbsp; ')}</div>` : ''}
     <div class="karte-merksatz">${[d.de ? d.meaning : null, ...(d.defs_de || d.defs || []).slice(1)].filter(Boolean).join(' · ')}</div>
     ${b ? `<div class="tr-beispiel">${b.zh} — <span style="color:var(--muted)">${b.de}</span></div>` : ''}`;
 }
