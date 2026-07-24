@@ -161,10 +161,22 @@ function push(item_type, lvl, data) {
   rows.push({ language: 'chinese-tw', item_type, level: lvl, position: posCounter[k]++, data });
 }
 
+// Zeichen, die als Baustein anderer Pool-Zeichen dienen, werden ZUSÄTZLICH
+// als Radikal eingeführt (WaniKani-Prinzip: erst Radikal 女, dann Hanzi 女).
+// Über den GANZEN Pool berechnet, damit der Radikal-Status stabil bleibt,
+// wenn später mehr Level gebaut werden.
+const wirdGebraucht = new Set();
+for (const c of pool) for (const t of teileVon(c)) if (poolSet.has(t)) wirdGebraucht.add(t);
+
 level.forEach(({ zeichen, komponenten }, i) => {
   const lvl = i + 1;
   for (const k of komponenten) {
     push('component', lvl, { zeichen: k, name: nameVon(k) || '—' });
+  }
+  for (const z of zeichen) {
+    if (wirdGebraucht.has(z)) {
+      push('component', lvl, { zeichen: z, name: nameVon(z) || '—', istZeichen: true });
+    }
   }
   for (const z of zeichen) {
     const les = lesungen(z);
@@ -189,8 +201,10 @@ const zeichenLevel = {};
 for (const r of rows) if (r.item_type === 'character') zeichenLevel[r.data.zeichen] = r.level;
 fs.writeFileSync(path.join(CP, 'zeichen-level.json'), JSON.stringify(zeichenLevel));
 
-level.forEach(({ zeichen, komponenten }, i) =>
-  console.log(`Level ${i + 1}: ${zeichen.join('')} | Radikale: ${komponenten.join('') || '—'}`));
+level.forEach(({ zeichen, komponenten }, i) => {
+  const zusatz = zeichen.filter(z => wirdGebraucht.has(z));
+  console.log(`Level ${i + 1}: ${zeichen.join('')} | Radikale: ${komponenten.join('')}${zusatz.length ? ' + als Zeichen-Radikale: ' + zusatz.join('') : ''}`);
+});
 console.log(`Gebaut: ${rows.length} Zeilen (${rows.filter(r => r.item_type === 'component').length} Komponenten, ${rows.filter(r => r.item_type === 'character').length} Zeichen) — Vorrat: noch ${offen.length} Zeichen für spätere Level`);
 
 // ── Seeden ──────────────────────────────────────────────────────────────────
