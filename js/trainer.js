@@ -317,6 +317,12 @@ function animiereZeichen(ziel, zeichen, groesse = 110, zeigeFehler = false) {
       strokeColor: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f0ece4',
       delayBetweenStrokes: 120,
       strokeAnimationSpeed: 1.6,
+      // Strichdaten lokal (strokes/, offlinefähig), CDN nur als Fallback
+      charDataLoader: (c) =>
+        fetch('strokes/' + encodeURIComponent(c) + '.json')
+          .then(r => { if (!r.ok) throw new Error('lokal fehlt'); return r.json(); })
+          .catch(() => fetch('https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0.1/' + encodeURIComponent(c) + '.json')
+            .then(r => { if (!r.ok) throw new Error('keine Daten'); return r.json(); })),
       onLoadCharDataError: () => fehler('keine Strichdaten'),
     });
     writer.animateCharacter();

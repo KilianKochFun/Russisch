@@ -1,0 +1,4 @@
+Die Strichfolge-Daten in diesem Ordner stammen aus dem Projekt makemeahanzi
+(https://github.com/skishore/makemeahanzi), das sie aus Arphic-Schriftdaten
+ableitet. Sie stehen unter der Arphic Public License:
+https://github.com/skishore/makemeahanzi/blob/master/APL.txt
