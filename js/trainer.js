@@ -291,6 +291,7 @@ function backHtml(it) {
     <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${zhuyinFarbig(d.zhuyin)} &nbsp;·&nbsp; ${d.pinyin}</div>
     <div class="karte-de" style="font-size:clamp(20px,4vw,32px);">${d.de || d.meaning}</div>
     ${d.zerlegung ? `<div class="karte-merksatz" style="font-size:14px;">= ${d.zerlegung.map(t => `<b>${t.z}</b> ${t.name}`).join(' &nbsp;+&nbsp; ')}</div>` : ''}
+    ${(!d.zerlegung && d.zerlegung_text) ? `<div class="karte-merksatz" style="font-size:14px;">${d.zerlegung_text}</div>` : ''}
     <div class="karte-merksatz">${[d.de ? d.meaning : null, ...(d.defs_de || d.defs || []).slice(1)].filter(Boolean).join(' · ')}</div>
     ${b ? `<div class="tr-beispiel">${b.zh} — <span style="color:var(--muted)">${b.de}</span></div>` : ''}`;
 }
@@ -548,6 +549,8 @@ export function trainerShowDetail(deckKey, key) {
   if (d.defs_de && d.defs_de.length > 1) html += zeile('Auch', d.defs_de.slice(1).join(' · '));
   if (d.meaning && d.de) html += zeile('Englisch', [d.meaning, ...(d.defs || []).slice(1)].join(' · '));
   if (d.zerlegung) html += zeile('Zerlegung', d.zerlegung.map(z => `<b>${z.z}</b> ${z.name}`).join(' &nbsp;+&nbsp; '));
+  if (d.zerlegung_text) html += zeile(d.zerlegung ? 'Merkbild' : 'Zerlegung', d.zerlegung_text);
+  if (it.typ === 'character' && !d.zerlegung && !d.zerlegung_text) html += zeile('Zerlegung', '<span style="color:var(--muted)">Urzeichen — nicht weiter zerlegbar</span>');
   if (d.striche) html += zeile('Striche', `${d.striche} — Animation oben antippen zum Wiederholen`);
   if (d.hinweis) html += zeile('Aussprache', d.hinweis);
   if (d.beispiel) html += zeile('Beispiel', `${d.beispiel.zh} &nbsp;${d.beispiel.zy || ''} &nbsp;<span style="color:var(--muted)">${d.beispiel.py || ''} — ${d.beispiel.de || ''}</span>`);
