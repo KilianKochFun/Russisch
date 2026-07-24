@@ -9,9 +9,17 @@ import { progressInit, ladeProgress, ladeSettings } from './progress.js';
 
 initInput();
 
-// PWA: Service Worker für Offline-Betrieb (App-Shell + Inhalte)
+// PWA: Service Worker für Offline-Betrieb (App-Shell + Inhalte).
+// Auto-Update: Übernimmt eine neue Version die Kontrolle, einmal neu laden —
+// sonst würde nach einem Deploy noch der alte Cache angezeigt.
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW nicht registriert:', e.message));
+  let neuGeladen = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (neuGeladen) return;
+    neuGeladen = true;
+    location.reload();
+  });
 }
 
 let auth = null; // Modul js/supabase.js (oder null im Offline-Fallback)

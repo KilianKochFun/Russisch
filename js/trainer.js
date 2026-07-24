@@ -297,11 +297,18 @@ function backHtml(it) {
 
 // Strichfolge-Animation (Hanzi Writer, vendored; Zeichendaten vom CDN —
 // offline schlägt das leise fehl und der Container bleibt unsichtbar)
-function animiereZeichen(ziel, zeichen, groesse = 110) {
-  if (!ziel || !window.HanziWriter || !zeichen || [...zeichen].length !== 1) {
-    if (ziel) ziel.style.display = 'none';
-    return;
-  }
+function animiereZeichen(ziel, zeichen, groesse = 110, zeigeFehler = false) {
+  const fehler = (grund) => {
+    if (!ziel) return;
+    if (zeigeFehler) {
+      ziel.innerHTML = `<span style="font-family:var(--mono);font-size:10px;color:var(--muted);">Strichfolge nicht verfügbar (${grund})</span>`;
+    } else {
+      ziel.style.display = 'none';
+    }
+  };
+  if (!ziel) return;
+  if (!window.HanziWriter) { fehler('Bibliothek fehlt — Seite neu laden'); return; }
+  if (!zeichen || [...zeichen].length !== 1) { fehler('nur für Einzelzeichen'); return; }
   ziel.innerHTML = '';
   ziel.style.cssText = 'display:flex;justify-content:center;margin:8px 0;';
   try {
@@ -310,12 +317,12 @@ function animiereZeichen(ziel, zeichen, groesse = 110) {
       strokeColor: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f0ece4',
       delayBetweenStrokes: 120,
       strokeAnimationSpeed: 1.6,
-      onLoadCharDataError: () => { ziel.style.display = 'none'; },
+      onLoadCharDataError: () => fehler('keine Strichdaten'),
     });
     writer.animateCharacter();
     ziel.onclick = (ev) => { ev.stopPropagation(); writer.animateCharacter(); };
   } catch (e) {
-    ziel.style.display = 'none';
+    fehler(e.message);
   }
 }
 
@@ -559,7 +566,7 @@ export function trainerShowDetail(deckKey, key) {
   html += zeile('Nächstes Review', formatNaechstesReview(c));
 
   el('tr-detail-content').innerHTML = html;
-  animiereZeichen(el('tr-detail-strokes'), it.typ !== 'zhuyin' ? d.zeichen : null, 130);
+  animiereZeichen(el('tr-detail-strokes'), it.typ !== 'zhuyin' ? d.zeichen : null, 130, true);
   sprich(it);
 }
 
