@@ -28,6 +28,7 @@ if (!KEY) { console.error('SUPABASE_SECRET_KEY fehlt in .env'); process.exit(1);
 // Deutsche Bedeutung von Hand, wo das Wörterbuch Kurioses liefert
 // (己 → "Hexyl-Gruppe", 也 → "(wird zur Betonung verwendet)" …)
 const DE_FIX = {
+  '刀': 'Messer; Klinge',
   '己': 'selbst; sich selbst',
   '也': 'auch; ebenfalls',
   '士': 'Gelehrter; Krieger',
@@ -143,7 +144,8 @@ function lesungen(zeichen) {
 
 // Radikal-/Zerlegungsnamen kurz halten: "wieder, noch einmal (Adv)" → "wieder"
 function kurz(text) {
-  return text ? text.split(/[,;]/)[0].replace(/\s*\([^)]*\)\s*$/, '').trim() : text;
+  // erst Klammern entfernen (Kommas darin würden sonst falsch schneiden)
+  return text ? text.replace(/\([^)]*\)/g, '').split(/[,;]/)[0].trim() : text;
 }
 
 function nameVon(teil) {
