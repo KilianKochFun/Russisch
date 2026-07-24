@@ -25,28 +25,6 @@ const env = Object.fromEntries(
 const KEY = env.SUPABASE_SECRET_KEY;
 if (!KEY) { console.error('SUPABASE_SECRET_KEY fehlt in .env'); process.exit(1); }
 
-// Handgeschriebene Zerlegungs-Merksätze für Zeichen, deren Zerlegung einen
-// unbenennbaren Rest (？) enthält — das WaniKani-Prinzip, auf Deutsch:
-const ZERLEGUNG_TEXT = {
-  '力': '丿 Schwungstrich + gespannter Haken — ein angespannter Arm: Kraft',
-  '刀': 'wie 力, aber der Griff schaut oben heraus — eine Klinge',
-  '也': '乚 Bogen-Haken, quer durchgestrichen',
-  '久': '勹 Umarmung mit ausgestelltem Bein — wer umarmt, bleibt lange',
-  '才': 'Hand (wie 扌) mit Schrägstrich — rohes Talent',
-  '己': 'offene Schlangenlinie — man selbst',
-  '水': '亅 Haken in der Mitte + Spritzer links und rechts — Wasser',
-  '方': '亠 Deckel über schwungvollem Haken — eine Fahne weht in eine Richtung',
-  '片': 'die rechte Hälfte eines Baumstamms (halbes 木) — eine Scheibe/Platte',
-  '今': '人-Dach mit Strich darunter — der Augenblick unterm Dach: jetzt',
-  '以': 'Schnörkel + 人 Mensch — mittels einer Person',
-  '友': 'eine Hand über 又 (noch einer Hand) — Freundschaft',
-  '不': '一 Decke, darunter sperrt sich etwas — nein, nicht!',
-  '介': '人 Mensch zwischen zwei Strichen — dazwischen, vermitteln',
-  '戶': 'Strich über 尸 liegendem Körper — eine Tür in der Angel',
-  '五': '二 oben und unten, in der Mitte verbunden — fünf',
-  '司': 'Haken umschließt 口 Mund — der, der Befehle gibt: verwalten',
-};
-
 // Deutsche Bedeutung von Hand, wo das Wörterbuch Kurioses liefert
 // (己 → "Hexyl-Gruppe", 也 → "(wird zur Betonung verwendet)" …)
 const DE_FIX = {
@@ -106,6 +84,9 @@ for (let band = 1; band <= 4; band++) {
 const poolRang = new Map(pool.map((c, i) => [c, i]));
 const poolSet = new Set(pool);
 
+// Reine Striche sind keine Radikale — nie als Lernkarte oder Zerlegungsteil zeigen
+const STRICH_PRIMITIVE = new Set(['丿', '丨', '丶', '乚', '亅', '乂', '𠃌', '㇏', '𡿨']);
+
 const IDC = /[⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻？]/u;
 function teileVon(zeichen) {
   const d = mma.get(zeichen)?.decomposition || '';
@@ -133,6 +114,7 @@ for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
   const komponenten = [];
   for (const z of gewaehlt) {
     for (const t of teileVon(z)) {
+      if (STRICH_PRIMITIVE.has(t)) continue;
       if (!bekannt.has(t) && !poolSet.has(t) && !komponenten.includes(t)) komponenten.push(t);
     }
   }
@@ -201,9 +183,12 @@ level.forEach(({ zeichen, komponenten }, i) => {
     const les = lesungen(z);
     // Enthält die Roh-Zerlegung einen unbenennbaren Rest (？), wäre die Liste
     // irreführend halb — dann übernimmt allein das Merkbild (ZERLEGUNG_TEXT)
+    // Zerlegung nur auf Radikal-Ebene: unbenennbare Reste (？) oder reine
+    // Striche machen ein Zeichen zum "Urzeichen" — keine Strich-Anatomie zeigen
     const roh = mma.get(z)?.decomposition || '';
-    const zerlegung = roh.includes('？') ? []
-      : teileVon(z).map(t => ({ z: t, name: nameVon(t) })).filter(t => t.name);
+    const teile = teileVon(z).filter(t => !STRICH_PRIMITIVE.has(t));
+    const zerlegung = (roh.includes('？') || teile.length < 2) ? []
+      : teile.map(t => ({ z: t, name: nameVon(t) })).filter(t => t.name);
     const deutsch = deutschVon(handedict, z, les[0].pinyin);
     if (DE_FIX[z]) deutsch.de = DE_FIX[z];
     push('character', lvl, {
@@ -215,7 +200,6 @@ level.forEach(({ zeichen, komponenten }, i) => {
       defs: les[0].defs,
       weitere_lesungen: les.slice(1, 3).map(l => ({ pinyin: l.pinyin, zhuyin: l.zhuyin })),
       zerlegung: zerlegung.length ? zerlegung : undefined,
-      zerlegung_text: ZERLEGUNG_TEXT[z],
       striche: striche.get(z),
     });
   }
