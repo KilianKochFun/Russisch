@@ -135,10 +135,14 @@ for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
 
 // ── Zeilen bauen ────────────────────────────────────────────────────────────
 const PRIMAER = { '行': 'xing2', '讀': 'du2', '重': 'zhong4', '曲': 'qu3', '血': 'xue4', '校': 'xiao4' };
+// Nachnamen-, Varianten- und Kurzform-Einträge sind selten die Lern-Bedeutung
+const nachrangig = e => /^(surname |variant of|old variant|archaic variant|abbr\. for|used in |see )/i.test(e.defs[0] || '') ? 1 : 0;
+
 function lesungen(zeichen) {
   const eintraege = cedict.get(zeichen) || [];
   return [...eintraege].sort((a, b) =>
     (a.py === PRIMAER[zeichen] ? -1 : 0) - (b.py === PRIMAER[zeichen] ? -1 : 0) ||
+    nachrangig(a) - nachrangig(b) ||
     (a.py.endsWith('5') ? 1 : 0) - (b.py.endsWith('5') ? 1 : 0))
     .map(e => ({
       pinyin: e.py,
@@ -180,7 +184,11 @@ level.forEach(({ zeichen, komponenten }, i) => {
   }
   for (const z of zeichen) {
     const les = lesungen(z);
-    const zerlegung = teileVon(z).map(t => ({ z: t, name: nameVon(t) })).filter(t => t.name);
+    // Enthält die Roh-Zerlegung einen unbenennbaren Rest (？), wäre die Liste
+    // irreführend halb — dann übernimmt allein das Merkbild (ZERLEGUNG_TEXT)
+    const roh = mma.get(z)?.decomposition || '';
+    const zerlegung = roh.includes('？') ? []
+      : teileVon(z).map(t => ({ z: t, name: nameVon(t) })).filter(t => t.name);
     push('character', lvl, {
       zeichen: z,
       ...deutschVon(handedict, z),
