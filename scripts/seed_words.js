@@ -68,7 +68,7 @@ for (let band = 1; band <= 4; band++) {
       language: 'chinese-tw', item_type: 'word', level, position: posProLevel[level]++,
       data: {
         zeichen: wort,
-        ...deutschVon(handedict, wort),
+        ...deutschVon(handedict, wort, eintraege[0].py),
         pinyin: pinyin || eintraege[0].py,
         zhuyin: zhuyin || eintraege[0].py.split(' ').map(pinyinToZhuyin).join(' '),
         meaning: eintraege[0].defs[0] || '',

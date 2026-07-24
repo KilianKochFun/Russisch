@@ -24,7 +24,8 @@ function loadCedict(pfad) {
     if (!m) continue;
     const [, tr, , py, defs] = m;
     if (!cedict.has(tr)) cedict.set(tr, []);
-    cedict.get(tr).push({ py: py.toLowerCase(), defs: defs.split('/').slice(0, 3) });
+    // Großbuchstabe im Pinyin = Eigenname (Bǐ = Belgien) → als Lern-Bedeutung nachrangig
+    cedict.get(tr).push({ py: py.toLowerCase(), eigenname: /[A-Z]/.test(py), defs: defs.split('/').slice(0, 3) });
   }
   return cedict;
 }
@@ -77,11 +78,22 @@ function pinyinToZhuyin(py) {
   return tone === '5' ? TONES[5] + kern : kern + TONES[tone];
 }
 
-// Deutsche Bedeutung + Beispielsatz aus HanDeDict (gleiche Datei-Struktur wie CEDICT)
-function deutschVon(handedict, zh) {
-  const e = (handedict.get(zh) || [])[0];
+// Deutsche Bedeutung + Beispielsatz aus HanDeDict (gleiche Datei-Struktur wie CEDICT).
+// Bevorzugt den Eintrag zur gewünschten Lesung und überspringt Meta-Einträge
+// ("Radikal Nr. …", "Bedeutung wie …", Kalender-Himmelsstämme, Eigennamen).
+const META_DE = /^(Radikal Nr\.|Bedeutung wie|Variante von|der \w+ der zehn|\(Kangxi)/i;
+
+function deutschVon(handedict, zh, pinyin) {
+  const eintraege = [...(handedict.get(zh) || [])].sort((a, b) =>
+    ((pinyin && a.py === pinyin) ? -1 : 0) - ((pinyin && b.py === pinyin) ? -1 : 0) ||
+    (META_DE.test(a.defs[0] || '') ? 1 : 0) - (META_DE.test(b.defs[0] || '') ? 1 : 0) ||
+    (a.eigenname ? 1 : 0) - (b.eigenname ? 1 : 0));
+  const e = eintraege[0];
   if (!e) return {};
-  const defs_de = e.defs.slice(0, 2).map(d => d.split('; Bsp.:')[0].trim()).filter(Boolean);
+  // Auch INNERHALB eines Eintrags: Meta-Bedeutungen ("Radikal Nr. …") ans Ende
+  const defs_de = e.defs.map(d => d.split('; Bsp.:')[0].trim()).filter(Boolean)
+    .sort((a, b) => (META_DE.test(a) ? 1 : 0) - (META_DE.test(b) ? 1 : 0))
+    .slice(0, 2);
   let beispiel = null;
   for (const d of e.defs) {
     const m = d.match(/Bsp\.: (\S+) \S+ -- ([^;/]+)/);

@@ -47,6 +47,14 @@ const ZERLEGUNG_TEXT = {
   '司': 'Haken umschließt 口 Mund — der, der Befehle gibt: verwalten',
 };
 
+// Deutsche Bedeutung von Hand, wo das Wörterbuch Kurioses liefert
+// (己 → "Hexyl-Gruppe", 也 → "(wird zur Betonung verwendet)" …)
+const DE_FIX = {
+  '己': 'selbst; sich selbst',
+  '也': 'auch; ebenfalls',
+  '士': 'Gelehrter; Krieger',
+};
+
 // ── Deutsche Namen für Komponenten, die keine eigenständigen Zeichen sind ──
 const NAMEN = {
   '亻': 'Mensch (links)', '氵': 'Wasser (drei Tropfen)', '扌': 'Hand (links)',
@@ -134,9 +142,9 @@ for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
 }
 
 // ── Zeilen bauen ────────────────────────────────────────────────────────────
-const PRIMAER = { '行': 'xing2', '讀': 'du2', '重': 'zhong4', '曲': 'qu3', '血': 'xue4', '校': 'xiao4' };
+const PRIMAER = { '行': 'xing2', '讀': 'du2', '重': 'zhong4', '曲': 'qu3', '血': 'xue4', '校': 'xiao4', '尺': 'chi3', '中': 'zhong1', '大': 'da4', '比': 'bi3' };
 // Nachnamen-, Varianten- und Kurzform-Einträge sind selten die Lern-Bedeutung
-const nachrangig = e => /^(surname |variant of|old variant|archaic variant|abbr\. for|used in |see )/i.test(e.defs[0] || '') ? 1 : 0;
+const nachrangig = e => (e.eigenname || /variant of|surname |abbr\. for|^used in |^see /i.test(e.defs[0] || '')) ? 1 : 0;
 
 function lesungen(zeichen) {
   const eintraege = cedict.get(zeichen) || [];
@@ -151,10 +159,17 @@ function lesungen(zeichen) {
     }));
 }
 
+// Radikal-/Zerlegungsnamen kurz halten: "wieder, noch einmal (Adv)" → "wieder"
+function kurz(text) {
+  return text ? text.split(/[,;]/)[0].replace(/\s*\([^)]*\)\s*$/, '').trim() : text;
+}
+
 function nameVon(teil) {
+  if (DE_FIX[teil]) return kurz(DE_FIX[teil]);
   if (NAMEN[teil]) return NAMEN[teil];
-  const de = deutschVon(handedict, teil).de;
-  return de || null;
+  const les = lesungen(teil);
+  const de = deutschVon(handedict, teil, les[0]?.pinyin).de;
+  return kurz(de) || null;
 }
 
 const rows = [];
@@ -189,9 +204,11 @@ level.forEach(({ zeichen, komponenten }, i) => {
     const roh = mma.get(z)?.decomposition || '';
     const zerlegung = roh.includes('？') ? []
       : teileVon(z).map(t => ({ z: t, name: nameVon(t) })).filter(t => t.name);
+    const deutsch = deutschVon(handedict, z, les[0].pinyin);
+    if (DE_FIX[z]) deutsch.de = DE_FIX[z];
     push('character', lvl, {
       zeichen: z,
-      ...deutschVon(handedict, z),
+      ...deutsch,
       meaning: les[0].defs[0] || '',
       pinyin: les[0].pinyin,
       zhuyin: les[0].zhuyin,
