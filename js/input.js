@@ -85,6 +85,17 @@ export function initInput() {
       else if (key === 'C') sprachenMove(1);
       else if (key === 'B') sprachenSelect();
 
+    } else if (S.state === 'buecher-liste') {
+      if (key === 'A') window.buecherMove?.(-1);
+      else if (key === 'C') window.buecherMove?.(1);
+      else if (key === 'B') window.buecherSelect?.();
+
+    } else if (S.state === 'buch-viewer') {
+      // Im PDF selbst scrollt der Browser-Viewer (Maus/Touch) — die Pedale
+      // bringen einen nur wieder heraus bzw. laden das Buch herunter.
+      if (key === 'B') window.buchHerunterladen?.();
+      else window.buchZurueck?.();
+
     } else if (S.state === 'srs-dashboard') {
       if (key === 'A') srsDashboardMove(-1);
       else if (key === 'C') srsDashboardMove(1);

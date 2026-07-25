@@ -7,6 +7,8 @@ export const S = {
   sprachenData: [],         // aus content/sprachen.json (liefert die Russisch-Vokabeln)
   aktiveSprache: null,      // {id, sprache, icon} — steuert u.a. die TTS-Sprache
   sprachenCursor: 0,
+  buecherCursor: 0,       // Bücherregal (js/buecher.js)
+  aktivesBuch: null,
 
   // Russisch-SRS
   srsData: { cards: {}, unlockedLevel: 1 },

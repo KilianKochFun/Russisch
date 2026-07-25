@@ -19,6 +19,7 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `js/state.js` | Zentrales State-Objekt `S` + SRS-Stufen |
 | `js/ui.js` | Sprachen-Menü + Russisch-SRS-Trainer |
 | `js/trainer.js` + `js/decks.js` | Generischer Trainer für Supabase-Decks (Mandarin) |
+| `js/buecher.js` | Bücherregal: eigene Lehrbücher als PDF, im Browser lesen |
 | `js/input.js` | Pedal-Handler (Tasten frei belegbar) + Pedal-Setup |
 | `js/content.js` | Lädt `content/sprachen.json` |
 | `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
@@ -99,6 +100,34 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
 
 ---
 
+## Bücherregal
+
+Die selbstgeschriebenen Lehrbücher (`~/Dokumente/Japanisch-Lehrbuch`,
+`~/Dokumente/Chinesisch-Lehrbuch`) liegen als PDF im Supabase-Bucket **`buecher`**
+— **nicht public**. `js/buecher.js` holt nach dem Login eine signierte URL (1 h)
+und hängt sie in ein `<iframe>`; der PDF-Viewer des Browsers macht den Rest.
+Herunterladen geht über denselben Link. Ohne Session gibt es keine gültige URL.
+
+Neues Buch hochladen (Secret Key umgeht RLS, **beide** Header nötig — ohne
+`apikey` antwortet Storage mit `Invalid Compact JWS`):
+
+```bash
+set -a && . ./.env && set +a
+curl -X POST "$SUPABASE_URL/storage/v1/object/buecher/DATEI.pdf" \
+  -H "apikey: $SUPABASE_SECRET_KEY" -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
+  -H "Content-Type: application/pdf" -H "x-upsert: true" \
+  --data-binary "@pfad/zum/buch.pdf"
+```
+
+Danach den Eintrag in der Liste `BUECHER` in `js/buecher.js` ergänzen.
+
+**Migrationen:** die Direktverbindung (`db.<ref>.supabase.co`) ist nur über IPv6
+erreichbar. Falls das Netz kein IPv6 hat, läuft es über den Pooler
+`aws-0-eu-central-1.pooler.supabase.com:5432` mit Benutzer `postgres.<projekt-ref>`
+— und das Passwort muss prozentkodiert werden, es enthält Sonderzeichen.
+
+---
+
 ## Steuerung
 
 **KRITISCH:** Jeder Screen muss mit genau 3 Pedal-Tasten vollständig bedienbar sein.
@@ -110,6 +139,7 @@ gespeichert als `pedalKeys` in settings). Zusätzlich ist alles klick-/antippbar
 | Menüs/Dashboards | hoch | auswählen | runter |
 | Karte (vorne) | aufdecken | aufdecken | aufdecken |
 | Karte (hinten, Review) | gewusst ✓ | gewusst ✓ | nochmal ↩ |
+| Buch-Viewer | zurück | herunterladen | zurück |
 | Ergebnis | — | weiter | — |
 
 **Design:** Markenfarbe Indigo (`--accent`), Rot nur semantisch (falsch/nochmal).

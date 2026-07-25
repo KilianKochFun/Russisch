@@ -57,6 +57,10 @@ function getSprachenItems() {
     name: '🇹🇼 中文 — Mandarin (traditionell)',
     desc: 'Zhuyin ㄅㄆㄇ · Zeichen · Wörter',
   });
+  items.push({
+    isBuecher: true, name: '📚 Bücherregal',
+    desc: 'Japanisch N3→N2 · Chinesisch von innen heraus — im Browser lesen',
+  });
   items.push({ isPedal: true, name: '⚙ Pedal-Tasten belegen', desc: 'Aktuell: A · B · C (oder eigene Belegung)' });
   if (istEingeloggt()) items.push({ isLogout: true, name: 'Abmelden', desc: 'Fortschritt bleibt gespeichert' });
   return items;
@@ -94,6 +98,7 @@ function sprachenSelect() {
   if (!item) return;
   if (item.isLogout) { abmelden(); return; }
   if (item.isPedal) { window.startePedalSetup?.(); return; }
+  if (item.isBuecher) { S.buecherCursor = 0; window.buecherShowListe?.(); return; }
   S.aktiveSprache = item.sprache;
   if (item.trainer === 'russisch-srs') {
     srsShowDashboard();
