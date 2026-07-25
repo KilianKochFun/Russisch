@@ -2,13 +2,15 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v1';
+const VERSION = 'sprachen-v2';
 
 const SHELL = [
   '.',
   'index.html',
   'manifest.json',
-  'icon.svg',
+  'icon.svg', 'favicon.ico',
+  'icons/apple-touch-icon.png', 'icons/icon-192.png',
+  'icons/icon-512.png', 'icons/icon-maskable-512.png',
   'srs-levels.js',
   'srs-data.json',
   'content/sprachen.json',

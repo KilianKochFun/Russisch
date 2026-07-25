@@ -15,6 +15,7 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | Datei/Ordner | Zweck |
 |---|---|
 | `index.html` | Markup + CSS aller Screens |
+| `icon.svg` + `icons/` | App-Icon: Ring aus Я 中 あ 한 ñ (Text als Pfade, nicht als Schrift!) |
 | `js/main.js` | Einstiegspunkt (lädt Inhalte, startet App) |
 | `js/state.js` | Zentrales State-Objekt `S` + SRS-Stufen |
 | `js/ui.js` | Sprachen-Menü + Russisch-SRS-Trainer |
@@ -93,7 +94,12 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   Tonfarben (1 orange/2 grün/3 blau/4 violett/neutral grau) auf Rückseiten + Lessons.
   Strichfolge via `vendor/hanzi-writer.min.js` (Zeichendaten vom CDN, offline still).
   PWA: `manifest.json` + `sw.js` (stale-while-revalidate; bei Shell-Änderungen VERSION
-  in sw.js NICHT nötig zu bumpen — Updates greifen beim nächsten Start).
+  in sw.js NICHT nötig zu bumpen — Updates greifen beim nächsten Start). **Ausnahme:
+  geänderte Icons** — die hängen sonst im alten Cache, dann VERSION hochziehen.
+  **iOS ignoriert `icon.svg` und die Manifest-Icons komplett**: ohne
+  `<link rel="apple-touch-icon">` auf ein PNG landet beim „Zum Home-Bildschirm“ ein
+  Screenshot der Seite als Symbol. Icons enthalten Text **als Pfade** (via
+  `inkscape --export-text-to-path`), sonst rendern sie auf jedem Gerät anders.
   Item-Keys: `typ:zeichen` — Zeichen/Zhuyin nie ändern, sonst reißt der Fortschritt ab.
   Inhalte pflegen: `scripts/seed_zhuyin.js` / `seed_hanzi.js` / `seed_words.js`
   (WK-Daten in `content-private/`, gitignored — NIE committen!).
