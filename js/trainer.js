@@ -444,7 +444,12 @@ function malStrichfolge(it) {
 function sprich(it) {
   const d = it.data;
   if (it.typ === 'rusword') { speak(d.wort, 'ru-RU'); return; }
-  if (it.typ === 'morph') return;                      // Bausteine sind keine Wörter
+  if (it.typ === 'morph') {
+    // Die Bindestriche markieren nur die Anschlussstelle — gesprochen wird
+    // die blanke Lautfolge, sonst buchstabiert die Stimme das Minus mit.
+    speak(d.form.replace(/-/g, ''), 'ru-RU');
+    return;
+  }
   if (it.typ === 'zhuyin') { if (d.beispiel?.zh) speak(d.beispiel.zh, 'zh-TW'); }
   else if (it.typ === 'character' || it.typ === 'word') speak(d.zeichen, 'zh-TW');
 }
@@ -646,7 +651,7 @@ export function trainerShowDetail(deckKey, key) {
 
   let html = `<div style="text-align:center;">
     <span class="category-tag blue">${TYP_LABEL[it.typ] || it.typ} · Level ${it.level}</span>
-    <div class="karte-wort" style="font-size:clamp(56px,14vw,96px);margin:16px 0 4px;">${(it.typ === 'character' || it.typ === 'word') ? mitTonfarben(d.zeichen, d.zhuyin) : (d.betont || d.form || d.wort || d.zeichen || d.zhuyin)}</div>
+    <div class="karte-wort" id="tr-detail-wort" title="Antippen zum Anhören" style="font-size:clamp(56px,14vw,96px);margin:16px 0 4px;cursor:pointer;">${(it.typ === 'character' || it.typ === 'word') ? mitTonfarben(d.zeichen, d.zhuyin) : (d.betont || d.form || d.wort || d.zeichen || d.zhuyin)}</div>
     ${it.typ !== 'zhuyin' && [...(d.zeichen || '')].length === 1 ? '<div id="tr-detail-strokes"></div>' : ''}
   </div>`;
 
@@ -702,6 +707,8 @@ export function trainerShowDetail(deckKey, key) {
 
   el('tr-detail-content').innerHTML = html;
   animiereZeichen(el('tr-detail-strokes'), (it.typ === 'character' || it.typ === 'word') ? d.zeichen : null, 130, true);
+  const wortEl = el('tr-detail-wort');
+  if (wortEl) wortEl.onclick = () => sprich(it);
   sprich(it);
 }
 

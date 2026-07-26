@@ -169,6 +169,7 @@ Light-/Dark-Mode automatisch via `prefers-color-scheme`.
 
 ## Text-to-Speech
 
+- Auf der Detailseite eines Items ist das große Wort **antippbar zum Anhören**.
 - Überall: **Web Speech API** (`speechSynthesis`), Sprache pro Inhalt (`ru-RU`, `ja-JP`, `de-DE`).
   Fehlt eine Stimme → Konsolen-Hinweis, kein Fehler.
 - Nur lokal mit `node server.js`: `/tts`-Proxy (Google Translate) wird automatisch bevorzugt.
