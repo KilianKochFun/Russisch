@@ -14,7 +14,7 @@ const BUECHER = [
   {
     datei: 'japanisch.pdf',
     titel: '🇯🇵 Japanese from the Inside Out',
-    unter: '349 Seiten · N3 → N2 · Grammatik nach Tae Kim',
+    unter: '367 Seiten · N3 → N2 · Grammatik nach Tae Kim',
     beschreibung: 'Lesekurs ohne Schreibaufgaben. Kanji der WaniKani-Level 1–10 ' +
                   'stehen blank, alles andere trägt Furigana. Lesetexte ohne ' +
                   'Englisch, Übersetzungen zeilenweise im Lösungsteil.',
