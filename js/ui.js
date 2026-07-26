@@ -41,9 +41,14 @@ function highlightRu(text) {
 // Neuausrichtung: reine Trainer-Plattform. Der alte Kapitelbaum (Grammatik,
 // Dialoge, Texte) ist nicht mehr erreichbar — jede Sprache führt direkt in
 // ihr Trainer-Dashboard.
+const ZEIGE_ALTEN_RUSSISCH_SRS = false;
+
 function getSprachenItems() {
   const items = [];
-  const russisch = S.sprachenData.find(s => s.id === 'russian');
+  // Der alte Russisch-SRS (482 Einzelvokabeln) ist vorerst ausgeblendet — der
+  // morphologische Trainer übernimmt. Code und Lernstand bleiben unangetastet;
+  // auf ZEIGE_ALTEN_RUSSISCH_SRS = true kommt er zurück.
+  const russisch = ZEIGE_ALTEN_RUSSISCH_SRS ? S.sprachenData.find(s => s.id === 'russian') : null;
   if (russisch) {
     const due = srsGetDueCards().length;
     items.push({
@@ -59,8 +64,8 @@ function getSprachenItems() {
   });
   items.push({
     trainer: 'russian-morph',
-    sprache: { id: 'russian-morph', sprache: 'Русский — Bausteine', icon: '🧩' },
-    name: '🧩 Русский — Wortbausteine',
+    sprache: { id: 'russian-morph', sprache: 'Русский', icon: '🇷🇺' },
+    name: '🇷🇺 Русский — Wortbausteine',
     desc: 'Wörter aus Präfixen und Wurzeln zusammensetzen',
   });
   items.push({

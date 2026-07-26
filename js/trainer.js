@@ -22,6 +22,13 @@ const DECKS = {
   ],
 };
 
+// Kopfzeile des Dashboards je Sprache — vorher stand hier fest 中文 台灣,
+// was über dem Russisch-Trainer natürlich Unsinn war.
+const KOPF = {
+  'chinese-tw':    { zeile1: '中文', zeile2: '台灣', unter: '// Zhuyin zuerst, dann Zeichen' },
+  'russian-morph': { zeile1: 'РУССКИЙ', zeile2: 'ПО ЧАСТЯМ', unter: '// Erst die Bausteine, dann die Wörter' },
+};
+
 // Trainer-State (bewusst getrennt vom Alt-App-State in S — nur S.state wird geteilt)
 const T = {
   lang: null, deck: null,
@@ -229,6 +236,9 @@ function trainerForecast() {
 }
 
 function trainerRenderDashboard() {
+  const k = KOPF[T.lang] || { zeile1: T.lang, zeile2: '', unter: '' };
+  el('tr-kopf').innerHTML = `${k.zeile1}<br><span style="color:var(--blue)">${k.zeile2}</span>`;
+  el('tr-kopf-unter').textContent = k.unter;
   trainerForecast();
   const list = el('tr-dash-list');
   list.innerHTML = '';
@@ -584,10 +594,10 @@ export function trainerShowBrowse() {
       for (const it of level) {
         const srs = T.srs.cards[it.key]?.srs ?? -1;
         const farbe = (locked || srs < 1) ? 'var(--border)' : SRS_STAGES[srs].color;
-        const glyph = it.data.zeichen || it.data.zhuyin;
-        const tip = `${it.data.pinyin || ''} ${it.data.meaning || it.data.name || ''}`.trim();
-        const strich = it.typ === 'component' ? 'border-style:dashed;' : '';
-        html += `<span data-deck="${deck.key}" data-key="${it.key.replace(/"/g, '&quot;')}" title="${(it.typ === 'component' ? 'Komponente: ' : '') + tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};${strich}font-size:16px;cursor:pointer;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
+        const glyph = it.data.zeichen || it.data.zhuyin || it.data.form || it.data.betont || it.data.wort || '?';
+        const tip = `${it.data.pinyin || ''} ${it.data.de || it.data.meaning || it.data.name || ''}`.trim();
+        const strich = (it.typ === 'component' || it.typ === 'morph') ? 'border-style:dashed;' : '';
+        html += `<span data-deck="${deck.key}" data-key="${it.key.replace(/"/g, '&quot;')}" title="${(it.typ === 'component' ? 'Komponente: ' : it.typ === 'morph' ? 'Baustein: ' : '') + tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};${strich}font-size:${it.typ === 'morph' || it.typ === 'rusword' ? '14' : '16'}px;cursor:pointer;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
       }
       html += '</div>';
     }
