@@ -531,6 +531,19 @@
   <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
 </div>
 
+<!-- REVIEW-VORSCHAU (gemeinsam für Russisch-SRS und Mandarin, js/forecast.js) -->
+<div id="forecast-screen" class="screen" style="max-width:680px;">
+  <div style="text-align:center;margin-bottom:18px;">
+    <div class="star-badge">VORSCHAU</div>
+    <div id="forecast-titel" style="font-family:var(--display);font-size:20px;font-weight:900;"></div>
+  </div>
+  <div id="forecast-kopf"></div>
+  <div id="forecast-liste" style="display:flex;flex-direction:column;gap:2px;"></div>
+  <p class="key-hint" style="margin-top:20px;position:sticky;bottom:0;background:var(--bg);padding:12px 0;">
+    <kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> Tag auf-/zuklappen
+  </p>
+</div>
+
 <!-- BÜCHERREGAL -->
 <div id="buecher-screen" class="screen">
   <div style="text-align:center; margin-bottom:32px;">
@@ -670,13 +683,6 @@
 </div>
 
 <!-- SRS FORECAST DETAIL SCREEN -->
-<div id="srs-forecast-screen" class="screen" style="max-width:600px;">
-  <div style="text-align:center;margin-bottom:24px;">
-    <div style="font-family:var(--display);font-size:20px;font-weight:900;">REVIEW-ZEITPLAN</div>
-  </div>
-  <div id="srs-forecast-content" style="display:flex;flex-direction:column;gap:4px;"></div>
-  <p class="key-hint" style="margin-top:24px;position:sticky;bottom:0;background:var(--bg);padding:12px 0;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
-</div>
 
 <!-- SRS BROWSE SCREEN -->
 <div id="srs-browse-screen" class="screen" style="max-width:780px;">

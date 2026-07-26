@@ -6,6 +6,7 @@ import { ladeSprachen } from './content.js';
 import { renderSprachen, srsBuildCardMap, srsLoad } from './ui.js';
 import { initInput } from './input.js';
 import { progressInit, ladeProgress, ladeSettings } from './progress.js';
+import './forecast.js';  // hängt sich an window, wie trainer.js
 import './buecher.js';   // hängt sich an window, wie trainer.js
 
 initInput();

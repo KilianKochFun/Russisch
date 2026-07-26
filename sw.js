@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v2';
+const VERSION = 'sprachen-v3';
 
 const SHELL = [
   '.',
@@ -17,7 +17,7 @@ const SHELL = [
   'vendor/hanzi-writer.min.js',
   'js/main.js', 'js/state.js', 'js/ui.js', 'js/input.js', 'js/content.js',
   'js/tts.js', 'js/config.js', 'js/supabase.js', 'js/progress.js',
-  'js/decks.js', 'js/trainer.js', 'js/buecher.js',
+  'js/decks.js', 'js/trainer.js', 'js/buecher.js', 'js/forecast.js',
 ];
 
 self.addEventListener('install', (e) => {

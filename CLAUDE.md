@@ -21,6 +21,7 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `js/ui.js` | Sprachen-Menü + Russisch-SRS-Trainer |
 | `js/trainer.js` + `js/decks.js` | Generischer Trainer für Supabase-Decks (Mandarin) |
 | `js/buecher.js` | Bücherregal: eigene Lehrbücher als PDF, im Browser lesen |
+| `js/forecast.js` | Review-Vorschau — gemeinsam für Russisch-SRS und Mandarin |
 | `js/input.js` | Pedal-Handler (Tasten frei belegbar) + Pedal-Setup |
 | `js/content.js` | Lädt `content/sprachen.json` |
 | `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
@@ -146,6 +147,7 @@ gespeichert als `pedalKeys` in settings). Zusätzlich ist alles klick-/antippbar
 | Karte (vorne) | aufdecken | aufdecken | aufdecken |
 | Karte (hinten, Review) | gewusst ✓ | gewusst ✓ | nochmal ↩ |
 | Buch-Viewer | zurück | herunterladen | zurück |
+| Review-Vorschau | hoch | Tag auf-/zuklappen | runter |
 | Ergebnis | — | weiter | — |
 
 **Design:** Markenfarbe Indigo (`--accent`), Rot nur semantisch (falsch/nochmal).

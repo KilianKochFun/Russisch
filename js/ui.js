@@ -302,74 +302,19 @@ function srsGetForecast() {
 }
 
 function srsShowForecastDetail() {
-  S.state = 'srs-forecast-detail';
-  show('srs-forecast-screen');
-
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const content = document.getElementById('srs-forecast-content');
-  let html = '';
-
-  // Show 7 days, each with hourly breakdown
-  for (let d = 0; d < 7; d++) {
-    const dayStart = new Date(today.getTime() + d * 86400000);
-    const dayLabels = ['Heute', 'Morgen'];
-    const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
-    const dayLabel = d < 2 ? dayLabels[d] : weekdays[dayStart.getDay()] + ' ' + dayStart.getDate() + '.';
-
-    // Collect hourly data for this day
-    const hours = [];
-    let dayTotal = 0;
-    for (let h = 0; h < 24; h++) {
-      const hourStart = new Date(dayStart.getTime() + h * 3600000);
-      const hourEnd = new Date(hourStart.getTime() + 3600000);
-      let count = 0;
-      const stages = { apprentice: 0, guru: 0, master: 0, enlightened: 0 };
-
-      for (const data of Object.values(S.srsData.cards)) {
-        if (data.srs >= 9 || data.srs === 0 || !data.nextReview) continue;
-        const t = new Date(data.nextReview).getTime();
-        const inRange = (d === 0 && h === 0)
-          ? t < hourEnd.getTime()
-          : t >= hourStart.getTime() && t < hourEnd.getTime();
-        if (inRange) {
-          count++;
-          if (data.srs <= 4) stages.apprentice++;
-          else if (data.srs <= 6) stages.guru++;
-          else if (data.srs === 7) stages.master++;
-          else stages.enlightened++;
-        }
-      }
-
-      if (count > 0) {
-        hours.push({ label: `${String(hourStart.getHours()).padStart(2,'0')}:00`, count, stages });
-        dayTotal += count;
-      }
-    }
-
-    // Day header
-    html += `<div style="font-family:var(--display);font-size:14px;font-weight:900;margin-top:${d > 0 ? '16px' : '0'};padding:6px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;">
-      <span>${dayLabel}</span><span style="color:${dayTotal > 0 ? 'var(--green)' : 'var(--muted)'}">${dayTotal}</span>
-    </div>`;
-
-    if (hours.length === 0) {
-      html += `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);padding:4px 0;">—</div>`;
-    } else {
-      for (const h of hours) {
-        const parts = [];
-        if (h.stages.apprentice) parts.push(`<span style="color:#e05080">${h.stages.apprentice}</span>`);
-        if (h.stages.guru) parts.push(`<span style="color:#9b59b6">${h.stages.guru}</span>`);
-        if (h.stages.master) parts.push(`<span style="color:#3498db">${h.stages.master}</span>`);
-        if (h.stages.enlightened) parts.push(`<span style="color:#2ecc71">${h.stages.enlightened}</span>`);
-        html += `<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;padding:2px 8px;">
-          <span style="color:var(--muted)">${h.label}</span>
-          <span>${h.count} <span style="font-size:9px;margin-left:4px;">${parts.join(' ')}</span></span>
-        </div>`;
-      }
-    }
-  }
-
-  content.innerHTML = html;
+  window.zeigeForecast?.({
+    cards: S.srsData.cards,
+    titel: 'Русский — Vokabeltrainer',
+    // Kartenschlüssel ist "ru|de"; für die Anzeige reicht die Vorderseite,
+    // die Rückseite landet im Tooltip.
+    aufloesen: (key) => {
+      const card = S.srsCardMap[key.split('|').slice(0, 2).join('|')] || S.srsCardMap[key];
+      if (card) return { vorne: card.ru, hinten: card.de };
+      const [ru, de] = key.split('|');
+      return ru ? { vorne: ru, hinten: de || '' } : null;
+    },
+    zurueck: () => srsShowDashboard(),
+  });
 }
 
 // ── SRS Dashboard ──
@@ -461,7 +406,7 @@ function srsGetDashboardItems() {
   return [
     { label: `Reviews starten`, desc: `${dueCards.length} fällig`, enabled: dueCards.length > 0 },
     { label: `Neue Karten lernen`, desc: `${Math.min(5, newCards.length)} verfügbar`, enabled: newCards.length > 0 },
-    { label: `Review-Zeitplan`, desc: `Stündliche Übersicht`, enabled: true },
+    { label: `Review-Vorschau`, desc: `Wann was drankommt — Tag für Tag, Stunde für Stunde`, enabled: true },
     { label: `Vokabel-Übersicht`, desc: `Alle Level & Fortschritt`, enabled: true },
     { label: '← Zurück', desc: '', enabled: true },
   ];

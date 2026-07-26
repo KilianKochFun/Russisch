@@ -85,6 +85,11 @@ export function initInput() {
       else if (key === 'C') sprachenMove(1);
       else if (key === 'B') sprachenSelect();
 
+    } else if (S.state === 'forecast') {
+      if (key === 'A') window.forecastMove?.(-1);
+      else if (key === 'C') window.forecastMove?.(1);
+      else if (key === 'B') window.forecastSelect?.();
+
     } else if (S.state === 'buecher-liste') {
       if (key === 'A') window.buecherMove?.(-1);
       else if (key === 'C') window.buecherMove?.(1);
@@ -121,11 +126,6 @@ export function initInput() {
 
     } else if (S.state === 'srs-result') {
       if (key === 'B') srsResultSelect();
-
-    } else if (S.state === 'srs-forecast-detail') {
-      if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
-      else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
-      else if (key === 'B') srsShowDashboard();
 
     } else if (S.state === 'srs-browse') {
       if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });

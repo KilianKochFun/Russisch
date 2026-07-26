@@ -153,9 +153,33 @@ function dashItems() {
       desc: `${Math.min(5, frisch)} von ${frisch} · Level ${T.srs.unlockedLevel}/${maxLevel(items)} (${stats.pct}% Guru+)`,
     });
   }
+  eintraege.push({ art: 'forecast', enabled: true, label: 'Review-Vorschau',
+    desc: 'Wann was drankommt — Tag für Tag, Stunde für Stunde' });
   eintraege.push({ art: 'browse', enabled: true, label: 'Übersicht', desc: 'Alle Level & Fortschritt' });
   eintraege.push({ art: 'zurueck', enabled: true, label: '← Sprachen', desc: '' });
   return eintraege;
+}
+
+function trainerZeigeVorschau() {
+  const alle = {};
+  const namen = {};
+  for (const deck of (DECKS[T.lang] || [])) {
+    T.deck = deck; ladeSrs();
+    for (const [k, c] of Object.entries(T.srs.cards)) alle[k] = c;
+  }
+  for (const it of (T.items || [])) {
+    const k = it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.data.wort || it.position);
+    namen[k] = {
+      vorne: it.data.zeichen || it.data.zhuyin || it.data.wort || '?',
+      hinten: [it.data.pinyin, it.data.meaning || it.data.name].filter(Boolean).join(' · '),
+    };
+  }
+  window.zeigeForecast?.({
+    cards: alle,
+    titel: '中文 — Mandarin',
+    aufloesen: (key) => namen[key] || { vorne: key.split(':')[1] || key, hinten: '' },
+    zurueck: () => trainerShowDashboard(T.lang),
+  });
 }
 
 function trainerForecast() {
@@ -217,6 +241,7 @@ export function trainerDashSelect() {
   if (!item || !item.enabled) return;
   if (item.art === 'zurueck') { window.renderSprachenGlobal?.(); return; }
   if (item.art === 'browse') { trainerShowBrowse(); return; }
+  if (item.art === 'forecast') { trainerZeigeVorschau(); return; }
   T.deck = item.deck;
   ladeSrs();
   const items = deckItems(item.deck);
