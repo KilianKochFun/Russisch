@@ -14,6 +14,12 @@ const DECKS = {
     { key: 'hanzi', titel: '漢字 Zeichen', typen: ['character'] },
     { key: 'woerter', titel: '詞 Wörter', typen: ['word'] },
   ],
+  // Russisch morphologisch: erst die Bausteine, dann die Wörter, die aus
+  // ihnen zusammenkleben. Gesperrt, bis alle Teile eines Worts sitzen.
+  'russian-morph': [
+    { key: 'bausteine', titel: 'Bausteine', typen: ['morph'] },
+    { key: 'ruwoerter', titel: 'Wörter', typen: ['rusword'] },
+  ],
 };
 
 // Trainer-State (bewusst getrennt vom Alt-App-State in S — nur S.state wird geteilt)
@@ -34,10 +40,11 @@ const show = id => {
 };
 // Schlüssel, unter dem der Lernstand einer Karte liegt. Wörter tragen ihr Wort
 // ebenfalls in data.zeichen, deshalb reicht diese Kette.
-const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.position);
+const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.data.form || it.data.wort || it.position);
 
 // Wie die Vorschau eine Karte benennt: Radikal, Zeichen, Wort oder Zhuyin.
-const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter', zhuyin: 'Zhuyin' };
+const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter', zhuyin: 'Zhuyin',
+                   morph: 'Bausteine', rusword: 'Wörter' };
 
 function srsKey() { return `trainer-${T.lang}-${T.deck.key}`; }
 
@@ -74,7 +81,7 @@ function faellig(items) {
 
 // Lesson-Reihenfolge: erst Komponenten, dann Zeichen (WaniKani-Gating);
 // Wörter erst, wenn alle ihre Zeichen im Hanzi-Deck gelernt sind (srs ≥ 1).
-const TYP_RANG = { component: 0, zhuyin: 0, word: 0, character: 1 };
+const TYP_RANG = { component: 0, zhuyin: 0, word: 0, character: 1, morph: 0, rusword: 0 };
 
 function neue(items) {
   let kandidaten = items.filter(it => {
@@ -92,6 +99,13 @@ function neue(items) {
       const komponenten = T.items.filter(k => k.item_type === 'component' && k.level === it.level);
       return komponenten.every(k => gelernt.has('component:' + k.data.zeichen));
     });
+  }
+  if (T.deck.key === 'ruwoerter') {
+    const bau = getSetting(`trainer-${T.lang}-bausteine`);
+    const gelernt = new Set(Object.entries(bau?.cards || {})
+      .filter(([k, c]) => k.startsWith('morph:') && c.srs >= 1)
+      .map(([k]) => k.slice('morph:'.length)));
+    kandidaten = kandidaten.filter(it => (it.data.teile || []).every(t => gelernt.has(t)));
   }
   if (T.deck.key === 'woerter') {
     const hanzi = getSetting(`trainer-${T.lang}-hanzi`);
@@ -291,10 +305,17 @@ function zhuyinFarbig(zhuyin) {
 }
 
 // ── Karten-Rendering ───────────────────────────────────────────────────────
-const TYP_LABEL = { component: 'Komponente 部', character: 'Zeichen 字', word: 'Wort 詞', zhuyin: 'Zhuyin ㄅ' };
+const TYP_LABEL = { component: 'Komponente 部', character: 'Zeichen 字', word: 'Wort 詞', zhuyin: 'Zhuyin ㄅ',
+                    morph: 'Baustein', rusword: 'Wort' };
 
 function frontHtml(it, farben) {
   const d = it.data;
+  // Russisch: Baustein bzw. Wort schlicht groß — abgefragt wird nur diese
+  // Richtung, also Form sehen und Bedeutung denken.
+  if (it.typ === 'morph')
+    return `<div class="karte-wort" style="font-size:clamp(44px,12vw,84px);">${d.form}</div>`;
+  if (it.typ === 'rusword')
+    return `<div class="karte-wort" style="font-size:clamp(40px,11vw,76px);">${d.wort}</div>`;
   if (it.typ === 'zhuyin') return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zhuyin}</div>`;
   const anzeige = farben ? mitTonfarben(d.zeichen, d.zhuyin) : d.zeichen;
   return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${anzeige}</div>`;
@@ -302,6 +323,30 @@ function frontHtml(it, farben) {
 
 function backHtml(it) {
   const d = it.data;
+
+  if (it.typ === 'morph') {
+    const art = d.art === 'praefix' ? 'Präfix' : 'Wurzel';
+    return `
+      <div class="karte-wort karte-back-klein">${d.form}</div>
+      <div class="karte-de" style="font-size:clamp(28px,6vw,48px);">${d.de}</div>
+      <div class="karte-merksatz">${art}</div>
+      ${d.merk ? `<div class="karte-merksatz" style="font-size:14px;">${d.merk}</div>` : ''}
+      ${bausteinWoerter(d.form)}`;
+  }
+
+  if (it.typ === 'rusword') {
+    const teile = (d.teile || []).map(t => {
+      const m = T.items.find(x => x.item_type === 'morph' && x.data.form === t);
+      return `<b>${t}</b> ${m ? m.data.de : ''}`;
+    }).join(' &nbsp;+&nbsp; ');
+    return `
+      <div class="karte-wort karte-back-klein">${d.betont || d.wort}</div>
+      <div class="karte-de" style="font-size:clamp(26px,5vw,42px);">${d.de}</div>
+      <div class="karte-merksatz" style="font-size:14px;">${teile}</div>
+      <div class="karte-merksatz" style="font-size:14px;">→ wörtlich: ${d.woertlich}</div>
+      ${(d.teile || []).map(t => bausteinWoerter(t, d.wort)).join('')}`;
+  }
+
   if (it.typ === 'zhuyin') {
     const b = d.beispiel || {};
     return `
@@ -327,6 +372,22 @@ function backHtml(it) {
     ${(!d.zerlegung && d.zerlegung_text) ? `<div class="karte-merksatz" style="font-size:14px;">${d.zerlegung_text}</div>` : ''}
     <div class="karte-merksatz">${[d.de ? d.meaning : null, ...(d.defs_de || d.defs || []).slice(1)].filter(Boolean).join(' · ')}</div>
     ${b ? `<div class="tr-beispiel">${b.zh} — <span style="color:var(--muted)">${b.de}</span></div>` : ''}`;
+}
+
+// Zeigt, welche schon gelernten Wörter denselben Baustein enthalten. Beim
+// ersten Wort ist die Zeile leer, später wächst sie mit — so sieht man das
+// Netz entstehen, statt eine fertige Liste vorgesetzt zu bekommen.
+function bausteinWoerter(form, ausser) {
+  const stand = getSetting(`trainer-${T.lang}-ruwoerter`)?.cards || {};
+  const treffer = (T.items || [])
+    .filter(x => x.item_type === 'rusword'
+              && (x.data.teile || []).includes(form)
+              && x.data.wort !== ausser
+              && (stand['rusword:' + x.data.wort]?.srs || 0) >= 1)
+    .map(x => x.data.betont || x.data.wort);
+  if (!treffer.length) return '';
+  return `<div class="karte-merksatz" style="font-size:13px;">
+    <span style="color:var(--muted)">${form} kennst du aus:</span> ${treffer.join(' · ')}</div>`;
 }
 
 // Strichfolge-Animation (Hanzi Writer, vendored; Zeichendaten vom CDN —
@@ -372,6 +433,8 @@ function malStrichfolge(it) {
 
 function sprich(it) {
   const d = it.data;
+  if (it.typ === 'rusword') { speak(d.wort, 'ru-RU'); return; }
+  if (it.typ === 'morph') return;                      // Bausteine sind keine Wörter
   if (it.typ === 'zhuyin') { if (d.beispiel?.zh) speak(d.beispiel.zh, 'zh-TW'); }
   else if (it.typ === 'character' || it.typ === 'word') speak(d.zeichen, 'zh-TW');
 }
@@ -573,7 +636,7 @@ export function trainerShowDetail(deckKey, key) {
 
   let html = `<div style="text-align:center;">
     <span class="category-tag blue">${TYP_LABEL[it.typ] || it.typ} · Level ${it.level}</span>
-    <div class="karte-wort" style="font-size:clamp(56px,14vw,96px);margin:16px 0 4px;">${(it.typ === 'character' || it.typ === 'word') ? mitTonfarben(d.zeichen, d.zhuyin) : (d.zeichen || d.zhuyin)}</div>
+    <div class="karte-wort" style="font-size:clamp(56px,14vw,96px);margin:16px 0 4px;">${(it.typ === 'character' || it.typ === 'word') ? mitTonfarben(d.zeichen, d.zhuyin) : (d.betont || d.form || d.wort || d.zeichen || d.zhuyin)}</div>
     ${it.typ !== 'zhuyin' && [...(d.zeichen || '')].length === 1 ? '<div id="tr-detail-strokes"></div>' : ''}
   </div>`;
 
@@ -588,6 +651,26 @@ export function trainerShowDetail(deckKey, key) {
   if (d.hinweis) html += zeile('Aussprache', d.hinweis);
   if (d.beispiel) html += zeile('Beispiel', `${d.beispiel.zh} &nbsp;${d.beispiel.zy || ''} &nbsp;<span style="color:var(--muted)">${d.beispiel.py || ''} — ${d.beispiel.de || ''}</span>`);
   if (d.beispiel_de) html += zeile('Beispielsatz', `${d.beispiel_de.zh} — <span style="color:var(--muted)">${d.beispiel_de.de}</span>`);
+
+  if (it.typ === 'morph') {
+    html += zeile('Art', d.art === 'praefix' ? 'Präfix' : 'Wurzel');
+    if (d.merk) html += zeile('Merkhilfe', d.merk);
+    const woerter = T.items.filter(x => x.item_type === 'rusword' && (x.data.teile || []).includes(d.form))
+      .map(x => x.data.betont || x.data.wort);
+    if (woerter.length) html += zeile('Steckt in', woerter.join(' · '));
+  }
+  if (it.typ === 'rusword') {
+    const teile = (d.teile || []).map(t => {
+      const m = T.items.find(x => x.item_type === 'morph' && x.data.form === t);
+      return `<b>${t}</b> ${m ? m.data.de : ''}`;
+    }).join(' &nbsp;+&nbsp; ');
+    html += zeile('Zerlegung', teile);
+    html += zeile('Wörtlich', d.woertlich || '');
+    const geschwister = T.items.filter(x => x.item_type === 'rusword' && x.data.wort !== d.wort
+        && (x.data.teile || []).some(t => (d.teile || []).includes(t)))
+      .map(x => x.data.betont || x.data.wort);
+    if (geschwister.length) html += zeile('Teilt Bausteine mit', geschwister.join(' · '));
+  }
 
   // Wo kommt das vor?
   if (it.typ === 'component') {
@@ -608,7 +691,7 @@ export function trainerShowDetail(deckKey, key) {
   html += zeile('Nächstes Review', formatNaechstesReview(c));
 
   el('tr-detail-content').innerHTML = html;
-  animiereZeichen(el('tr-detail-strokes'), it.typ !== 'zhuyin' ? d.zeichen : null, 130, true);
+  animiereZeichen(el('tr-detail-strokes'), (it.typ === 'character' || it.typ === 'word') ? d.zeichen : null, 130, true);
   sprich(it);
 }
 

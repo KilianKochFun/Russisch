@@ -102,6 +102,20 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   Screenshot der Seite als Symbol. Icons enthalten Text **als Pfade** (via
   `inkscape --export-text-to-path`), sonst rendern sie auf jedem Gerät anders.
   Item-Keys: `typ:zeichen` — Zeichen/Zhuyin nie ändern, sonst reißt der Fortschritt ab.
+- **Russisch morphologisch** (`js/trainer.js`, Sprache `russian-morph`): zweites,
+  eigenständiges Vorgehen neben dem Russisch-SRS. Wörter werden aus Präfix + Wurzel
+  zusammengeklebt, statt als Ganzes gelernt. Zwei Decks: `bausteine` (morph) und
+  `ruwoerter` (rusword); ein Wort wird erst frei, wenn alle seine Teile ≥ Apprentice
+  sind. **Abfrage nur in einer Richtung** — Form sehen, Bedeutung denken.
+  Aufbau nach STRUKTUR, nicht nach Nützlichkeit: Level 1 klebt glatt (в+ход),
+  Level 2 bringt das Härtezeichen (под+езд→подъезд), Level 3 die з→с-Regel
+  (раз+ход→расход). **Harte Regel: jedes Wort muss sich restlos aus seinen Teilen
+  erklären, mit der räumlichen Grundbedeutung des Präfixes.** Wörter, die eine
+  zweite Präfixbedeutung oder einen Umweg übers Verb brauchen (уход, указ, завод,
+  повод), gehören in ein späteres Level — nicht als Ausnahme dazwischen.
+  Pflegen mit `scripts/seed_russian_morph.js`; das Skript prüft vor dem Upload,
+  dass jedes Wort buchstabengenau aus seinen Bausteinen zusammengeht.
+
   Inhalte pflegen: `scripts/seed_zhuyin.js` / `seed_hanzi.js` / `seed_words.js`
   (WK-Daten in `content-private/`, gitignored — NIE committen!).
 

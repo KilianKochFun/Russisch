@@ -58,6 +58,12 @@ function getSprachenItems() {
     desc: 'Zhuyin ㄅㄆㄇ · Zeichen · Wörter',
   });
   items.push({
+    trainer: 'russian-morph',
+    sprache: { id: 'russian-morph', sprache: 'Русский — Bausteine', icon: '🧩' },
+    name: '🧩 Русский — Wortbausteine',
+    desc: 'Wörter aus Präfixen und Wurzeln zusammensetzen',
+  });
+  items.push({
     isBuecher: true, name: '📚 Bücherregal',
     desc: 'Japanisch N3→N2 · Chinesisch von innen heraus — im Browser lesen',
   });
@@ -102,6 +108,8 @@ function sprachenSelect() {
   S.aktiveSprache = item.sprache;
   if (item.trainer === 'russisch-srs') {
     srsShowDashboard();
+  } else if (item.trainer === 'russian-morph') {
+    window.trainerShowDashboard?.('russian-morph');
   } else {
     // Mandarin-Trainer (js/trainer.js hängt sich an window, um Zyklen zu vermeiden)
     window.trainerShowDashboard?.('chinese-tw');
