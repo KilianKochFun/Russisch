@@ -32,7 +32,12 @@ const show = id => {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   el(id).classList.add('active');
 };
-const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.data.wort || it.position);
+// Schlüssel, unter dem der Lernstand einer Karte liegt. Wörter tragen ihr Wort
+// ebenfalls in data.zeichen, deshalb reicht diese Kette.
+const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.position);
+
+// Wie die Vorschau eine Karte benennt: Radikal, Zeichen, Wort oder Zhuyin.
+const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter', zhuyin: 'Zhuyin' };
 
 function srsKey() { return `trainer-${T.lang}-${T.deck.key}`; }
 
@@ -56,7 +61,7 @@ function speichereSrs() { setSetting(srsKey(), T.srs); }
 function deckItems(deck) {
   return T.items
     .filter(it => deck.typen.includes(it.item_type))
-    .map(it => ({ key: it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.position), typ: it.item_type, level: it.level, data: it.data }));
+    .map(it => ({ key: itemKey(it), typ: it.item_type, level: it.level, data: it.data }));
 }
 
 function faellig(items) {
@@ -168,16 +173,19 @@ function trainerZeigeVorschau() {
     for (const [k, c] of Object.entries(T.srs.cards)) alle[k] = c;
   }
   for (const it of (T.items || [])) {
-    const k = it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.data.wort || it.position);
-    namen[k] = {
-      vorne: it.data.zeichen || it.data.zhuyin || it.data.wort || '?',
+    namen[itemKey(it)] = {
+      vorne: it.data.zeichen || it.data.zhuyin || '?',
       hinten: [it.data.pinyin, it.data.meaning || it.data.name].filter(Boolean).join(' · '),
+      gruppe: TYP_NAME[it.item_type] || it.item_type,
     };
   }
   window.zeigeForecast?.({
     cards: alle,
     titel: '中文 — Mandarin',
-    aufloesen: (key) => namen[key] || { vorne: key.split(':')[1] || key, hinten: '' },
+    aufloesen: (key) => namen[key] || {
+      vorne: key.split(':').slice(1).join(':') || key, hinten: '',
+      gruppe: TYP_NAME[key.split(':')[0]] || null,
+    },
     zurueck: () => trainerShowDashboard(T.lang),
   });
 }

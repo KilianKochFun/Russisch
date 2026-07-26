@@ -162,7 +162,19 @@ function zeileHtml(z, i, max) {
   return html + '</div>';
 }
 
+// Reihenfolge der Kartenarten — so, wie sie auch gelernt werden.
+const GRUPPEN_FOLGE = ['Zhuyin', 'Radikale', 'Zeichen', 'Wörter'];
+
+function chip(k, inhalt) {
+  const st = stufeVon(k.srs);
+  const titel = `${inhalt.hinten || ''} · ${st.name}`.trim();
+  return `<span title="${escape2(titel)}" style="font-size:12px;padding:2px 6px;border:1px solid ${st.color};
+    color:${st.color};border-radius:3px;white-space:nowrap;">${escape2(inhalt.vorne)}</span>`;
+}
+
 // Aufgeklappter Tag: Stunde für Stunde, und in jeder Stunde die Karten selbst.
+// Liefert `aufloesen` einen Gruppennamen mit (Mandarin: Radikal / Zeichen / Wort),
+// wird die Stunde danach gegliedert — sonst stehen die Karten schlicht in einer Reihe.
 function stundenHtml(tag) {
   if (tag.anzahl === 0) {
     return `<div style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 0 4px 12px;">
@@ -172,21 +184,34 @@ function stundenHtml(tag) {
   let html = '<div style="margin:8px 0 4px 12px;border-left:1px solid var(--border);padding-left:12px;">';
 
   for (const [h, karten] of stunden) {
-    html += `<div style="margin-bottom:8px;">
+    html += `<div style="margin-bottom:10px;">
       <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:3px;">
         ${String(h).padStart(2, '0')}:00 &nbsp;·&nbsp; ${karten.length}
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:4px;">`;
+      </div>`;
 
+    // Karten auflösen und nach Art bündeln
+    const nachGruppe = new Map();
     for (const k of karten) {
-      const st = stufeVon(k.srs);
       const inhalt = _ctx.aufloesen?.(k.key);
       if (!inhalt) continue;
-      const titel = `${inhalt.hinten || ''} · ${st.name}`.trim();
-      html += `<span title="${escape2(titel)}" style="font-size:12px;padding:2px 6px;border:1px solid ${st.color};
-        color:${st.color};border-radius:3px;white-space:nowrap;">${escape2(inhalt.vorne)}</span>`;
+      const g = inhalt.gruppe || '';
+      if (!nachGruppe.has(g)) nachGruppe.set(g, []);
+      nachGruppe.get(g).push(chip(k, inhalt));
     }
-    html += '</div></div>';
+
+    if (nachGruppe.size === 1 && nachGruppe.has('')) {
+      html += `<div style="display:flex;flex-wrap:wrap;gap:4px;">${nachGruppe.get('').join('')}</div>`;
+    } else {
+      const namen = [...nachGruppe.keys()].sort(
+        (a, b) => (GRUPPEN_FOLGE.indexOf(a) + 1 || 99) - (GRUPPEN_FOLGE.indexOf(b) + 1 || 99));
+      for (const g of namen) {
+        html += `<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:3px;">
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted);min-width:62px;flex-shrink:0;">${escape2(g) || '—'}</span>
+          <span style="display:flex;flex-wrap:wrap;gap:4px;">${nachGruppe.get(g).join('')}</span>
+        </div>`;
+      }
+    }
+    html += '</div>';
   }
   return html + '</div>';
 }
