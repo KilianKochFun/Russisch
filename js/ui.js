@@ -72,6 +72,8 @@ function getSprachenItems() {
     isBuecher: true, name: '📚 Bücherregal',
     desc: 'Japanisch N3→N2 · Chinesisch von innen heraus — im Browser lesen',
   });
+  items.push({ isExport: true, name: '⬇ Lernstand sichern',
+    desc: 'Alles als Datei herunterladen — Versicherung gegen Datenverlust' });
   items.push({ isPedal: true, name: '⚙ Pedal-Tasten belegen', desc: 'Aktuell: A · B · C (oder eigene Belegung)' });
   if (istEingeloggt()) items.push({ isLogout: true, name: 'Abmelden', desc: 'Fortschritt bleibt gespeichert' });
   return items;
@@ -109,6 +111,14 @@ function sprachenSelect() {
   if (!item) return;
   if (item.isLogout) { abmelden(); return; }
   if (item.isPedal) { window.startePedalSetup?.(); return; }
+  if (item.isExport) {
+    import('./sync.js').then(async ({ exportiereAlles }) => {
+      const { alleSettings } = await import('./progress.js');
+      const n = await exportiereAlles(alleSettings());
+      alert(`Lernstand gesichert — ${n} Karten in der Datei.`);
+    });
+    return;
+  }
   if (item.isBuecher) { S.buecherCursor = 0; window.buecherShowListe?.(); return; }
   S.aktiveSprache = item.sprache;
   if (item.trainer === 'russisch-srs') {

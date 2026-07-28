@@ -6,6 +6,7 @@ import { S, SRS_STAGES } from './state.js';
 import { speak } from './tts.js';
 import { getSetting, setSetting } from './progress.js';
 import { ladeDeckItems } from './decks.js';
+import { ladeDeck as syncLadeDeck, merkeKarte, merkeDeck } from './sync.js';
 
 const DECKS = {
   'chinese-tw': [
@@ -82,21 +83,44 @@ function migriereAufPruefungen(srs) {
 }
 
 function ladeSrs() {
-  let gespeichert = getSetting(srsKey());
-  // Migration: Radikale steckten früher mit im Hanzi-Deck
-  if ((!gespeichert || !gespeichert.cards) && T.deck.key === 'radikale') {
-    const altKombi = getSetting(`trainer-${T.lang}-hanzi`);
-    if (altKombi?.cards) {
-      gespeichert = {
-        cards: Object.fromEntries(Object.entries(altKombi.cards).filter(([k]) => k.startsWith('component:'))),
-        unlockedLevel: altKombi.unlockedLevel || 1,
-      };
-    }
-  }
-  T.srs = migriereAufPruefungen((gespeichert && gespeichert.cards) ? gespeichert : { cards: {}, unlockedLevel: 1 });
+  T.srs = T.alleSrs[srsKey()] || { cards: {}, unlockedLevel: 1 };
 }
 
-function speichereSrs() { setSetting(srsKey(), T.srs); }
+// Einmal beim Betreten des Trainers: alle Decks der Sprache aus der Zeilen-
+// tabelle holen. Ist dort noch nichts, wird der alte Settings-Klumpen einmalig
+// übernommen — kein Lernstand geht verloren.
+async function ladeAlleSrs(lang) {
+  T.alleSrs = {};
+  for (const deck of (DECKS[lang] || [])) {
+    const key = `trainer-${lang}-${deck.key}`;
+    let stand = await syncLadeDeck(lang, deck.key);
+
+    if (!Object.keys(stand.cards).length) {
+      // Migration: Radikale steckten früher mit im Hanzi-Deck
+      let alt = getSetting(key);
+      if ((!alt || !alt.cards) && deck.key === 'radikale') {
+        const altKombi = getSetting(`trainer-${lang}-hanzi`);
+        if (altKombi?.cards) alt = {
+          cards: Object.fromEntries(Object.entries(altKombi.cards).filter(([k]) => k.startsWith('component:'))),
+          unlockedLevel: altKombi.unlockedLevel || 1,
+        };
+      }
+      if (alt?.cards) {
+        alt = migriereAufPruefungen(alt);
+        stand = { cards: alt.cards, unlockedLevel: alt.unlockedLevel || 1 };
+        for (const [k, c] of Object.entries(stand.cards)) merkeKarte(lang, deck.key, k, c);
+        merkeDeck(lang, deck.key, stand.unlockedLevel);
+        console.info(`Lernstand ${key} auf Einzelzeilen übernommen (${Object.keys(stand.cards).length} Karten).`);
+      }
+    } else {
+      stand = migriereAufPruefungen(stand);
+    }
+    T.alleSrs[key] = stand;
+  }
+}
+
+// Nur noch die Deckstufe; einzelne Karten melden sich beim Ändern selbst.
+function speichereSrs() { merkeDeck(T.lang, T.deck.key, T.srs.unlockedLevel); }
 
 const PRUEFUNGEN = {
   zhuyin:    ['lesung'],
@@ -189,6 +213,7 @@ function checkLevelUp(items) {
     if (s.pct >= 80) { T.srs.unlockedLevel++; aufstieg = true; continue; }
     break;
   }
+  if (aufstieg) merkeDeck(T.lang, T.deck.key, T.srs.unlockedLevel);
   return aufstieg;
 }
 
@@ -200,6 +225,7 @@ export async function trainerShowDashboard(lang) {
   el('tr-dash-list').innerHTML = '<div class="menu-item"><span class="menu-item-body"><span class="menu-item-name">Lade Inhalte…</span></span></div>';
   try {
     T.items = await ladeDeckItems(lang);
+    await ladeAlleSrs(lang);
   } catch (e) {
     el('tr-dash-list').innerHTML = `<div class="menu-item"><span class="menu-item-body"><span class="menu-item-name">⚠ ${e.message}</span></span></div>`;
     return;
@@ -609,6 +635,7 @@ function updateCard(key, korrekt) {
     due.setMinutes(0, 0, 0);
     c.nextReview = due.toISOString();
   }
+  merkeKarte(T.lang, T.deck.key, key, c);
   if (c.srs > alt) { T.stats.up++; return 1; }
   if (c.srs < alt) { T.stats.down++; return -1; }
   return 0;

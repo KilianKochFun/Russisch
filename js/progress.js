@@ -18,6 +18,9 @@ export function getClient() { return _sb; }
 
 export function istEingeloggt() { return !!_userId; }
 
+// Für den Export: der komplette Settings-Stand, wie er im Speicher liegt.
+export function alleSettings() { return _settings; }
+
 export async function abmelden() {
   if (_sb) await _sb.auth.signOut();
   location.reload();

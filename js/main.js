@@ -6,10 +6,33 @@ import { ladeSprachen } from './content.js';
 import { renderSprachen, srsBuildCardMap, srsLoad } from './ui.js';
 import { initInput } from './input.js';
 import { progressInit, ladeProgress, ladeSettings } from './progress.js';
+import { aufSyncStatus, schreibe, syncInit } from './sync.js';
 import './forecast.js';  // hängt sich an window, wie trainer.js
 import './buecher.js';   // hängt sich an window, wie trainer.js
 
 initInput();
+
+// Speicherstatus sichtbar machen. Vorher landeten Fehlschläge nur in der
+// Konsole — man lernte weiter im Glauben, alles sei gesichert.
+const statusEl = document.getElementById('sync-status');
+aufSyncStatus(({ offen, laeuft, fehler, online }) => {
+  if (!offen && !fehler) { statusEl.style.display = 'none'; return; }
+  statusEl.style.display = 'block';
+  if (!online) {
+    statusEl.textContent = `OFFLINE · ${offen} gemerkt`;
+    statusEl.style.color = 'var(--yellow)'; statusEl.style.borderColor = 'var(--yellow)';
+    statusEl.title = 'Ohne Netz. Die Antworten sind lokal gesichert und gehen hoch, sobald es wieder geht.';
+  } else if (fehler) {
+    statusEl.textContent = `NICHT GESPEICHERT · ${offen}`;
+    statusEl.style.color = 'var(--red)'; statusEl.style.borderColor = 'var(--red)';
+    statusEl.title = `${fehler} — Antippen für neuen Versuch.`;
+  } else {
+    statusEl.textContent = laeuft ? 'SPEICHERT …' : `${offen} offen`;
+    statusEl.style.color = 'var(--muted)'; statusEl.style.borderColor = 'var(--border)';
+    statusEl.title = 'Antippen, um sofort zu speichern.';
+  }
+});
+statusEl.onclick = () => schreibe();
 
 // PWA: Service Worker für Offline-Betrieb (App-Shell + Inhalte).
 // Auto-Update: Übernimmt eine neue Version die Kontrolle, einmal neu laden —
@@ -27,7 +50,8 @@ if ('serviceWorker' in navigator) {
 let auth = null; // Modul js/supabase.js (oder null im Offline-Fallback)
 
 async function startApp(session) {
-  if (session && auth) progressInit(auth.supabase, session.user.id);
+  if (session && auth) { progressInit(auth.supabase, session.user.id);
+                         syncInit(auth.supabase, session.user.id); }
   try {
     S.sprachenData = await ladeSprachen();
   } catch (e) {
