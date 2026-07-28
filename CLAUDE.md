@@ -101,7 +101,15 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   `<link rel="apple-touch-icon">` auf ein PNG landet beim „Zum Home-Bildschirm“ ein
   Screenshot der Seite als Symbol. Icons enthalten Text **als Pfade** (via
   `inkscape --export-text-to-path`), sonst rendern sie auf jedem Gerät anders.
-  Item-Keys: `typ:zeichen` — Zeichen/Zhuyin nie ändern, sonst reißt der Fortschritt ab.
+  **Zwei Abfragen pro Item** (WaniKani-Modell): Zeichen und Wörter werden getrennt
+  auf **Bedeutung** und **Lesung** geprüft, Radikale und Bausteine nur auf Bedeutung,
+  Zhuyin nur auf Lesung — geregelt in `PRUEFUNGEN`. Item-Keys: `typ:zeichen#pruefung`,
+  z.B. `character:好#lesung`. Zeichen/Zhuyin nie ändern, sonst reißt der Fortschritt ab.
+  Alte Stände ohne `#` werden beim Laden einmalig auf alle Prüfungen kopiert
+  (`migriereAufPruefungen`). Im Review wird die Vorderseite **nicht** vorgelesen —
+  die Aussprache ist Teil der Antwort.
+  `scripts/check_trainer.js` prüft, dass jede Inhaltssprache vollständig verdrahtet
+  ist (Deck, Kopfzeile, Vorschau-Titel, TTS-Sprache, Typnamen, Anzeigetext je Item).
 - **Russisch morphologisch** (`js/trainer.js`, Sprache `russian-morph`): zweites,
   eigenständiges Vorgehen neben dem Russisch-SRS. Wörter werden aus Präfix + Wurzel
   zusammengeklebt, statt als Ganzes gelernt. Zwei Decks: `bausteine` (morph) und

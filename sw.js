@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v5';
+const VERSION = 'sprachen-v6';
 
 const SHELL = [
   '.',

@@ -28,6 +28,12 @@ const KOPF = {
   'chinese-tw':    { zeile1: '中文', zeile2: '台灣', unter: '// Zhuyin zuerst, dann Zeichen' },
   'russian-morph': { zeile1: 'РУССКИЙ', zeile2: 'ПО ЧАСТЯМ', unter: '// Erst die Bausteine, dann die Wörter' },
 };
+const VORSCHAU_TITEL = {
+  'chinese-tw':    '中文 — Mandarin',
+  'russian-morph': 'Русский — Wortbausteine',
+};
+// Sprache für die Sprachausgabe, je Inhaltssprache
+const TTS_SPRACHE = { 'chinese-tw': 'zh-TW', 'russian-morph': 'ru-RU' };
 
 // Trainer-State (bewusst getrennt vom Alt-App-State in S — nur S.state wird geteilt)
 const T = {
@@ -55,6 +61,26 @@ const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter',
 
 function srsKey() { return `trainer-${T.lang}-${T.deck.key}`; }
 
+// Früher hatte jedes Item genau eine Karte. Jetzt trägt der Schlüssel die
+// Prüfung hinten dran (…#bedeutung / …#lesung). Alte Stände werden beim ersten
+// Laden auf alle Prüfungen des Items kopiert — sonst stünde alles wieder auf
+// null. Läuft nur einmal, danach gibt es keine Schlüssel ohne '#' mehr.
+function migriereAufPruefungen(srs) {
+  if (!srs?.cards) return srs;
+  let veraendert = false;
+  for (const [k, c] of Object.entries(srs.cards)) {
+    if (k.includes('#')) continue;
+    const typ = k.split(':')[0];
+    for (const p of (PRUEFUNGEN[typ] || ['bedeutung'])) {
+      if (!srs.cards[k + '#' + p]) srs.cards[k + '#' + p] = { ...c };
+    }
+    delete srs.cards[k];
+    veraendert = true;
+  }
+  if (veraendert) console.info('SRS-Stände auf getrennte Prüfungen umgestellt.');
+  return srs;
+}
+
 function ladeSrs() {
   let gespeichert = getSetting(srsKey());
   // Migration: Radikale steckten früher mit im Hanzi-Deck
@@ -67,10 +93,32 @@ function ladeSrs() {
       };
     }
   }
-  T.srs = (gespeichert && gespeichert.cards) ? gespeichert : { cards: {}, unlockedLevel: 1 };
+  T.srs = migriereAufPruefungen((gespeichert && gespeichert.cards) ? gespeichert : { cards: {}, unlockedLevel: 1 });
 }
 
 function speichereSrs() { setSetting(srsKey(), T.srs); }
+
+const PRUEFUNGEN = {
+  zhuyin:    ['lesung'],
+  component: ['bedeutung'],
+  character: ['bedeutung', 'lesung'],
+  word:      ['bedeutung', 'lesung'],
+  morph:     ['bedeutung'],
+  rusword:   ['bedeutung'],
+};
+
+// Die Karteneinheiten, die das SRS plant: ein Item kann mehrere ergeben.
+// Der Schlüssel trägt die Prüfung hinten dran, damit Bedeutung und Lesung
+// unabhängig voneinander fällig werden.
+function pruefItems(deck) {
+  const out = [];
+  for (const it of deckItems(deck)) {
+    for (const p of (PRUEFUNGEN[it.typ] || ['bedeutung'])) {
+      out.push({ ...it, pruefung: p, basisKey: it.key, key: it.key + '#' + p });
+    }
+  }
+  return out;
+}
 
 function deckItems(deck) {
   return T.items
@@ -101,7 +149,7 @@ function neue(items) {
   if (T.deck.key === 'hanzi') {
     const radikale = getSetting(`trainer-${T.lang}-radikale`);
     const gelernt = new Set(Object.entries(radikale?.cards || {})
-      .filter(([, c]) => c.srs >= 1).map(([k]) => k));
+      .filter(([, c]) => c.srs >= 1).map(([k]) => k.split('#')[0]));
     kandidaten = kandidaten.filter(it => {
       const komponenten = T.items.filter(k => k.item_type === 'component' && k.level === it.level);
       return komponenten.every(k => gelernt.has('component:' + k.data.zeichen));
@@ -111,14 +159,14 @@ function neue(items) {
     const bau = getSetting(`trainer-${T.lang}-bausteine`);
     const gelernt = new Set(Object.entries(bau?.cards || {})
       .filter(([k, c]) => k.startsWith('morph:') && c.srs >= 1)
-      .map(([k]) => k.slice('morph:'.length)));
+      .map(([k]) => k.split('#')[0].slice('morph:'.length)));
     kandidaten = kandidaten.filter(it => (it.data.teile || []).every(t => gelernt.has(t)));
   }
   if (T.deck.key === 'woerter') {
     const hanzi = getSetting(`trainer-${T.lang}-hanzi`);
     const gelernt = new Set(Object.entries(hanzi?.cards || {})
       .filter(([k, c]) => k.startsWith('character:') && c.srs >= 1)
-      .map(([k]) => k.split(':')[1]));
+      .map(([k]) => k.split('#')[0].split(':')[1]));
     kandidaten = kandidaten.filter(it => [...it.data.zeichen].every(c => gelernt.has(c)));
   }
   return kandidaten;
@@ -164,7 +212,7 @@ function dashItems() {
   const eintraege = [];
   for (const deck of (DECKS[T.lang] || [])) {
     T.deck = deck; ladeSrs();
-    const items = deckItems(deck);
+    const items = pruefItems(deck);
     checkLevelUp(items); // überspringt u.a. leere Anfangslevel
     const due = faellig(items).length;
     const frisch = neue(items).length;
@@ -186,6 +234,17 @@ function dashItems() {
   return eintraege;
 }
 
+// Anzeigetext eines Items, sprachunabhängig. Vorher stand das an drei Stellen
+// jeweils neu und jeweils nur für Mandarin gedacht — daher die Fragezeichen in
+// der Vorschau, sobald russische Karten auftauchten.
+function anzeigeVon(it) {
+  const d = it.data || {};
+  return {
+    vorne: d.betont || d.zeichen || d.zhuyin || d.form || d.wort || '?',
+    hinten: [d.pinyin, d.de || d.meaning || d.name].filter(Boolean).join(' · '),
+  };
+}
+
 function trainerZeigeVorschau() {
   const alle = {};
   const namen = {};
@@ -194,15 +253,11 @@ function trainerZeigeVorschau() {
     for (const [k, c] of Object.entries(T.srs.cards)) alle[k] = c;
   }
   for (const it of (T.items || [])) {
-    namen[itemKey(it)] = {
-      vorne: it.data.zeichen || it.data.zhuyin || '?',
-      hinten: [it.data.pinyin, it.data.meaning || it.data.name].filter(Boolean).join(' · '),
-      gruppe: TYP_NAME[it.item_type] || it.item_type,
-    };
+    namen[itemKey(it)] = { ...anzeigeVon(it), gruppe: TYP_NAME[it.item_type] || it.item_type };
   }
   window.zeigeForecast?.({
     cards: alle,
-    titel: '中文 — Mandarin',
+    titel: VORSCHAU_TITEL[T.lang] || T.lang,
     aufloesen: (key) => namen[key] || {
       vorne: key.split(':').slice(1).join(':') || key, hinten: '',
       gruppe: TYP_NAME[key.split(':')[0]] || null,
@@ -276,7 +331,7 @@ export function trainerDashSelect() {
   if (item.art === 'forecast') { trainerZeigeVorschau(); return; }
   T.deck = item.deck;
   ladeSrs();
-  const items = deckItems(item.deck);
+  const items = pruefItems(item.deck);
   checkLevelUp(items);
   T.stats = { up: 0, down: 0, burned: 0 };
   T.failed = new Set();
@@ -318,17 +373,30 @@ function zhuyinFarbig(zhuyin) {
 const TYP_LABEL = { component: 'Komponente 部', character: 'Zeichen 字', word: 'Wort 詞', zhuyin: 'Zhuyin ㄅ',
                     morph: 'Baustein', rusword: 'Wort' };
 
+// Sagt an, worauf die Karte hinauswill. Ohne das wüsste man bei Zeichen nicht,
+// ob Bedeutung oder Lesung gefragt ist — beide werden getrennt abgefragt.
+function frageMarke(it) {
+  if (!it.pruefung) return '';
+  if ((PRUEFUNGEN[it.typ] || []).length < 2) return '';
+  const [text, farbe] = it.pruefung === 'lesung'
+    ? ['Lesung?', 'var(--blue)'] : ['Bedeutung?', 'var(--accent)'];
+  return `<div style="font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    color:${farbe};margin-bottom:14px;text-transform:uppercase;">${text}</div>`;
+}
+
 function frontHtml(it, farben) {
   const d = it.data;
   // Russisch: Baustein bzw. Wort schlicht groß — abgefragt wird nur diese
   // Richtung, also Form sehen und Bedeutung denken.
+  const marke = frageMarke(it);
   if (it.typ === 'morph')
-    return `<div class="karte-wort" style="font-size:clamp(44px,12vw,84px);">${d.form}</div>`;
+    return marke + `<div class="karte-wort" style="font-size:clamp(44px,12vw,84px);">${d.form}</div>`;
   if (it.typ === 'rusword')
-    return `<div class="karte-wort" style="font-size:clamp(40px,11vw,76px);">${d.wort}</div>`;
-  if (it.typ === 'zhuyin') return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zhuyin}</div>`;
-  const anzeige = farben ? mitTonfarben(d.zeichen, d.zhuyin) : d.zeichen;
-  return `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${anzeige}</div>`;
+    return marke + `<div class="karte-wort" style="font-size:clamp(40px,11vw,76px);">${d.wort}</div>`;
+  if (it.typ === 'zhuyin') return marke + `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zhuyin}</div>`;
+  // Bei der Lesungsfrage keine Tonfarben zeigen — die verrieten den Ton.
+  const anzeige = (farben && it.pruefung !== 'lesung') ? mitTonfarben(d.zeichen, d.zhuyin) : d.zeichen;
+  return marke + `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${anzeige}</div>`;
 }
 
 function backHtml(it) {
@@ -393,7 +461,7 @@ function bausteinWoerter(form, ausser) {
     .filter(x => x.item_type === 'rusword'
               && (x.data.teile || []).includes(form)
               && x.data.wort !== ausser
-              && (stand['rusword:' + x.data.wort]?.srs || 0) >= 1)
+              && (stand['rusword:' + x.data.wort + '#bedeutung']?.srs || 0) >= 1)
     .map(x => x.data.betont || x.data.wort);
   if (!treffer.length) return '';
   return `<div class="karte-merksatz" style="font-size:13px;">
@@ -450,8 +518,9 @@ function sprich(it) {
     speak(d.form.replace(/-/g, ''), 'ru-RU');
     return;
   }
-  if (it.typ === 'zhuyin') { if (d.beispiel?.zh) speak(d.beispiel.zh, 'zh-TW'); }
-  else if (it.typ === 'character' || it.typ === 'word') speak(d.zeichen, 'zh-TW');
+  const tts = TTS_SPRACHE[T.lang] || 'zh-TW';
+  if (it.typ === 'zhuyin') { if (d.beispiel?.zh) speak(d.beispiel.zh, tts); }
+  else if (it.typ === 'character' || it.typ === 'word') speak(d.zeichen, tts);
 }
 
 function zeigeKarte(vorne) {
@@ -521,7 +590,9 @@ function naechsteReviewKarte() {
   el('tr-front').innerHTML = frontHtml(T.current, false);
   el('tr-back').innerHTML = backHtml(T.current);
   zeigeKarte(true);
-  if (T.current.typ !== 'zhuyin') sprich(T.current); // Zhuyin: Ton erst beim Aufdecken (wäre sonst die Lösung)
+  // Im Review wird NICHT vorgelesen: die Aussprache ist Teil der Antwort.
+  // Das galt bisher nur für Zhuyin — bei Zeichen und Wörtern verriet der Ton
+  // die Lesung, bevor man sie nennen konnte. trFlip() spricht beim Aufdecken.
 }
 
 function updateCard(key, korrekt) {
@@ -561,7 +632,7 @@ export function trNochmal() {
 }
 
 function beendeSession() {
-  const items = deckItems(T.deck);
+  const items = pruefItems(T.deck);
   const aufstieg = checkLevelUp(items);
   speichereSrs();
   el('tr-result-levelup').textContent = aufstieg ? `🎉 Level ${T.srs.unlockedLevel} freigeschaltet!` : '';
@@ -591,16 +662,17 @@ export function trainerShowBrowse() {
         .sort((a, b) => TYP_RANG[a.typ] - TYP_RANG[b.typ] || a.position - b.position);
       if (!level.length) continue;
       const locked = lvl > T.srs.unlockedLevel;
-      const stats = levelStats(items, lvl);
+      const stats = levelStats(pruefItems(deck), lvl);
       const striche = level.map(i => i.data.striche).filter(Boolean);
       const strichInfo = striche.length ? ` · ${Math.min(...striche)}–${Math.max(...striche)} Striche` : '';
       html += `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin:12px 0 6px;">Level ${lvl}${locked ? ' 🔒' : ` — ${stats.guru}/${stats.total} Guru+`} · ${level.length} Items${strichInfo}</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;">`;
       for (const it of level) {
-        const srs = T.srs.cards[it.key]?.srs ?? -1;
+        const stufen = (PRUEFUNGEN[it.typ] || ['bedeutung'])
+          .map(p => T.srs.cards[it.key + '#' + p]?.srs ?? -1);
+        const srs = Math.min(...stufen);
         const farbe = (locked || srs < 1) ? 'var(--border)' : SRS_STAGES[srs].color;
-        const glyph = it.data.zeichen || it.data.zhuyin || it.data.form || it.data.betont || it.data.wort || '?';
-        const tip = `${it.data.pinyin || ''} ${it.data.de || it.data.meaning || it.data.name || ''}`.trim();
+        const { vorne: glyph, hinten: tip } = anzeigeVon(it);
         const strich = (it.typ === 'component' || it.typ === 'morph') ? 'border-style:dashed;' : '';
         html += `<span data-deck="${deck.key}" data-key="${it.key.replace(/"/g, '&quot;')}" title="${(it.typ === 'component' ? 'Komponente: ' : it.typ === 'morph' ? 'Baustein: ' : '') + tip.replace(/"/g, '&quot;')}" style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};${strich}font-size:${it.typ === 'morph' || it.typ === 'rusword' ? '14' : '16'}px;cursor:pointer;${locked ? 'opacity:0.35;' : ''}">${glyph}</span>`;
       }
