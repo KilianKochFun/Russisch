@@ -12,6 +12,7 @@ import {
 } from './ui.js';
 import {
   trainerDashMove, trainerDashSelect, trFlip, trNext, trGewusst, trNochmal, trBackToDash,
+  trRueckgaengig,
   trZurueckZurUebersicht,
 } from './trainer.js';
 
@@ -137,7 +138,13 @@ export function initInput() {
       else if (key === 'C') trainerDashMove(1);
       else if (key === 'B') trainerDashSelect();
 
-    } else if (S.state === 'tr-lesson-front' || S.state === 'tr-review-front') {
+    } else if (S.state === 'tr-review-front') {
+      // A nimmt die letzte Antwort zurück, solange es eine gibt — mit Pedalen
+      // verdrückt man sich, und eine falsche Antwort kostet zwei Stufen.
+      if (key === 'A' && trRueckgaengig()) return;
+      trFlip();
+
+    } else if (S.state === 'tr-lesson-front') {
       trFlip();
 
     } else if (S.state === 'tr-lesson-back') {
@@ -149,6 +156,11 @@ export function initInput() {
 
     } else if (S.state === 'tr-result') {
       trBackToDash();
+
+    } else if (S.state === 'tr-stats') {
+      if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
+      else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
+      else if (key === 'B') trBackToDash();
 
     } else if (S.state === 'tr-browse') {
       if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });

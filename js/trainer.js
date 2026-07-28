@@ -253,6 +253,8 @@ function dashItems() {
       desc: `${Math.min(5, frisch)} von ${frisch} · Level ${T.srs.unlockedLevel}/${maxLevel(items)} (${stats.pct}% Guru+)`,
     });
   }
+  eintraege.push({ art: 'stats', enabled: true, label: 'Statistik',
+    desc: 'Trefferquote, Verteilung — und welche Karten dich immer wieder erwischen' });
   eintraege.push({ art: 'forecast', enabled: true, label: 'Review-Vorschau',
     desc: 'Wann was drankommt — Tag für Tag, Stunde für Stunde' });
   eintraege.push({ art: 'browse', enabled: true, label: 'Übersicht', desc: 'Alle Level & Fortschritt' });
@@ -355,6 +357,7 @@ export function trainerDashSelect() {
   if (item.art === 'zurueck') { window.renderSprachenGlobal?.(); return; }
   if (item.art === 'browse') { trainerShowBrowse(); return; }
   if (item.art === 'forecast') { trainerZeigeVorschau(); return; }
+  if (item.art === 'stats') { trainerZeigeStatistik(); return; }
   T.deck = item.deck;
   ladeSrs();
   const items = pruefItems(item.deck);
@@ -604,18 +607,29 @@ function starteReviews(items, istLessonReview) {
 function naechsteReviewKarte() {
   if (T.pool.length === 0) { beendeSession(); return; }
   T.current = T.pool[Math.floor(Math.random() * T.pool.length)];
-  S.state = 'tr-review-front';
+  zeigeReviewKarte(T.current);
+}
+
+// Vorher steckte die Anzeige fest in naechsteReviewKarte — für das Rückgängig
+// muss sich aber auch eine bestimmte Karte wieder aufbauen lassen.
+function zeigeReviewKarte(it, aufgedeckt = false) {
+  S.state = aufgedeckt ? 'tr-review-back' : 'tr-review-front';
   show('tr-card-screen');
-  el('tr-tag').textContent = 'REVIEW · ' + (TYP_LABEL[T.current.typ] || T.deck.titel);
+  el('tr-tag').textContent = 'REVIEW · ' + (TYP_LABEL[it.typ] || T.deck.titel);
   el('tr-counter').textContent = `noch ${T.pool.length} · ${T.done} ✓`;
-  el('tr-progress').style.width = (T.done / T.total * 100) + '%';
-  const c = T.srs.cards[T.current.key];
+  el('tr-progress').style.width = (T.done / Math.max(1, T.total) * 100) + '%';
+  const c = T.srs.cards[it.key];
   const stage = SRS_STAGES[c?.srs || 0];
   el('tr-stage-badge').textContent = stage.name;
   el('tr-stage-badge').style.background = stage.color;
-  el('tr-front').innerHTML = frontHtml(T.current, false);
-  el('tr-back').innerHTML = backHtml(T.current);
-  zeigeKarte(true);
+  el('tr-front').innerHTML = frontHtml(it, false);
+  el('tr-back').innerHTML = backHtml(it);
+  zeigeKarte(!aufgedeckt);
+  const rg = el('tr-rueckgang');
+  if (rg) {
+    rg.style.display = (!aufgedeckt && T.rueckgang) ? 'inline-block' : 'none';
+    rg.onclick = (ev) => { ev.stopPropagation(); trRueckgaengig(); };
+  }
   // Im Review wird NICHT vorgelesen: die Aussprache ist Teil der Antwort.
   // Das galt bisher nur für Zhuyin — bei Zeichen und Wörtern verriet der Ton
   // die Lesung, bevor man sie nennen konnte. trFlip() spricht beim Aufdecken.
@@ -635,14 +649,46 @@ function updateCard(key, korrekt) {
     due.setMinutes(0, 0, 0);
     c.nextReview = due.toISOString();
   }
+  if (!korrekt) c.fehler = (c.fehler || 0) + 1;
+  c.versuche = (c.versuche || 0) + 1;
   merkeKarte(T.lang, T.deck.key, key, c);
   if (c.srs > alt) { T.stats.up++; return 1; }
   if (c.srs < alt) { T.stats.down++; return -1; }
   return 0;
 }
 
+// Der Zustand vor der letzten Antwort, für genau einen Schritt zurück.
+function merkeFuerRueckgang(it) {
+  const c = T.srs.cards[it.key];
+  T.rueckgang = {
+    item: it,
+    karte: c ? { ...c } : null,
+    warFailed: T.failed.has(it.key),
+    done: T.done,
+    stats: { ...T.stats },
+    imPool: T.pool.includes(it),
+  };
+}
+
+export function trRueckgaengig() {
+  const r = T.rueckgang;
+  if (!r) return false;
+  if (r.karte) T.srs.cards[r.item.key] = r.karte; else delete T.srs.cards[r.item.key];
+  if (!r.warFailed) T.failed.delete(r.item.key);
+  T.done = r.done;
+  T.stats = r.stats;
+  if (r.imPool && !T.pool.includes(r.item)) T.pool.push(r.item);
+  if (r.karte) merkeKarte(T.lang, T.deck.key, r.item.key, r.karte);
+  T.rueckgang = null;
+  T.current = r.item;
+  S.state = 'tr-review-back';
+  zeigeReviewKarte(r.item, true);
+  return true;
+}
+
 export function trGewusst() {
   if (S.state !== 'tr-review-back') return;
+  merkeFuerRueckgang(T.current);
   T.pool.splice(T.pool.indexOf(T.current), 1);
   T.done++;
   if (!T.failed.has(T.current.key)) updateCard(T.current.key, true);
@@ -651,6 +697,7 @@ export function trGewusst() {
 
 export function trNochmal() {
   if (S.state !== 'tr-review-back') return;
+  merkeFuerRueckgang(T.current);
   if (!T.failed.has(T.current.key)) {
     T.failed.add(T.current.key);
     updateCard(T.current.key, false);
@@ -671,6 +718,84 @@ function beendeSession() {
   const stats = levelStats(items, T.srs.unlockedLevel);
   el('tr-result-level').textContent =
     `Level ${T.srs.unlockedLevel} — ${stats.guru}/${stats.total} auf Guru+ (${stats.pct}%, 80% schalten frei)`;
+}
+
+// Was war, statt nur was kommt. Vor allem: welche Karten dich immer wieder
+// erwischen — die fressen die meiste Zeit und sind gezielt angehbar.
+export function trainerZeigeStatistik() {
+  S.state = 'tr-stats';
+  show('tr-stats-screen');
+
+  let gesamt = 0, gelernt = 0, gebrannt = 0, versuche = 0, fehler = 0;
+  const leeches = [];
+  const proStufe = {};
+
+  for (const deck of (DECKS[T.lang] || [])) {
+    T.deck = deck; ladeSrs();
+    const items = pruefItems(deck);
+    for (const it of items) {
+      gesamt++;
+      const c = T.srs.cards[it.key];
+      if (!c || c.srs === 0) continue;
+      gelernt++;
+      if (c.srs >= 9) gebrannt++;
+      const st = SRS_STAGES[Math.min(c.srs, 9)].name;
+      proStufe[st] = (proStufe[st] || 0) + 1;
+      versuche += c.versuche || 0;
+      fehler += c.fehler || 0;
+      // Dauerläufer: mindestens vier Fehlversuche und schlechter als die Hälfte
+      if ((c.fehler || 0) >= 4 && (c.fehler / Math.max(1, c.versuche)) >= 0.4) {
+        leeches.push({ it, c, quote: c.fehler / Math.max(1, c.versuche) });
+      }
+    }
+  }
+  leeches.sort((a, b) => b.c.fehler - a.c.fehler);
+
+  const quote = versuche ? Math.round((1 - fehler / versuche) * 100) : null;
+  const kachel = (zahl, text, farbe) => `<div style="text-align:center;">
+    <div style="font-family:var(--display);font-size:30px;font-weight:900;line-height:1;color:${farbe || 'inherit'};">${zahl}</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;margin-top:4px;">${text}</div></div>`;
+
+  let html = `<div style="display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
+    ${kachel(gelernt + ' / ' + gesamt, 'GELERNT')}
+    ${kachel(gebrannt, 'GEBRANNT', 'var(--green)')}
+    ${kachel(quote === null ? '—' : quote + '%', 'TREFFERQUOTE')}
+    ${kachel(versuche, 'ANTWORTEN')}
+  </div>`;
+
+  const stufen = Object.entries(proStufe);
+  if (stufen.length) {
+    const maxS = Math.max(...stufen.map(([, n]) => n));
+    html += '<div style="font-family:var(--display);font-weight:900;font-size:14px;margin:20px 0 8px;">Verteilung</div>';
+    for (const st of SRS_STAGES.slice(1)) {
+      const n = proStufe[st.name] || 0;
+      if (!n) continue;
+      html += `<div style="display:flex;align-items:center;gap:10px;margin-bottom:3px;">
+        <span style="font-family:var(--mono);font-size:11px;min-width:104px;color:${st.color};">${st.name}</span>
+        <span style="flex:1;height:9px;background:var(--border);border-radius:2px;overflow:hidden;">
+          <span style="display:block;height:100%;width:${Math.round(n / maxS * 100)}%;background:${st.color};"></span></span>
+        <span style="font-family:var(--mono);font-size:11px;min-width:34px;text-align:right;">${n}</span></div>`;
+    }
+  }
+
+  html += '<div style="font-family:var(--display);font-weight:900;font-size:14px;margin:24px 0 8px;">Dauerläufer</div>';
+  if (!leeches.length) {
+    html += `<div style="font-family:var(--mono);font-size:11px;color:var(--muted);">
+      Keine — noch zu wenig Verlauf, oder es hakt nirgends.</div>`;
+  } else {
+    html += `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:8px;">
+      Diese Karten hast du am häufigsten falsch. Sie kosten überproportional Zeit.</div>`;
+    for (const l of leeches.slice(0, 12)) {
+      const a = anzeigeVon(l.it);
+      html += `<div style="display:flex;align-items:baseline;gap:10px;padding:5px 0;border-bottom:1px solid var(--border);">
+        <span style="font-size:20px;min-width:80px;">${a.vorne}</span>
+        <span style="flex:1;font-size:12px;color:var(--muted);">${a.hinten}</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--red);">${l.c.fehler}× falsch</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:42px;text-align:right;">${Math.round(l.quote * 100)}%</span>
+      </div>`;
+    }
+  }
+  el('tr-stats-content').innerHTML = html;
 }
 
 export function trainerShowBrowse() {

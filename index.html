@@ -740,6 +740,11 @@
     <span class="q-counter" id="tr-counter"></span>
   </div>
   <div id="tr-stage-badge" style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:2px;color:#fff;display:inline-block;margin-bottom:16px;"></div>
+  <div style="text-align:center;margin-bottom:6px;">
+    <span id="tr-rueckgang" style="display:none;font-family:var(--mono);font-size:10px;
+      letter-spacing:.1em;color:var(--muted);border:1px solid var(--border);
+      padding:3px 9px;border-radius:3px;cursor:pointer;">↩ <kbd>A</kbd> RÜCKGÄNGIG</span>
+  </div>
   <div id="tr-front" onclick="trFlip()" style="cursor:pointer;text-align:center;">
   </div>
   <div id="tr-back" onclick="trNext()" style="display:none;cursor:pointer;text-align:center;"></div>
@@ -748,6 +753,17 @@
     <button class="karte-btn nochmal" onclick="trNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
   </div>
   <p class="key-hint" id="tr-weiter-hint" style="display:none;">Tippen oder Taste → weiter</p>
+</div>
+
+<!-- TRAINER STATISTIK -->
+<div id="tr-stats-screen" class="screen" style="max-width:680px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+    <button class="back-btn" style="margin:0;" onclick="trBackToDash()">← Dashboard</button>
+    <span style="font-family:var(--display);font-size:16px;font-weight:900;">STATISTIK</span>
+    <span style="width:90px;"></span>
+  </div>
+  <div id="tr-stats-content"></div>
+  <p class="key-hint"><kbd>A</kbd>/<kbd>C</kbd> scrollen &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
 </div>
 
 <!-- TRAINER ÜBERSICHT -->

@@ -22,6 +22,7 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `js/trainer.js` + `js/decks.js` | Generischer Trainer für Supabase-Decks (Mandarin) |
 | `js/buecher.js` | Bücherregal: eigene Lehrbücher als PDF, im Browser lesen |
 | `js/forecast.js` | Review-Vorschau — gemeinsam für Russisch-SRS und Mandarin |
+| `js/sync.js` | Lernstand speichern: gebündelt, offlinefest, mit Statusanzeige |
 | `js/input.js` | Pedal-Handler (Tasten frei belegbar) + Pedal-Setup |
 | `js/content.js` | Lädt `content/sprachen.json` |
 | `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
@@ -170,7 +171,17 @@ gespeichert als `pedalKeys` in settings). Zusätzlich ist alles klick-/antippbar
 | Karte (hinten, Review) | gewusst ✓ | gewusst ✓ | nochmal ↩ |
 | Buch-Viewer | zurück | herunterladen | zurück |
 | Review-Vorschau | hoch | Tag auf-/zuklappen | runter |
+| Statistik | hoch | zurück | runter |
+| Karte (vorne, Review) | rückgängig* | aufdecken | aufdecken |
 | Ergebnis | — | weiter | — |
+
+\* Rückgängig nur, solange eine Antwort zurückzunehmen ist; sonst deckt auch A auf.
+
+**Speichern:** Lernstände liegen als **eine Zeile je Karte** in `srs_cards`/`srs_decks`
+(nicht mehr als Klumpen in `settings.data` — das führte dazu, dass zwei Geräte sich
+gegenseitig überschrieben). `js/sync.js` sammelt Änderungen, schreibt nach 2,5 s Ruhe
+gebündelt, puffert bei Fehlschlag und offline in localStorage und zeigt den Status
+oben rechts. Alte Stände werden beim ersten Betreten des Trainers übernommen.
 
 **Design:** Markenfarbe Indigo (`--accent`), Rot nur semantisch (falsch/nochmal).
 Light-/Dark-Mode automatisch via `prefers-color-scheme`.
