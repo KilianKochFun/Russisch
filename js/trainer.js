@@ -21,6 +21,13 @@ const DECKS = {
     { key: 'bausteine', titel: 'Bausteine', typen: ['morph'] },
     { key: 'ruwoerter', titel: 'Wörter', typen: ['rusword'] },
   ],
+  // Französisch: erst lesen können, dann die Brücken zum Deutschen, dann Wörter.
+  // Morphologie hilft hier nicht — siehe scripts/seed_french.js.
+  french: [
+    { key: 'aussprache', titel: 'Aussprache', typen: ['aussprache'] },
+    { key: 'bruecken',   titel: 'Brücken zum Deutschen', typen: ['bruecke'] },
+    { key: 'frwoerter',  titel: 'Wörter', typen: ['fword'] },
+  ],
 };
 
 // Kopfzeile des Dashboards je Sprache — vorher stand hier fest 中文 台灣,
@@ -28,13 +35,15 @@ const DECKS = {
 const KOPF = {
   'chinese-tw':    { zeile1: '中文', zeile2: '台灣', unter: '// Zhuyin zuerst, dann Zeichen' },
   'russian-morph': { zeile1: 'РУССКИЙ', zeile2: 'ПО ЧАСТЯМ', unter: '// Erst die Bausteine, dann die Wörter' },
+  french:          { zeile1: 'FRAN', zeile2: 'ÇAIS', unter: '// Erst lesen können, dann die Brücken' },
 };
 const VORSCHAU_TITEL = {
   'chinese-tw':    '中文 — Mandarin',
   'russian-morph': 'Русский — Wortbausteine',
+  french:          'Français — A1',
 };
 // Sprache für die Sprachausgabe, je Inhaltssprache
-const TTS_SPRACHE = { 'chinese-tw': 'zh-TW', 'russian-morph': 'ru-RU' };
+const TTS_SPRACHE = { 'chinese-tw': 'zh-TW', 'russian-morph': 'ru-RU', french: 'fr-FR' };
 
 // Trainer-State (bewusst getrennt vom Alt-App-State in S — nur S.state wird geteilt)
 const T = {
@@ -58,7 +67,8 @@ const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin ||
 
 // Wie die Vorschau eine Karte benennt: Radikal, Zeichen, Wort oder Zhuyin.
 const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter', zhuyin: 'Zhuyin',
-                   morph: 'Bausteine', rusword: 'Wörter' };
+                   morph: 'Bausteine', rusword: 'Wörter',
+                   aussprache: 'Aussprache', bruecke: 'Brücken', fword: 'Wörter' };
 
 function srsKey() { return `trainer-${T.lang}-${T.deck.key}`; }
 
@@ -123,6 +133,12 @@ async function ladeAlleSrs(lang) {
 function speichereSrs() { merkeDeck(T.lang, T.deck.key, T.srs.unlockedLevel); }
 
 const PRUEFUNGEN = {
+  // Französische Wörter werden nur auf Bedeutung geprüft. Die Aussprache ist
+  // regelmäßig — dafür ist das Aussprache-Deck da, statt sie Wort für Wort
+  // abzufragen und damit die Kartenzahl zu verdoppeln.
+  aussprache: ['lesung'],
+  bruecke:    ['bedeutung'],
+  fword:      ['bedeutung'],
   zhuyin:    ['lesung'],
   component: ['bedeutung'],
   character: ['bedeutung', 'lesung'],
@@ -160,7 +176,8 @@ function faellig(items) {
 
 // Lesson-Reihenfolge: erst Komponenten, dann Zeichen (WaniKani-Gating);
 // Wörter erst, wenn alle ihre Zeichen im Hanzi-Deck gelernt sind (srs ≥ 1).
-const TYP_RANG = { component: 0, zhuyin: 0, word: 0, character: 1, morph: 0, rusword: 0 };
+const TYP_RANG = { component: 0, zhuyin: 0, word: 0, character: 1, morph: 0, rusword: 0,
+                   aussprache: 0, bruecke: 0, fword: 0 };
 
 function neue(items) {
   let kandidaten = items.filter(it => {
@@ -178,6 +195,13 @@ function neue(items) {
       const komponenten = T.items.filter(k => k.item_type === 'component' && k.level === it.level);
       return komponenten.every(k => gelernt.has('component:' + k.data.zeichen));
     });
+  }
+  if (T.deck.key === 'frwoerter') {
+    const aus = getSetting(`trainer-${T.lang}-aussprache`);
+    const offen = (T.items || []).filter(i => i.item_type === 'aussprache').length;
+    const gelernt = Object.entries(aus?.cards || {})
+      .filter(([k, c]) => k.startsWith('aussprache:') && c.srs >= 1).length;
+    if (gelernt < offen) kandidaten = [];
   }
   if (T.deck.key === 'ruwoerter') {
     const bau = getSetting(`trainer-${T.lang}-bausteine`);
@@ -269,7 +293,7 @@ function anzeigeVon(it) {
   const d = it.data || {};
   return {
     vorne: d.betont || d.zeichen || d.zhuyin || d.form || d.wort || '?',
-    hinten: [d.pinyin, d.de || d.meaning || d.name].filter(Boolean).join(' · '),
+    hinten: [d.pinyin || d.aussprache, d.de || d.meaning || d.name].filter(Boolean).join(' · '),
   };
 }
 
@@ -400,7 +424,8 @@ function zhuyinFarbig(zhuyin) {
 
 // ── Karten-Rendering ───────────────────────────────────────────────────────
 const TYP_LABEL = { component: 'Komponente 部', character: 'Zeichen 字', word: 'Wort 詞', zhuyin: 'Zhuyin ㄅ',
-                    morph: 'Baustein', rusword: 'Wort' };
+                    morph: 'Baustein', rusword: 'Wort',
+                    aussprache: 'Ausspracheregel', bruecke: 'Brücke', fword: 'Wort' };
 
 // Sagt an, worauf die Karte hinauswill. Ohne das wüsste man bei Zeichen nicht,
 // ob Bedeutung oder Lesung gefragt ist — beide werden getrennt abgefragt.
@@ -418,6 +443,10 @@ function frontHtml(it, farben) {
   // Russisch: Baustein bzw. Wort schlicht groß — abgefragt wird nur diese
   // Richtung, also Form sehen und Bedeutung denken.
   const marke = frageMarke(it);
+  if (it.typ === 'aussprache' || it.typ === 'bruecke')
+    return marke + `<div class="karte-wort" style="font-size:clamp(30px,8vw,56px);">${d.form}</div>`;
+  if (it.typ === 'fword')
+    return marke + `<div class="karte-wort" style="font-size:clamp(36px,10vw,68px);">${d.wort}</div>`;
   if (it.typ === 'morph')
     return marke + `<div class="karte-wort" style="font-size:clamp(44px,12vw,84px);">${d.form}</div>`;
   if (it.typ === 'rusword')
@@ -430,6 +459,24 @@ function frontHtml(it, farben) {
 
 function backHtml(it) {
   const d = it.data;
+
+  if (it.typ === 'aussprache' || it.typ === 'bruecke') {
+    const bsp = (d.bsp || []).map(([a, b, c]) =>
+      `<div style="margin-top:3px;"><b>${a}</b> &nbsp;<span style="color:var(--muted)">${b}</span>` +
+      (c ? ` &nbsp;·&nbsp; ${c}` : '') + `</div>`).join('');
+    return `
+      <div class="karte-wort karte-back-klein" style="font-size:clamp(26px,6vw,44px);">${d.form}</div>
+      <div class="karte-de" style="font-size:clamp(22px,5vw,36px);">${d.de}</div>
+      <div class="karte-merksatz" style="font-size:14px;">${d.merk || ''}</div>
+      <div class="tr-beispiel" style="text-align:left;display:inline-block;">${bsp}</div>`;
+  }
+
+  if (it.typ === 'fword') {
+    return `
+      <div class="karte-wort karte-back-klein">${d.wort}</div>
+      <div class="karte-de" style="font-size:clamp(18px,4vw,28px);color:var(--muted);">[${d.aussprache}]</div>
+      <div class="karte-de" style="font-size:clamp(26px,5vw,42px);">${d.de}</div>`;
+  }
 
   if (it.typ === 'morph') {
     const art = d.art === 'praefix' ? 'Präfix' : 'Wurzel';
@@ -541,6 +588,12 @@ function malStrichfolge(it) {
 function sprich(it) {
   const d = it.data;
   if (it.typ === 'rusword') { speak(d.wort, 'ru-RU'); return; }
+  if (it.typ === 'fword') { speak(d.wort, 'fr-FR'); return; }
+  if (it.typ === 'aussprache' || it.typ === 'bruecke') {
+    const b = (d.bsp || [])[0];
+    if (b) speak(b[0], 'fr-FR');   // die Regel selbst ist nicht sprechbar, das Beispiel schon
+    return;
+  }
   if (it.typ === 'morph') {
     // Die Bindestriche markieren nur die Anschlussstelle — gesprochen wird
     // die blanke Lautfolge, sonst buchstabiert die Stimme das Minus mit.

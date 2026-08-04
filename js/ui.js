@@ -69,6 +69,12 @@ function getSprachenItems() {
     desc: 'Wörter aus Präfixen und Wurzeln zusammensetzen',
   });
   items.push({
+    trainer: 'french',
+    sprache: { id: 'french', sprache: 'Français', icon: '🇫🇷' },
+    name: '🇫🇷 Français — A1',
+    desc: 'Aussprache · Brücken zum Deutschen · die häufigsten Wörter',
+  });
+  items.push({
     isBuecher: true, name: '📚 Bücherregal',
     desc: 'Japanisch N3→N2 · Chinesisch von innen heraus — im Browser lesen',
   });
@@ -125,6 +131,8 @@ function sprachenSelect() {
     srsShowDashboard();
   } else if (item.trainer === 'russian-morph') {
     window.trainerShowDashboard?.('russian-morph');
+  } else if (item.trainer === 'french') {
+    window.trainerShowDashboard?.('french');
   } else {
     // Mandarin-Trainer (js/trainer.js hängt sich an window, um Zyklen zu vermeiden)
     window.trainerShowDashboard?.('chinese-tw');
