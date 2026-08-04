@@ -26,7 +26,8 @@ const DECKS = {
   french: [
     { key: 'aussprache', titel: 'Aussprache', typen: ['aussprache'] },
     { key: 'bruecken',   titel: 'Brücken zum Deutschen', typen: ['bruecke'] },
-    { key: 'frwoerter',  titel: 'Wörter', typen: ['fword'] },
+    { key: 'frwoerter',  titel: 'Wörter — A1 nach Häufigkeit', typen: ['fword'] },
+    { key: 'reise',      titel: 'Unterwegs', typen: ['reise'] },
   ],
 };
 
@@ -68,7 +69,8 @@ const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin ||
 // Wie die Vorschau eine Karte benennt: Radikal, Zeichen, Wort oder Zhuyin.
 const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter', zhuyin: 'Zhuyin',
                    morph: 'Bausteine', rusword: 'Wörter',
-                   aussprache: 'Aussprache', bruecke: 'Brücken', fword: 'Wörter' };
+                   aussprache: 'Aussprache', bruecke: 'Brücken', fword: 'Wörter',
+                   reise: 'Unterwegs' };
 
 function srsKey() { return `trainer-${T.lang}-${T.deck.key}`; }
 
@@ -139,6 +141,7 @@ const PRUEFUNGEN = {
   aussprache: ['lesung'],
   bruecke:    ['bedeutung'],
   fword:      ['bedeutung'],
+  reise:      ['bedeutung'],
   zhuyin:    ['lesung'],
   component: ['bedeutung'],
   character: ['bedeutung', 'lesung'],
@@ -177,7 +180,7 @@ function faellig(items) {
 // Lesson-Reihenfolge: erst Komponenten, dann Zeichen (WaniKani-Gating);
 // Wörter erst, wenn alle ihre Zeichen im Hanzi-Deck gelernt sind (srs ≥ 1).
 const TYP_RANG = { component: 0, zhuyin: 0, word: 0, character: 1, morph: 0, rusword: 0,
-                   aussprache: 0, bruecke: 0, fword: 0 };
+                   aussprache: 0, bruecke: 0, fword: 0, reise: 0 };
 
 function neue(items) {
   let kandidaten = items.filter(it => {
@@ -196,7 +199,7 @@ function neue(items) {
       return komponenten.every(k => gelernt.has('component:' + k.data.zeichen));
     });
   }
-  if (T.deck.key === 'frwoerter') {
+  if (T.deck.key === 'frwoerter' || T.deck.key === 'reise') {
     const aus = getSetting(`trainer-${T.lang}-aussprache`);
     const offen = (T.items || []).filter(i => i.item_type === 'aussprache').length;
     const gelernt = Object.entries(aus?.cards || {})
@@ -425,7 +428,8 @@ function zhuyinFarbig(zhuyin) {
 // ── Karten-Rendering ───────────────────────────────────────────────────────
 const TYP_LABEL = { component: 'Komponente 部', character: 'Zeichen 字', word: 'Wort 詞', zhuyin: 'Zhuyin ㄅ',
                     morph: 'Baustein', rusword: 'Wort',
-                    aussprache: 'Ausspracheregel', bruecke: 'Brücke', fword: 'Wort' };
+                    aussprache: 'Ausspracheregel', bruecke: 'Brücke', fword: 'Wort',
+                    reise: 'Unterwegs' };
 
 // Sagt an, worauf die Karte hinauswill. Ohne das wüsste man bei Zeichen nicht,
 // ob Bedeutung oder Lesung gefragt ist — beide werden getrennt abgefragt.
@@ -445,7 +449,7 @@ function frontHtml(it, farben) {
   const marke = frageMarke(it);
   if (it.typ === 'aussprache' || it.typ === 'bruecke')
     return marke + `<div class="karte-wort" style="font-size:clamp(30px,8vw,56px);">${d.form}</div>`;
-  if (it.typ === 'fword')
+  if (it.typ === 'fword' || it.typ === 'reise')
     return marke + `<div class="karte-wort" style="font-size:clamp(36px,10vw,68px);">${d.wort}</div>`;
   if (it.typ === 'morph')
     return marke + `<div class="karte-wort" style="font-size:clamp(44px,12vw,84px);">${d.form}</div>`;
@@ -471,7 +475,7 @@ function backHtml(it) {
       <div class="tr-beispiel" style="text-align:left;display:inline-block;">${bsp}</div>`;
   }
 
-  if (it.typ === 'fword') {
+  if (it.typ === 'fword' || it.typ === 'reise') {
     return `
       <div class="karte-wort karte-back-klein">${d.wort}</div>
       <div class="karte-de" style="font-size:clamp(18px,4vw,28px);color:var(--muted);">[${d.aussprache}]</div>
@@ -588,7 +592,7 @@ function malStrichfolge(it) {
 function sprich(it) {
   const d = it.data;
   if (it.typ === 'rusword') { speak(d.wort, 'ru-RU'); return; }
-  if (it.typ === 'fword') { speak(d.wort, 'fr-FR'); return; }
+  if (it.typ === 'fword' || it.typ === 'reise') { speak(d.wort, 'fr-FR'); return; }
   if (it.typ === 'aussprache' || it.typ === 'bruecke') {
     const b = (d.bsp || [])[0];
     if (b) speak(b[0], 'fr-FR');   // die Regel selbst ist nicht sprechbar, das Beispiel schon

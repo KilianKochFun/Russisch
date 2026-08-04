@@ -37,8 +37,8 @@ if (!KEY) { console.error('SUPABASE_SECRET_KEY fehlt in .env'); process.exit(1);
 // form = das Schriftbild, de = wie es klingt, merk = die Regel dahinter
 const AUSSPRACHE = [
   { form: '-t -d -s -x -z', de: 'schweigt am Wortende',
-    merk: 'petit klingt „pöti“, grand klingt „grã“. Der Buchstabe steht da, gesprochen wird er nicht.',
-    bsp: [['petit', 'pöti', 'klein'], ['grand', 'grã', 'groß']] },
+    merk: 'petit klingt „p(ö)ti“, grand klingt „grã“. Der Buchstabe steht da, gesprochen wird er nicht.',
+    bsp: [['petit', 'p(ö)ti', 'klein'], ['grand', 'grã', 'groß']] },
   { form: 'c r f l', de: 'am Wortende gesprochen',
     merk: 'Die vier Ausnahmen zur Regel oben. Merkhilfe: C-a-R-e-F-u-L.',
     bsp: [['bonjour', 'bõschur', 'guten Tag'], ['neuf', 'nöf', 'neun']] },
@@ -52,19 +52,21 @@ const AUSSPRACHE = [
     bsp: [['vous', 'wu', 'ihr / Sie'], ['bonjour', 'bõschur', 'guten Tag']] },
   { form: 'u', de: 'ü', merk: 'Das einfache u ist immer ü. Für u braucht es ou.',
     bsp: [['tu', 'tü', 'du'], ['rue', 'rü', 'Straße']] },
-  { form: 'oi', de: 'wa', merk: 'Fest zusammen, immer „wa“.',
-    bsp: [['moi', 'mwa', 'ich'], ['trois', 'trwa', 'drei']] },
+  { form: 'oi', de: 'ua', merk: 'Ein kurzes u, das sofort in den nächsten Vokal rutscht. '
+    + 'Nicht „wa“ — deutsches w spricht man wie v, und dafür steht w hier schon.',
+    bsp: [['moi', 'mua', 'ich'], ['trois', 'trua', 'drei'], ['voir', 'wuar', 'sehen']] },
   { form: 'ai · ei', de: 'ä', merk: 'Offenes ä wie in „hätte“.',
     bsp: [['mais', 'mä', 'aber'], ['seize', 'ßäs', 'sechzehn']] },
   { form: 'au · eau', de: 'o', merk: 'eaux ist ein einziger Laut: o.',
     bsp: [['eau', 'o', 'Wasser'], ['bateau', 'bato', 'Boot']] },
-  { form: 'eu · œu', de: 'ö', merk: 'Wie in „Köln“.',
+  { form: 'eu · œu', de: 'volles ö', merk: 'Wie in „Köln“. Zu unterscheiden vom schwachen (ö), '
+    + 'das aus einem schlichten e kommt und oft ganz wegfällt: je klingt sch(ö).',
     bsp: [['deux', 'dö', 'zwei'], ['sœur', 'ßör', 'Schwester']] },
   { form: 'ch', de: 'sch', merk: 'Nie wie deutsches „ch“.',
     bsp: [['chat', 'scha', 'Katze'], ['chercher', 'schärsche', 'suchen']] },
   { form: 'j · ge · gi', de: 'weiches sch',
     merk: 'Wie das g in „Garage“ oder das j in „Journal“.',
-    bsp: [['je', 'schö', 'ich'], ['manger', 'mãsche', 'essen']] },
+    bsp: [['je', 'sch(ö)', 'ich'], ['manger', 'mãsche', 'essen']] },
   { form: 'qu', de: 'k', merk: 'Kein „kw“ wie im Deutschen.',
     bsp: [['qui', 'ki', 'wer'], ['quatre', 'katr', 'vier']] },
   { form: 'h', de: 'schweigt immer', merk: 'Wird nie gesprochen, egal wo es steht.',
@@ -129,72 +131,47 @@ const BRUECKEN = [
           ['champ', '(Kampagne)', 'Feld']] },
 ];
 
-// ── Deck 3: Wörter ─────────────────────────────────────────────────────────
-// [französisch, Aussprache in deutscher Näherung, deutsch, Level]
-// Level 1 = die Wörter, ohne die kein Satz geht. Level 2 = Alltag.
-// Level 3 = unterwegs.
-const WOERTER = [
-  // Level 1 — Grundgerüst
-  ['je', 'schö', 'ich', 1], ['tu', 'tü', 'du', 1], ['il', 'il', 'er', 1],
-  ['elle', 'äl', 'sie', 1], ['nous', 'nu', 'wir', 1], ['vous', 'wu', 'ihr / Sie', 1],
-  ['ils', 'il', 'sie (Plural)', 1],
-  ['être', 'ätr', 'sein', 1], ['avoir', 'awwar', 'haben', 1],
-  ['aller', 'ale', 'gehen', 1], ['faire', 'fär', 'machen', 1],
-  ['pouvoir', 'puwwar', 'können', 1], ['vouloir', 'wulwar', 'wollen', 1],
-  ['savoir', 'ßawwar', 'wissen', 1], ['dire', 'dir', 'sagen', 1],
-  ['le', 'lö', 'der / den', 1], ['la', 'la', 'die', 1], ['les', 'le', 'die (Plural)', 1],
-  ['un', 'ä̃', 'ein', 1], ['une', 'ün', 'eine', 1],
-  ['de', 'dö', 'von / aus', 1], ['à', 'a', 'zu / nach / in', 1],
-  ['et', 'e', 'und', 1], ['ou', 'u', 'oder', 1], ['mais', 'mä', 'aber', 1],
-  ['dans', 'dã', 'in', 1], ['sur', 'ßür', 'auf', 1], ['pour', 'pur', 'für', 1],
-  ['avec', 'awäk', 'mit', 1], ['sans', 'ßã', 'ohne', 1],
-  ['ne … pas', 'nö … pa', 'nicht (Klammer ums Verb)', 1],
-  ['oui', 'wi', 'ja', 1], ['non', 'nõ', 'nein', 1],
-  ['qui', 'ki', 'wer', 1], ['que', 'kö', 'was / dass', 1],
-  ['où', 'u', 'wo', 1], ['quand', 'kã', 'wann', 1],
-  ['comment', 'komã', 'wie', 1], ['pourquoi', 'purkwa', 'warum', 1],
-  ['combien', 'kõbjä̃', 'wie viel', 1],
-  ['ce', 'ßö', 'dies', 1], ['très', 'trä', 'sehr', 1], ['aussi', 'oßi', 'auch', 1],
-  ['plus', 'plü', 'mehr', 1], ['bien', 'bjä̃', 'gut', 1],
+// ── Deck 3: Wörter ────────────────────────────────────────────────────────
+// Nicht mehr handverlesen, sondern aus FLELex (Beacco-Fassung, die dem
+// Europarat-Referential für Französisch folgt): die häufigsten 400 der 1196
+// A1-Wörter. Das deckt rund 93 % aller Vorkommen in A1-Material ab und liegt
+// damit in derselben Größenordnung wie HSK 1 (500) oder JLPT N5 (~800).
+//
+// Die 1196 sind KEINE Lernvorgabe — FLELex zählt, welche Wörter in Lehrwerken
+// vorkommen, nicht welche man beherrschen muss. Der Langschwanz (divorcer,
+// électricité …) bringt zusammen etwa ein Prozent.
+const A1 = require('../data/french-a1-400.json');
+const PRO_LEVEL = 50;
 
-  // Level 2 — Alltag
-  ['bonjour', 'bõschur', 'guten Tag', 2], ['bonsoir', 'bõßwar', 'guten Abend', 2],
-  ['merci', 'märßi', 'danke', 2], ['pardon', 'pardõ', 'Entschuldigung', 2],
-  ['s’il vous plaît', 'ßilwuplä', 'bitte', 2],
-  ['au revoir', 'orwwar', 'auf Wiedersehen', 2],
-  ['monsieur', 'mößjö', 'Herr', 2], ['madame', 'madam', 'Frau', 2],
-  ['jour', 'schur', 'Tag', 2], ['nuit', 'nüi', 'Nacht', 2],
-  ['temps', 'tã', 'Zeit / Wetter', 2], ['heure', 'ör', 'Stunde / Uhr', 2],
-  ['homme', 'om', 'Mann', 2], ['femme', 'fam', 'Frau', 2],
-  ['enfant', 'ãfã', 'Kind', 2], ['ami', 'ami', 'Freund', 2],
-  ['maison', 'mäsõ', 'Haus', 2], ['ville', 'wil', 'Stadt', 2],
-  ['rue', 'rü', 'Straße', 2], ['pays', 'pei', 'Land', 2],
-  ['eau', 'o', 'Wasser', 2], ['pain', 'pä̃', 'Brot', 2],
-  ['vin', 'wä̃', 'Wein', 2], ['café', 'kafe', 'Kaffee', 2],
-  ['manger', 'mãsche', 'essen', 2], ['boire', 'bwar', 'trinken', 2],
-  ['grand', 'grã', 'groß', 2], ['petit', 'pöti', 'klein', 2],
-  ['bon', 'bõ', 'gut', 2], ['nouveau', 'nuwo', 'neu', 2],
-  ['beaucoup', 'boku', 'viel', 2], ['peu', 'pö', 'wenig', 2],
-  ['aujourd’hui', 'oschurdüi', 'heute', 2], ['demain', 'dömä̃', 'morgen', 2],
-  ['hier', 'jär', 'gestern', 2], ['maintenant', 'mä̃tnã', 'jetzt', 2],
-  ['ici', 'ißi', 'hier', 2], ['là', 'la', 'dort', 2],
-
-  // Level 3 — unterwegs
-  ['gare', 'gar', 'Bahnhof', 3], ['train', 'trä̃', 'Zug', 3],
-  ['billet', 'bijä', 'Fahrkarte', 3], ['hôtel', 'otäl', 'Hotel', 3],
-  ['chambre', 'schãbr', 'Zimmer', 3], ['clé', 'kle', 'Schlüssel', 3],
-  ['addition', 'adißjõ', 'Rechnung', 3], ['argent', 'arschã', 'Geld', 3],
-  ['magasin', 'magasä̃', 'Geschäft', 3], ['marché', 'marsche', 'Markt', 3],
-  ['ouvert', 'uwär', 'geöffnet', 3], ['fermé', 'färme', 'geschlossen', 3],
-  ['gauche', 'gohsch', 'links', 3], ['droite', 'drwat', 'rechts', 3],
-  ['tout droit', 'tu drwa', 'geradeaus', 3],
-  ['entrée', 'ãtre', 'Eingang', 3], ['sortie', 'ßorti', 'Ausgang', 3],
-  ['toilettes', 'toalät', 'Toilette', 3],
-  ['aide', 'äd', 'Hilfe', 3], ['perdu', 'pärdü', 'verloren', 3],
-  ['je voudrais', 'schö wudrä', 'ich hätte gern', 3],
-  ['je ne comprends pas', 'schö nö kõprã pa', 'ich verstehe nicht', 3],
-  ['parlez-vous allemand ?', 'parle wu almã', 'sprechen Sie Deutsch?', 3],
-  ['combien ça coûte ?', 'kõbjä̃ ßa kut', 'was kostet das?', 3],
+// ── Deck 4: Unterwegs ─────────────────────────────────────────────────────
+// Wörter und Wendungen, die auf einer Reise sofort gebraucht werden, aber
+// nicht unter den häufigsten 400 stehen — teils weil sie seltener sind, teils
+// weil FLELex nur Einzelwörter kennt und keine Wendungen.
+const UNTERWEGS = [
+  ['bonsoir', 'bõßuar', 'guten Abend'],
+  ['pardon', 'pardõ', 'Entschuldigung'],
+  ['s\u2019il vous pla\u00eet', 'ßilwuplä', 'bitte'],
+  ['au revoir', 'or(ö)wuar', 'auf Wiedersehen'],
+  ['gare', 'gar', 'Bahnhof'],
+  ['billet', 'bijä', 'Fahrkarte'],
+  ['cl\u00e9', 'kle', 'Schlüssel'],
+  ['addition', 'adißjõ', 'Rechnung'],
+  ['argent', 'arschã', 'Geld'],
+  ['march\u00e9', 'marsche', 'Markt'],
+  ['ouvert', 'uwär', 'geöffnet'],
+  ['ferm\u00e9', 'färme', 'geschlossen'],
+  ['droite', 'druat', 'rechts'],
+  ['tout droit', 'tu drua', 'geradeaus'],
+  ['entr\u00e9e', 'ãtre', 'Eingang'],
+  ['sortie', 'ßorti', 'Ausgang'],
+  ['toilettes', 'tualät', 'Toilette'],
+  ['aide', 'äd', 'Hilfe'],
+  ['perdu', 'pärdü', 'verloren'],
+  ['pain', 'pä̃', 'Brot'],
+  ['je voudrais', 'sch(ö) wudrä', 'ich hätte gern'],
+  ['je ne comprends pas', 'sch(ö) n(ö) kõprã pa', 'ich verstehe nicht'],
+  ['parlez-vous allemand ?', 'parle wu almã', 'sprechen Sie Deutsch?'],
+  ['combien \u00e7a co\u00fbte ?', 'kõbjä̃ ßa kut', 'was kostet das?'],
 ];
 
 // ── Zeilen bauen ───────────────────────────────────────────────────────────
@@ -210,28 +187,34 @@ for (const b of BRUECKEN) {
   rows.push({ language: 'french', item_type: 'bruecke', level: 1, position: p++,
     data: { form: b.form, de: b.de, merk: b.merk, bsp: b.bsp } });
 }
-const posProLevel = {};
-for (const [wort, aus, de, level] of WOERTER) {
-  posProLevel[level] = posProLevel[level] || 0;
-  rows.push({ language: 'french', item_type: 'fword', level, position: posProLevel[level]++,
+let wp = 0, lvl = 1;
+for (const e of A1) {
+  if (wp >= PRO_LEVEL) { wp = 0; lvl++; }
+  rows.push({ language: 'french', item_type: 'fword', level: lvl, position: wp++,
+    data: { wort: e.wort, aussprache: e.aus, de: e.de, wortart: e.tag, rang: e.rang } });
+}
+let up = 0;
+for (const [wort, aus, de] of UNTERWEGS) {
+  rows.push({ language: 'french', item_type: 'reise', level: 1, position: up++,
     data: { wort, aussprache: aus, de } });
 }
 
 // ── Gegenprüfung ───────────────────────────────────────────────────────────
 let fehler = 0;
 const gesehen = new Set();
-for (const [wort] of WOERTER) {
+for (const { wort } of A1) {
   if (gesehen.has(wort)) { console.error(`✗ ${wort} steht doppelt in der Liste`); fehler++; }
   gesehen.add(wort);
 }
 for (const r of rows) {
   if (!r.data.de) { console.error(`✗ ohne Bedeutung: ${JSON.stringify(r.data).slice(0, 60)}`); fehler++; }
-  if (r.item_type === 'fword' && !r.data.aussprache) {
+  if ((r.item_type === 'fword' || r.item_type === 'reise') && !r.data.aussprache) {
     console.error(`✗ ohne Aussprache: ${r.data.wort}`); fehler++;
   }
 }
 if (fehler) { console.error(`\n${fehler} Problem(e) — nichts hochgeladen.`); process.exit(1); }
-console.log(`✓ ${AUSSPRACHE.length} Ausspracheregeln, ${BRUECKEN.length} Brücken, ${WOERTER.length} Wörter — alle vollständig.`);
+console.log(`✓ ${AUSSPRACHE.length} Ausspracheregeln, ${BRUECKEN.length} Brücken, `
+  + `${A1.length} A1-Wörter in ${Math.ceil(A1.length / PRO_LEVEL)} Leveln, ${UNTERWEGS.length} Reisewörter.`);
 
 // ── Hochladen ──────────────────────────────────────────────────────────────
 async function main() {

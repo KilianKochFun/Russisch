@@ -125,6 +125,20 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   Pflegen mit `scripts/seed_russian_morph.js`; das Skript prüft vor dem Upload,
   dass jedes Wort buchstabengenau aus seinen Bausteinen zusammengeht.
 
+- **Französisch** (`js/trainer.js`, Sprache `french`): vier Decks — `aussprache`
+  (19 Lautregeln), `bruecken` (10 Regeln, die Wortbündel über Deutsch/Englisch
+  erschließen: das Dach auf forêt markiert ein verlorenes s), `frwoerter`
+  (400 Wörter in 8 Leveln) und `reise` (24 Wendungen). Wörter sind gesperrt,
+  bis alle Ausspracheregeln sitzen.
+  **Der Wortschatz ist nicht handverlesen**, sondern die häufigsten 400 der
+  1196 A1-Wörter aus FLELex (Beacco-Fassung, folgt dem Europarat-Referential):
+  `data/french-a1-400.json`, deckt ~93 % ab. Die 1196 sind KEINE Lernvorgabe —
+  FLELex zählt, was in Lehrwerken vorkommt, nicht was man können muss.
+  **Klangnäherung statt Lautschrift**, Konventionen in
+  `~/Dokumente/Franzoesisch-Lehrbuch/referenz/KONVENTIONEN.md`. Wichtig:
+  `oi` wird **`ua`** geschrieben, nie `wa` — deutsches w spricht man /v/, und
+  `w` steht schon für französisches v (`voir` gäbe sonst `wwar`).
+
   Inhalte pflegen: `scripts/seed_zhuyin.js` / `seed_hanzi.js` / `seed_words.js`
   (WK-Daten in `content-private/`, gitignored — NIE committen!).
 

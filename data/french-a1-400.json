@@ -1,0 +1,2802 @@
+[
+ {
+  "wort": "le",
+  "tag": "DET:ART",
+  "rang": 1,
+  "de": "der, die, das",
+  "aus": "l(ö)"
+ },
+ {
+  "wort": "de",
+  "tag": "PRP",
+  "rang": 2,
+  "de": "von · aus",
+  "aus": "d(ö)"
+ },
+ {
+  "wort": "être",
+  "tag": "VER",
+  "rang": 3,
+  "de": "sein",
+  "aus": "ätr"
+ },
+ {
+  "wort": "et",
+  "tag": "KON",
+  "rang": 4,
+  "de": "und",
+  "aus": "e"
+ },
+ {
+  "wort": "je",
+  "tag": "PRO",
+  "rang": 5,
+  "de": "ich",
+  "aus": "sch(ö)"
+ },
+ {
+  "wort": "un",
+  "tag": "DET:ART",
+  "rang": 6,
+  "de": "ein, eine",
+  "aus": "ä̃"
+ },
+ {
+  "wort": "à",
+  "tag": "PRP",
+  "rang": 7,
+  "de": "in, nach, zu",
+  "aus": "a"
+ },
+ {
+  "wort": "avoir",
+  "tag": "VER",
+  "rang": 8,
+  "de": "haben",
+  "aus": "awuar"
+ },
+ {
+  "wort": "ce",
+  "tag": "PRO",
+  "rang": 9,
+  "de": "das, dies",
+  "aus": "ß(ö)"
+ },
+ {
+  "wort": "il",
+  "tag": "PRO",
+  "rang": 10,
+  "de": "er · es",
+  "aus": "il"
+ },
+ {
+  "wort": "du",
+  "tag": "PRP:det",
+  "rang": 11,
+  "de": "vom, von dem · etwas (Teilungsartikel)",
+  "aus": "dü"
+ },
+ {
+  "wort": "ne",
+  "tag": "ADV",
+  "rang": 12,
+  "de": "nicht (erster Teil der Verneinung)",
+  "aus": "n(ö)"
+ },
+ {
+  "wort": "pas",
+  "tag": "ADV",
+  "rang": 13,
+  "de": "nicht",
+  "aus": "pa"
+ },
+ {
+  "wort": "elle",
+  "tag": "PRO",
+  "rang": 14,
+  "de": "sie",
+  "aus": "äl"
+ },
+ {
+  "wort": "aller",
+  "tag": "VER",
+  "rang": 15,
+  "de": "gehen · fahren",
+  "aus": "ale"
+ },
+ {
+  "wort": "en",
+  "tag": "PRP",
+  "rang": 16,
+  "de": "in, nach",
+  "aus": "ã"
+ },
+ {
+  "wort": "vous",
+  "tag": "PRO",
+  "rang": 17,
+  "de": "ihr, euch · Sie",
+  "aus": "wu"
+ },
+ {
+  "wort": "dans",
+  "tag": "PRP",
+  "rang": 18,
+  "de": "in",
+  "aus": "dã"
+ },
+ {
+  "wort": "on",
+  "tag": "PRO",
+  "rang": 19,
+  "de": "man · wir",
+  "aus": "õ"
+ },
+ {
+  "wort": "au",
+  "tag": "PRP:det",
+  "rang": 20,
+  "de": "zum, zu dem · im",
+  "aus": "o"
+ },
+ {
+  "wort": "son",
+  "tag": "DET:POS",
+  "rang": 21,
+  "de": "sein · ihr",
+  "aus": "ßõ"
+ },
+ {
+  "wort": "pour",
+  "tag": "PRP",
+  "rang": 22,
+  "de": "für",
+  "aus": "pur"
+ },
+ {
+  "wort": "mais",
+  "tag": "KON",
+  "rang": 23,
+  "de": "aber",
+  "aus": "mä"
+ },
+ {
+  "wort": "faire",
+  "tag": "VER",
+  "rang": 24,
+  "de": "machen, tun",
+  "aus": "fär"
+ },
+ {
+  "wort": "se",
+  "tag": "PRO",
+  "rang": 25,
+  "de": "sich",
+  "aus": "ß(ö)"
+ },
+ {
+  "wort": "avec",
+  "tag": "PRP",
+  "rang": 26,
+  "de": "mit",
+  "aus": "awäk"
+ },
+ {
+  "wort": "tu",
+  "tag": "PRO",
+  "rang": 27,
+  "de": "du",
+  "aus": "tü"
+ },
+ {
+  "wort": "que",
+  "tag": "PRO",
+  "rang": 28,
+  "de": "was · den, die, das (Relativpronomen)",
+  "aus": "k(ö)"
+ },
+ {
+  "wort": "mon",
+  "tag": "DET:POS",
+  "rang": 29,
+  "de": "mein",
+  "aus": "mõ"
+ },
+ {
+  "wort": "tout",
+  "tag": "PRO",
+  "rang": 30,
+  "de": "alles",
+  "aus": "tu"
+ },
+ {
+  "wort": "très",
+  "tag": "ADV",
+  "rang": 31,
+  "de": "sehr",
+  "aus": "trä"
+ },
+ {
+  "wort": "y",
+  "tag": "PRO",
+  "rang": 32,
+  "de": "dort, dahin",
+  "aus": "i"
+ },
+ {
+  "wort": "bien",
+  "tag": "ADV",
+  "rang": 33,
+  "de": "gut",
+  "aus": "bjä̃"
+ },
+ {
+  "wort": "plus",
+  "tag": "ADV",
+  "rang": 34,
+  "de": "mehr",
+  "aus": "plü"
+ },
+ {
+  "wort": "moi",
+  "tag": "PRO",
+  "rang": 35,
+  "de": "ich (betont) · mir, mich",
+  "aus": "mua"
+ },
+ {
+  "wort": "sur",
+  "tag": "PRP",
+  "rang": 36,
+  "de": "auf",
+  "aus": "ßür"
+ },
+ {
+  "wort": "nous",
+  "tag": "PRO",
+  "rang": 37,
+  "de": "wir · uns",
+  "aus": "nu"
+ },
+ {
+  "wort": "pouvoir",
+  "tag": "VER",
+  "rang": 38,
+  "de": "können",
+  "aus": "puwuar"
+ },
+ {
+  "wort": "dire",
+  "tag": "VER",
+  "rang": 39,
+  "de": "sagen",
+  "aus": "dir"
+ },
+ {
+  "wort": "me",
+  "tag": "PRO",
+  "rang": 40,
+  "de": "mich, mir",
+  "aus": "m(ö)"
+ },
+ {
+  "wort": "cela",
+  "tag": "PRO",
+  "rang": 41,
+  "de": "das",
+  "aus": "ß(ö)la"
+ },
+ {
+  "wort": "ou",
+  "tag": "KON",
+  "rang": 42,
+  "de": "oder",
+  "aus": "u"
+ },
+ {
+  "wort": "vouloir",
+  "tag": "VER",
+  "rang": 43,
+  "de": "wollen",
+  "aus": "wuluar"
+ },
+ {
+  "wort": "oui",
+  "tag": "INT",
+  "rang": 44,
+  "de": "ja",
+  "aus": "wi"
+ },
+ {
+  "wort": "aimer",
+  "tag": "VER",
+  "rang": 45,
+  "de": "lieben · mögen",
+  "aus": "äme"
+ },
+ {
+  "wort": "aussi",
+  "tag": "ADV",
+  "rang": 46,
+  "de": "auch",
+  "aus": "oßi"
+ },
+ {
+  "wort": "heure",
+  "tag": "NOM",
+  "rang": 47,
+  "de": "Stunde · Uhrzeit",
+  "aus": "ör"
+ },
+ {
+  "wort": "petit",
+  "tag": "ADJ",
+  "rang": 48,
+  "de": "klein",
+  "aus": "p(ö)ti"
+ },
+ {
+  "wort": "lui",
+  "tag": "PRO",
+  "rang": 49,
+  "de": "ihm, ihr · er (betont)",
+  "aus": "lüi"
+ },
+ {
+  "wort": "bon",
+  "tag": "ADJ",
+  "rang": 50,
+  "de": "gut",
+  "aus": "bõ"
+ },
+ {
+  "wort": "qui",
+  "tag": "PRO",
+  "rang": 51,
+  "de": "wer · der, die, das (Relativpronomen)",
+  "aus": "ki"
+ },
+ {
+  "wort": "beaucoup",
+  "tag": "ADV",
+  "rang": 52,
+  "de": "viel",
+  "aus": "boku"
+ },
+ {
+  "wort": "voir",
+  "tag": "VER",
+  "rang": 53,
+  "de": "sehen",
+  "aus": "wuar"
+ },
+ {
+  "wort": "non",
+  "tag": "ADV",
+  "rang": 54,
+  "de": "nein",
+  "aus": "nõ"
+ },
+ {
+  "wort": "par",
+  "tag": "PRP",
+  "rang": 55,
+  "de": "durch · pro",
+  "aus": "par"
+ },
+ {
+  "wort": "grand",
+  "tag": "ADJ",
+  "rang": 56,
+  "de": "groß",
+  "aus": "grã"
+ },
+ {
+  "wort": "te",
+  "tag": "PRO",
+  "rang": 57,
+  "de": "dich, dir",
+  "aus": "t(ö)"
+ },
+ {
+  "wort": "an",
+  "tag": "NOM",
+  "rang": 58,
+  "de": "Jahr",
+  "aus": "ã"
+ },
+ {
+  "wort": "venir",
+  "tag": "VER",
+  "rang": 59,
+  "de": "kommen",
+  "aus": "w(ö)nir"
+ },
+ {
+  "wort": "alors",
+  "tag": "ADV",
+  "rang": 60,
+  "de": "also · dann",
+  "aus": "alor"
+ },
+ {
+  "wort": "jour",
+  "tag": "NOM",
+  "rang": 61,
+  "de": "Tag",
+  "aus": "schur"
+ },
+ {
+  "wort": "votre",
+  "tag": "DET:POS",
+  "rang": 62,
+  "de": "euer · Ihr",
+  "aus": "wotr"
+ },
+ {
+  "wort": "prendre",
+  "tag": "VER",
+  "rang": 63,
+  "de": "nehmen",
+  "aus": "prãdr"
+ },
+ {
+  "wort": "savoir",
+  "tag": "VER",
+  "rang": 64,
+  "de": "wissen · können",
+  "aus": "ßawuar"
+ },
+ {
+  "wort": "monsieur",
+  "tag": "NOM",
+  "rang": 65,
+  "de": "Herr",
+  "aus": "m(ö)ßjö"
+ },
+ {
+  "wort": "peu",
+  "tag": "ADV",
+  "rang": 66,
+  "de": "wenig",
+  "aus": "pö"
+ },
+ {
+  "wort": "chez",
+  "tag": "PRP",
+  "rang": 67,
+  "de": "bei",
+  "aus": "sche"
+ },
+ {
+  "wort": "parler",
+  "tag": "VER",
+  "rang": 68,
+  "de": "sprechen",
+  "aus": "parle"
+ },
+ {
+  "wort": "là",
+  "tag": "ADV",
+  "rang": 69,
+  "de": "da, dort",
+  "aus": "la"
+ },
+ {
+  "wort": "trouver",
+  "tag": "VER",
+  "rang": 70,
+  "de": "finden",
+  "aus": "truwe"
+ },
+ {
+  "wort": "regarder",
+  "tag": "VER",
+  "rang": 71,
+  "de": "anschauen, ansehen",
+  "aus": "r(ö)garde"
+ },
+ {
+  "wort": "quand",
+  "tag": "KON",
+  "rang": 72,
+  "de": "wenn, als · wann",
+  "aus": "kã"
+ },
+ {
+  "wort": "leur",
+  "tag": "DET:POS",
+  "rang": 73,
+  "de": "ihr (von mehreren)",
+  "aus": "lör"
+ },
+ {
+  "wort": "toi",
+  "tag": "PRO",
+  "rang": 74,
+  "de": "du (betont) · dir, dich",
+  "aus": "tua"
+ },
+ {
+  "wort": "ton",
+  "tag": "DET:POS",
+  "rang": 75,
+  "de": "dein",
+  "aus": "tõ"
+ },
+ {
+  "wort": "ami",
+  "tag": "NOM",
+  "rang": 76,
+  "de": "Freund",
+  "aus": "ami"
+ },
+ {
+  "wort": "travailler",
+  "tag": "VER",
+  "rang": 77,
+  "de": "arbeiten",
+  "aus": "trawaje"
+ },
+ {
+  "wort": "beau",
+  "tag": "ADJ",
+  "rang": 78,
+  "de": "schön",
+  "aus": "bo"
+ },
+ {
+  "wort": "passer",
+  "tag": "VER",
+  "rang": 79,
+  "de": "vorbeigehen · verbringen",
+  "aus": "paße"
+ },
+ {
+  "wort": "appeler",
+  "tag": "VER",
+  "rang": 80,
+  "de": "rufen, anrufen · nennen",
+  "aus": "ap(ö)le"
+ },
+ {
+  "wort": "maison",
+  "tag": "NOM",
+  "rang": 81,
+  "de": "Haus",
+  "aus": "mäsõ"
+ },
+ {
+  "wort": "autre",
+  "tag": "ADJ",
+  "rang": 82,
+  "de": "andere",
+  "aus": "otr"
+ },
+ {
+  "wort": "falloir",
+  "tag": "VER",
+  "rang": 83,
+  "de": "müssen, nötig sein",
+  "aus": "faluar"
+ },
+ {
+  "wort": "arriver",
+  "tag": "VER",
+  "rang": 84,
+  "de": "ankommen · geschehen",
+  "aus": "ariwe"
+ },
+ {
+  "wort": "comme",
+  "tag": "KON",
+  "rang": 85,
+  "de": "wie · da, weil",
+  "aus": "kom"
+ },
+ {
+  "wort": "ah",
+  "tag": "INT",
+  "rang": 86,
+  "de": "ah, ach",
+  "aus": "a"
+ },
+ {
+  "wort": "toujours",
+  "tag": "ADV",
+  "rang": 87,
+  "de": "immer",
+  "aus": "tuschur"
+ },
+ {
+  "wort": "monde",
+  "tag": "NOM",
+  "rang": 88,
+  "de": "Welt · Leute",
+  "aus": "mõd"
+ },
+ {
+  "wort": "madame",
+  "tag": "NOM",
+  "rang": 89,
+  "de": "Frau (Anrede)",
+  "aus": "madam"
+ },
+ {
+  "wort": "puis",
+  "tag": "ADV",
+  "rang": 90,
+  "de": "dann, danach",
+  "aus": "püi"
+ },
+ {
+  "wort": "soir",
+  "tag": "NOM",
+  "rang": 91,
+  "de": "Abend",
+  "aus": "ßuar"
+ },
+ {
+  "wort": "habiter",
+  "tag": "VER",
+  "rang": 92,
+  "de": "wohnen",
+  "aus": "abite"
+ },
+ {
+  "wort": "quel",
+  "tag": "PRO",
+  "rang": 93,
+  "de": "welcher, welche, welches",
+  "aus": "käl"
+ },
+ {
+  "wort": "chose",
+  "tag": "NOM",
+  "rang": 94,
+  "de": "Sache, Ding",
+  "aus": "schos"
+ },
+ {
+  "wort": "connaître",
+  "tag": "VER",
+  "rang": 95,
+  "de": "kennen",
+  "aus": "konätr"
+ },
+ {
+  "wort": "partir",
+  "tag": "VER",
+  "rang": 96,
+  "de": "weggehen, abfahren",
+  "aus": "partir"
+ },
+ {
+  "wort": "bonjour",
+  "tag": "NOM",
+  "rang": 97,
+  "de": "guten Tag, hallo",
+  "aus": "bõschur"
+ },
+ {
+  "wort": "fille",
+  "tag": "NOM",
+  "rang": 98,
+  "de": "Mädchen · Tochter",
+  "aus": "fij"
+ },
+ {
+  "wort": "quelque",
+  "tag": "PRO",
+  "rang": 99,
+  "de": "einige, ein paar · etwas",
+  "aus": "kälk"
+ },
+ {
+  "wort": "merci",
+  "tag": "NOM",
+  "rang": 100,
+  "de": "danke",
+  "aus": "märßi"
+ },
+ {
+  "wort": "français",
+  "tag": "ADJ",
+  "rang": 101,
+  "de": "französisch",
+  "aus": "frãßä"
+ },
+ {
+  "wort": "demander",
+  "tag": "VER",
+  "rang": 102,
+  "de": "fragen · bitten",
+  "aus": "d(ö)mãde"
+ },
+ {
+  "wort": "manger",
+  "tag": "VER",
+  "rang": 103,
+  "de": "essen",
+  "aus": "mãsche"
+ },
+ {
+  "wort": "ville",
+  "tag": "NOM",
+  "rang": 104,
+  "de": "Stadt",
+  "aus": "wil"
+ },
+ {
+  "wort": "où",
+  "tag": "PRO",
+  "rang": 105,
+  "de": "wo · wohin",
+  "aus": "u"
+ },
+ {
+  "wort": "enfant",
+  "tag": "NOM",
+  "rang": 106,
+  "de": "das Kind",
+  "aus": "ãfã"
+ },
+ {
+  "wort": "temps",
+  "tag": "NOM",
+  "rang": 107,
+  "de": "Zeit · Wetter",
+  "aus": "tã"
+ },
+ {
+  "wort": "comment",
+  "tag": "ADV",
+  "rang": 108,
+  "de": "wie",
+  "aus": "komã"
+ },
+ {
+  "wort": "chercher",
+  "tag": "VER",
+  "rang": 109,
+  "de": "suchen",
+  "aus": "schärsche"
+ },
+ {
+  "wort": "nouveau",
+  "tag": "ADJ",
+  "rang": 110,
+  "de": "neu",
+  "aus": "nuwo"
+ },
+ {
+  "wort": "penser",
+  "tag": "VER",
+  "rang": 111,
+  "de": "denken",
+  "aus": "pãße"
+ },
+ {
+  "wort": "si",
+  "tag": "KON",
+  "rang": 112,
+  "de": "wenn, falls · ob",
+  "aus": "ßi"
+ },
+ {
+  "wort": "notre",
+  "tag": "DET:POS",
+  "rang": 113,
+  "de": "unser",
+  "aus": "notr"
+ },
+ {
+  "wort": "encore",
+  "tag": "ADV",
+  "rang": 114,
+  "de": "noch · wieder",
+  "aus": "ãkor"
+ },
+ {
+  "wort": "attendre",
+  "tag": "VER",
+  "rang": 115,
+  "de": "warten",
+  "aus": "atãdr"
+ },
+ {
+  "wort": "devoir",
+  "tag": "VER",
+  "rang": 116,
+  "de": "müssen · schulden",
+  "aus": "d(ö)wuar"
+ },
+ {
+  "wort": "vacance",
+  "tag": "NOM",
+  "rang": 117,
+  "de": "Ferien, Urlaub",
+  "aus": "wakãß"
+ },
+ {
+  "wort": "aujourd'hui",
+  "tag": "ADV",
+  "rang": 118,
+  "de": "heute",
+  "aus": "oschurdüi"
+ },
+ {
+  "wort": "trop",
+  "tag": "ADV",
+  "rang": 119,
+  "de": "zu, zu viel",
+  "aus": "tro"
+ },
+ {
+  "wort": "année",
+  "tag": "NOM",
+  "rang": 120,
+  "de": "das Jahr",
+  "aus": "ane"
+ },
+ {
+  "wort": "personne",
+  "tag": "NOM",
+  "rang": 121,
+  "de": "Person · niemand",
+  "aus": "pärßon"
+ },
+ {
+  "wort": "rue",
+  "tag": "NOM",
+  "rang": 122,
+  "de": "Straße",
+  "aus": "rü"
+ },
+ {
+  "wort": "matin",
+  "tag": "NOM",
+  "rang": 123,
+  "de": "Morgen",
+  "aus": "matä̃"
+ },
+ {
+  "wort": "père",
+  "tag": "NOM",
+  "rang": 124,
+  "de": "Vater",
+  "aus": "pär"
+ },
+ {
+  "wort": "retrouver",
+  "tag": "VER",
+  "rang": 125,
+  "de": "wiederfinden · treffen",
+  "aus": "r(ö)truwe"
+ },
+ {
+  "wort": "place",
+  "tag": "NOM",
+  "rang": 126,
+  "de": "der Platz",
+  "aus": "plaß"
+ },
+ {
+  "wort": "rester",
+  "tag": "VER",
+  "rang": 127,
+  "de": "bleiben",
+  "aus": "räßte"
+ },
+ {
+  "wort": "chambre",
+  "tag": "NOM",
+  "rang": 128,
+  "de": "das Zimmer",
+  "aus": "schãbr"
+ },
+ {
+  "wort": "souvent",
+  "tag": "ADV",
+  "rang": 129,
+  "de": "oft",
+  "aus": "ßuwã"
+ },
+ {
+  "wort": "sûr",
+  "tag": "ADJ",
+  "rang": 130,
+  "de": "sicher",
+  "aus": "ßür"
+ },
+ {
+  "wort": "donner",
+  "tag": "VER",
+  "rang": 131,
+  "de": "geben",
+  "aus": "done"
+ },
+ {
+  "wort": "histoire",
+  "tag": "NOM",
+  "rang": 132,
+  "de": "Geschichte",
+  "aus": "ißtuar"
+ },
+ {
+  "wort": "homme",
+  "tag": "NOM",
+  "rang": 133,
+  "de": "Mann",
+  "aus": "om"
+ },
+ {
+  "wort": "répondre",
+  "tag": "VER",
+  "rang": 134,
+  "de": "antworten",
+  "aus": "repõdr"
+ },
+ {
+  "wort": "famille",
+  "tag": "NOM",
+  "rang": 135,
+  "de": "Familie",
+  "aus": "famij"
+ },
+ {
+  "wort": "d'accord",
+  "tag": "ADV",
+  "rang": 136,
+  "de": "einverstanden",
+  "aus": "dakor"
+ },
+ {
+  "wort": "commencer",
+  "tag": "VER",
+  "rang": 137,
+  "de": "anfangen",
+  "aus": "komãße"
+ },
+ {
+  "wort": "pourquoi",
+  "tag": "ADV",
+  "rang": 138,
+  "de": "warum",
+  "aus": "purkua"
+ },
+ {
+  "wort": "maintenant",
+  "tag": "ADV",
+  "rang": 139,
+  "de": "jetzt",
+  "aus": "mä̃t(ö)nã"
+ },
+ {
+  "wort": "rentrer",
+  "tag": "VER",
+  "rang": 140,
+  "de": "zurückkommen · hineingehen",
+  "aus": "rãtre"
+ },
+ {
+  "wort": "plaire",
+  "tag": "VER",
+  "rang": 141,
+  "de": "gefallen",
+  "aus": "plär"
+ },
+ {
+  "wort": "demain",
+  "tag": "ADV",
+  "rang": 142,
+  "de": "morgen",
+  "aus": "d(ö)mä̃"
+ },
+ {
+  "wort": "école",
+  "tag": "NOM",
+  "rang": 143,
+  "de": "Schule",
+  "aus": "ekol"
+ },
+ {
+  "wort": "vie",
+  "tag": "NOM",
+  "rang": 144,
+  "de": "das Leben",
+  "aus": "wi"
+ },
+ {
+  "wort": "jeune",
+  "tag": "ADJ",
+  "rang": 145,
+  "de": "jung",
+  "aus": "schön"
+ },
+ {
+  "wort": "blanc",
+  "tag": "ADJ",
+  "rang": 146,
+  "de": "weiß",
+  "aus": "blã"
+ },
+ {
+  "wort": "pendant",
+  "tag": "PRP",
+  "rang": 147,
+  "de": "während",
+  "aus": "pãdã"
+ },
+ {
+  "wort": "ici",
+  "tag": "ADV",
+  "rang": 148,
+  "de": "hier",
+  "aus": "ißi"
+ },
+ {
+  "wort": "mère",
+  "tag": "NOM",
+  "rang": 149,
+  "de": "Mutter",
+  "aus": "mär"
+ },
+ {
+  "wort": "tard",
+  "tag": "ADV",
+  "rang": 150,
+  "de": "spät",
+  "aus": "tar"
+ },
+ {
+  "wort": "rien",
+  "tag": "ADV",
+  "rang": 151,
+  "de": "nichts",
+  "aus": "rjä̃"
+ },
+ {
+  "wort": "semaine",
+  "tag": "NOM",
+  "rang": 152,
+  "de": "Woche",
+  "aus": "ß(ö)män"
+ },
+ {
+  "wort": "vieux",
+  "tag": "ADJ",
+  "rang": 153,
+  "de": "alt",
+  "aus": "wjö"
+ },
+ {
+  "wort": "peut-être",
+  "tag": "ADV",
+  "rang": 154,
+  "de": "vielleicht",
+  "aus": "pötätr"
+ },
+ {
+  "wort": "pays",
+  "tag": "NOM",
+  "rang": 155,
+  "de": "das Land",
+  "aus": "pei"
+ },
+ {
+  "wort": "vers",
+  "tag": "PRP",
+  "rang": 156,
+  "de": "in Richtung, zu · gegen (Uhrzeit)",
+  "aus": "wär"
+ },
+ {
+  "wort": "adorer",
+  "tag": "VER",
+  "rang": 157,
+  "de": "sehr mögen, lieben",
+  "aus": "adore"
+ },
+ {
+  "wort": "seul",
+  "tag": "ADJ",
+  "rang": 158,
+  "de": "allein · einzig",
+  "aus": "ßöl"
+ },
+ {
+  "wort": "voiture",
+  "tag": "NOM",
+  "rang": 159,
+  "de": "das Auto",
+  "aus": "wuatür"
+ },
+ {
+  "wort": "oh",
+  "tag": "INT",
+  "rang": 160,
+  "de": "oh, ach",
+  "aus": "o"
+ },
+ {
+  "wort": "travail",
+  "tag": "NOM",
+  "rang": 161,
+  "de": "die Arbeit",
+  "aus": "trawaj"
+ },
+ {
+  "wort": "journée",
+  "tag": "NOM",
+  "rang": 162,
+  "de": "der Tag",
+  "aus": "schurne"
+ },
+ {
+  "wort": "restaurant",
+  "tag": "NOM",
+  "rang": 163,
+  "de": "das Restaurant",
+  "aus": "räßtorã"
+ },
+ {
+  "wort": "entre",
+  "tag": "PRP",
+  "rang": 164,
+  "de": "zwischen",
+  "aus": "ãtr"
+ },
+ {
+  "wort": "après",
+  "tag": "PRP",
+  "rang": 165,
+  "de": "nach",
+  "aus": "aprä"
+ },
+ {
+  "wort": "mettre",
+  "tag": "VER",
+  "rang": 166,
+  "de": "legen, stellen, setzen · anziehen",
+  "aus": "mätr"
+ },
+ {
+  "wort": "entendre",
+  "tag": "VER",
+  "rang": 167,
+  "de": "hören",
+  "aus": "ãtãdr"
+ },
+ {
+  "wort": "fête",
+  "tag": "NOM",
+  "rang": 168,
+  "de": "das Fest, Feier",
+  "aus": "fät"
+ },
+ {
+  "wort": "sortir",
+  "tag": "VER",
+  "rang": 169,
+  "de": "hinausgehen, ausgehen",
+  "aus": "ßortir"
+ },
+ {
+  "wort": "aider",
+  "tag": "VER",
+  "rang": 170,
+  "de": "helfen",
+  "aus": "äde"
+ },
+ {
+  "wort": "femme",
+  "tag": "NOM",
+  "rang": 171,
+  "de": "Frau",
+  "aus": "fam"
+ },
+ {
+  "wort": "vraiment",
+  "tag": "ADV",
+  "rang": 172,
+  "de": "wirklich",
+  "aus": "wrämã"
+ },
+ {
+  "wort": "parce",
+  "tag": "KON",
+  "rang": 173,
+  "de": "weil (parce que)",
+  "aus": "parß"
+ },
+ {
+  "wort": "vite",
+  "tag": "ADV",
+  "rang": 174,
+  "de": "schnell",
+  "aus": "wit"
+ },
+ {
+  "wort": "la",
+  "tag": "PRO",
+  "rang": 175,
+  "de": "sie, ihn, es (Objektpronomen)",
+  "aus": "la"
+ },
+ {
+  "wort": "euro",
+  "tag": "NOM",
+  "rang": 176,
+  "de": "Euro",
+  "aus": "öro"
+ },
+ {
+  "wort": "côté",
+  "tag": "NOM",
+  "rang": 177,
+  "de": "die Seite",
+  "aus": "kote"
+ },
+ {
+  "wort": "musée",
+  "tag": "NOM",
+  "rang": 178,
+  "de": "das Museum",
+  "aus": "müse"
+ },
+ {
+  "wort": "VRAI",
+  "tag": "ADJ",
+  "rang": 179,
+  "de": "wahr, echt",
+  "aus": "wrä"
+ },
+ {
+  "wort": "eau",
+  "tag": "NOM",
+  "rang": 180,
+  "de": "das Wasser",
+  "aus": "o"
+ },
+ {
+  "wort": "préférer",
+  "tag": "VER",
+  "rang": 181,
+  "de": "lieber mögen, bevorzugen",
+  "aus": "prefere"
+ },
+ {
+  "wort": "dernier",
+  "tag": "ADJ",
+  "rang": 182,
+  "de": "letzt-, vorig-",
+  "aus": "därnje"
+ },
+ {
+  "wort": "comprendre",
+  "tag": "VER",
+  "rang": 183,
+  "de": "verstehen",
+  "aus": "kõprãdr"
+ },
+ {
+  "wort": "gens",
+  "tag": "NOM",
+  "rang": 184,
+  "de": "Leute",
+  "aus": "schã"
+ },
+ {
+  "wort": "photo",
+  "tag": "NOM",
+  "rang": 185,
+  "de": "das Foto",
+  "aus": "foto"
+ },
+ {
+  "wort": "visiter",
+  "tag": "VER",
+  "rang": 186,
+  "de": "besichtigen, besuchen",
+  "aus": "wisite"
+ },
+ {
+  "wort": "question",
+  "tag": "NOM",
+  "rang": 187,
+  "de": "Frage",
+  "aus": "käßtjõ"
+ },
+ {
+  "wort": "entrer",
+  "tag": "VER",
+  "rang": 188,
+  "de": "hineingehen, eintreten",
+  "aus": "ãtre"
+ },
+ {
+  "wort": "devant",
+  "tag": "PRP",
+  "rang": 189,
+  "de": "vor (örtlich)",
+  "aus": "d(ö)wã"
+ },
+ {
+  "wort": "préparer",
+  "tag": "VER",
+  "rang": 190,
+  "de": "vorbereiten",
+  "aus": "prepare"
+ },
+ {
+  "wort": "écrire",
+  "tag": "VER",
+  "rang": 191,
+  "de": "schreiben",
+  "aus": "ekrir"
+ },
+ {
+  "wort": "salle",
+  "tag": "NOM",
+  "rang": 192,
+  "de": "der Saal, Raum",
+  "aus": "ßal"
+ },
+ {
+  "wort": "cinéma",
+  "tag": "NOM",
+  "rang": 193,
+  "de": "das Kino",
+  "aus": "ßinema"
+ },
+ {
+  "wort": "près",
+  "tag": "ADV",
+  "rang": 194,
+  "de": "nah, in der Nähe",
+  "aus": "prä"
+ },
+ {
+  "wort": "musique",
+  "tag": "NOM",
+  "rang": 195,
+  "de": "Musik",
+  "aus": "müsik"
+ },
+ {
+  "wort": "jusque",
+  "tag": "PRP",
+  "rang": 196,
+  "de": "bis",
+  "aus": "schüßk"
+ },
+ {
+  "wort": "même",
+  "tag": "ADJ",
+  "rang": 197,
+  "de": "gleich, selb- · sogar",
+  "aus": "mäm"
+ },
+ {
+  "wort": "région",
+  "tag": "NOM",
+  "rang": 198,
+  "de": "Region, Gegend",
+  "aus": "reschjõ"
+ },
+ {
+  "wort": "cuisine",
+  "tag": "NOM",
+  "rang": 199,
+  "de": "Küche",
+  "aus": "küisin"
+ },
+ {
+  "wort": "magnifique",
+  "tag": "ADJ",
+  "rang": 200,
+  "de": "wunderschön, großartig",
+  "aus": "manjifik"
+ },
+ {
+  "wort": "acheter",
+  "tag": "VER",
+  "rang": 201,
+  "de": "kaufen",
+  "aus": "asch(ö)te"
+ },
+ {
+  "wort": "lire",
+  "tag": "VER",
+  "rang": 202,
+  "de": "lesen",
+  "aus": "lir"
+ },
+ {
+  "wort": "sans",
+  "tag": "PRP",
+  "rang": 203,
+  "de": "ohne",
+  "aus": "ßã"
+ },
+ {
+  "wort": "jamais",
+  "tag": "ADV",
+  "rang": 204,
+  "de": "nie, niemals",
+  "aus": "schamä"
+ },
+ {
+  "wort": "après-midi",
+  "tag": "NOM",
+  "rang": 205,
+  "de": "Nachmittag",
+  "aus": "aprä-midi"
+ },
+ {
+  "wort": "avant",
+  "tag": "PRP",
+  "rang": 206,
+  "de": "vor",
+  "aus": "awã"
+ },
+ {
+  "wort": "seulement",
+  "tag": "ADV",
+  "rang": 207,
+  "de": "nur",
+  "aus": "ßölmã"
+ },
+ {
+  "wort": "eux",
+  "tag": "PRO",
+  "rang": 208,
+  "de": "sie (betont)",
+  "aus": "ö"
+ },
+ {
+  "wort": "voilà",
+  "tag": "ADV",
+  "rang": 209,
+  "de": "da ist, hier ist",
+  "aus": "wuala"
+ },
+ {
+  "wort": "gentil",
+  "tag": "ADJ",
+  "rang": 210,
+  "de": "nett, freundlich",
+  "aus": "schãti"
+ },
+ {
+  "wort": "tour",
+  "tag": "NOM",
+  "rang": 211,
+  "de": "Runde, Ausflug · Turm",
+  "aus": "tur"
+ },
+ {
+  "wort": "problème",
+  "tag": "NOM",
+  "rang": 212,
+  "de": "Problem",
+  "aus": "probläm"
+ },
+ {
+  "wort": "rencontrer",
+  "tag": "VER",
+  "rang": 213,
+  "de": "treffen, begegnen",
+  "aus": "rãkõtre"
+ },
+ {
+  "wort": "loin",
+  "tag": "ADV",
+  "rang": 214,
+  "de": "weit, fern",
+  "aus": "luä̃"
+ },
+ {
+  "wort": "nuit",
+  "tag": "NOM",
+  "rang": 215,
+  "de": "Nacht",
+  "aus": "nüi"
+ },
+ {
+  "wort": "collège",
+  "tag": "NOM",
+  "rang": 216,
+  "de": "Mittelschule",
+  "aus": "koläsch"
+ },
+ {
+  "wort": "porte",
+  "tag": "NOM",
+  "rang": 217,
+  "de": "Tür",
+  "aus": "port"
+ },
+ {
+  "wort": "content",
+  "tag": "ADJ",
+  "rang": 218,
+  "de": "zufrieden, froh",
+  "aus": "kõtã"
+ },
+ {
+  "wort": "garçon",
+  "tag": "NOM",
+  "rang": 219,
+  "de": "Junge",
+  "aus": "garßõ"
+ },
+ {
+  "wort": "raconter",
+  "tag": "VER",
+  "rang": 220,
+  "de": "erzählen",
+  "aus": "rakõte"
+ },
+ {
+  "wort": "heureux",
+  "tag": "ADJ",
+  "rang": 221,
+  "de": "glücklich",
+  "aus": "örö"
+ },
+ {
+  "wort": "croire",
+  "tag": "VER",
+  "rang": 222,
+  "de": "glauben",
+  "aus": "kruar"
+ },
+ {
+  "wort": "sympa",
+  "tag": "ADJ",
+  "rang": 223,
+  "de": "nett, sympathisch",
+  "aus": "ßä̃pa"
+ },
+ {
+  "wort": "eh",
+  "tag": "INT",
+  "rang": 224,
+  "de": "he, ach",
+  "aus": "e"
+ },
+ {
+  "wort": "occuper",
+  "tag": "VER",
+  "rang": 225,
+  "de": "beschäftigen · sich kümmern",
+  "aus": "oküpe"
+ },
+ {
+  "wort": "jouer",
+  "tag": "VER",
+  "rang": 226,
+  "de": "spielen",
+  "aus": "schue"
+ },
+ {
+  "wort": "salut",
+  "tag": "NOM",
+  "rang": 227,
+  "de": "Hallo · Tschüss",
+  "aus": "ßalü"
+ },
+ {
+  "wort": "fin",
+  "tag": "NOM",
+  "rang": 228,
+  "de": "Ende",
+  "aus": "fä̃"
+ },
+ {
+  "wort": "possible",
+  "tag": "ADJ",
+  "rang": 229,
+  "de": "möglich",
+  "aus": "poßibl"
+ },
+ {
+  "wort": "train",
+  "tag": "NOM",
+  "rang": 230,
+  "de": "Zug",
+  "aus": "trä̃"
+ },
+ {
+  "wort": "oeil",
+  "tag": "NOM",
+  "rang": 231,
+  "de": "Auge",
+  "aus": "öj"
+ },
+ {
+  "wort": "hôtel",
+  "tag": "NOM",
+  "rang": 232,
+  "de": "Hotel",
+  "aus": "otäl"
+ },
+ {
+  "wort": "vin",
+  "tag": "NOM",
+  "rang": 233,
+  "de": "Wein",
+  "aus": "wä̃"
+ },
+ {
+  "wort": "vivre",
+  "tag": "VER",
+  "rang": 234,
+  "de": "leben",
+  "aus": "wiwr"
+ },
+ {
+  "wort": "depuis",
+  "tag": "PRP",
+  "rang": 235,
+  "de": "seit",
+  "aus": "d(ö)püi"
+ },
+ {
+  "wort": "écouter",
+  "tag": "VER",
+  "rang": 236,
+  "de": "zuhören, hören",
+  "aus": "ekute"
+ },
+ {
+  "wort": "nom",
+  "tag": "NOM",
+  "rang": 237,
+  "de": "Name",
+  "aus": "nõ"
+ },
+ {
+  "wort": "sous",
+  "tag": "PRP",
+  "rang": 238,
+  "de": "unter",
+  "aus": "ßu"
+ },
+ {
+  "wort": "marcher",
+  "tag": "VER",
+  "rang": 239,
+  "de": "gehen, laufen · funktionieren",
+  "aus": "marsche"
+ },
+ {
+  "wort": "montrer",
+  "tag": "VER",
+  "rang": 240,
+  "de": "zeigen",
+  "aus": "mõtre"
+ },
+ {
+  "wort": "joli",
+  "tag": "ADJ",
+  "rang": 241,
+  "de": "hübsch, schön",
+  "aus": "scholi"
+ },
+ {
+  "wort": "voyage",
+  "tag": "NOM",
+  "rang": 242,
+  "de": "Reise",
+  "aus": "wuajasch"
+ },
+ {
+  "wort": "arrêter",
+  "tag": "VER",
+  "rang": 243,
+  "de": "anhalten, aufhören",
+  "aus": "aräte"
+ },
+ {
+  "wort": "déjà",
+  "tag": "ADV",
+  "rang": 244,
+  "de": "schon, bereits",
+  "aus": "descha"
+ },
+ {
+  "wort": "triste",
+  "tag": "ADJ",
+  "rang": 245,
+  "de": "traurig",
+  "aus": "trißt"
+ },
+ {
+  "wort": "lit",
+  "tag": "NOM",
+  "rang": 246,
+  "de": "Bett",
+  "aus": "li"
+ },
+ {
+  "wort": "d'abord",
+  "tag": "ADV",
+  "rang": 247,
+  "de": "zuerst",
+  "aus": "dabor"
+ },
+ {
+  "wort": "moins",
+  "tag": "ADV",
+  "rang": 248,
+  "de": "weniger",
+  "aus": "muä̃"
+ },
+ {
+  "wort": "idée",
+  "tag": "NOM",
+  "rang": 249,
+  "de": "Idee",
+  "aus": "ide"
+ },
+ {
+  "wort": "été",
+  "tag": "NOM",
+  "rang": 250,
+  "de": "Sommer",
+  "aus": "ete"
+ },
+ {
+  "wort": "jardin",
+  "tag": "NOM",
+  "rang": 251,
+  "de": "Garten",
+  "aus": "schardä̃"
+ },
+ {
+  "wort": "excuser",
+  "tag": "VER",
+  "rang": 252,
+  "de": "entschuldigen",
+  "aus": "äkßküse"
+ },
+ {
+  "wort": "difficile",
+  "tag": "ADJ",
+  "rang": 253,
+  "de": "schwierig, schwer",
+  "aus": "difißil"
+ },
+ {
+  "wort": "café",
+  "tag": "NOM",
+  "rang": 254,
+  "de": "Kaffee · Café",
+  "aus": "kafe"
+ },
+ {
+  "wort": "chaud",
+  "tag": "ADJ",
+  "rang": 255,
+  "de": "warm, heiß",
+  "aus": "scho"
+ },
+ {
+  "wort": "soeur",
+  "tag": "NOM",
+  "rang": 256,
+  "de": "Schwester",
+  "aus": "ßör"
+ },
+ {
+  "wort": "assez",
+  "tag": "ADV",
+  "rang": 257,
+  "de": "genug · ziemlich",
+  "aus": "aße"
+ },
+ {
+  "wort": "devenir",
+  "tag": "VER",
+  "rang": 258,
+  "de": "werden",
+  "aus": "d(ö)w(ö)nir"
+ },
+ {
+  "wort": "laisser",
+  "tag": "VER",
+  "rang": 259,
+  "de": "lassen",
+  "aus": "läße"
+ },
+ {
+  "wort": "donc",
+  "tag": "ADV",
+  "rang": 260,
+  "de": "also",
+  "aus": "dõk"
+ },
+ {
+  "wort": "monter",
+  "tag": "VER",
+  "rang": 261,
+  "de": "steigen, hinaufgehen",
+  "aus": "mõte"
+ },
+ {
+  "wort": "téléphone",
+  "tag": "NOM",
+  "rang": 262,
+  "de": "Telefon",
+  "aus": "telefon"
+ },
+ {
+  "wort": "intéresser",
+  "tag": "VER",
+  "rang": 263,
+  "de": "interessieren",
+  "aus": "ä̃tereße"
+ },
+ {
+  "wort": "découvrir",
+  "tag": "VER",
+  "rang": 264,
+  "de": "entdecken",
+  "aus": "dekuwrir"
+ },
+ {
+  "wort": "montagne",
+  "tag": "NOM",
+  "rang": 265,
+  "de": "Berg, Gebirge",
+  "aus": "mõtanj"
+ },
+ {
+  "wort": "table",
+  "tag": "NOM",
+  "rang": 266,
+  "de": "Tisch",
+  "aus": "tabl"
+ },
+ {
+  "wort": "âge",
+  "tag": "NOM",
+  "rang": 267,
+  "de": "Alter",
+  "aus": "asch"
+ },
+ {
+  "wort": "chien",
+  "tag": "NOM",
+  "rang": 268,
+  "de": "Hund",
+  "aus": "schiä̃"
+ },
+ {
+  "wort": "ensuite",
+  "tag": "ADV",
+  "rang": 269,
+  "de": "danach, anschließend",
+  "aus": "ãßüit"
+ },
+ {
+  "wort": "boire",
+  "tag": "VER",
+  "rang": 270,
+  "de": "trinken",
+  "aus": "buar"
+ },
+ {
+  "wort": "finir",
+  "tag": "VER",
+  "rang": 271,
+  "de": "beenden, enden",
+  "aus": "finir"
+ },
+ {
+  "wort": "livre",
+  "tag": "NOM",
+  "rang": 272,
+  "de": "Buch",
+  "aus": "liwr"
+ },
+ {
+  "wort": "appartement",
+  "tag": "NOM",
+  "rang": 273,
+  "de": "Wohnung",
+  "aus": "apart(ö)mã"
+ },
+ {
+  "wort": "main",
+  "tag": "NOM",
+  "rang": 274,
+  "de": "Hand",
+  "aus": "mä̃"
+ },
+ {
+  "wort": "langue",
+  "tag": "NOM",
+  "rang": 275,
+  "de": "Sprache · Zunge",
+  "aus": "lãg"
+ },
+ {
+  "wort": "dormir",
+  "tag": "VER",
+  "rang": 276,
+  "de": "schlafen",
+  "aus": "dormir"
+ },
+ {
+  "wort": "maman",
+  "tag": "NOM",
+  "rang": 277,
+  "de": "Mama",
+  "aus": "mamã"
+ },
+ {
+  "wort": "amour",
+  "tag": "NOM",
+  "rang": 278,
+  "de": "Liebe",
+  "aus": "amur"
+ },
+ {
+  "wort": "professeur",
+  "tag": "NOM",
+  "rang": 279,
+  "de": "Lehrer",
+  "aus": "profeßör"
+ },
+ {
+  "wort": "ouvrir",
+  "tag": "VER",
+  "rang": 280,
+  "de": "öffnen",
+  "aus": "uwrir"
+ },
+ {
+  "wort": "contre",
+  "tag": "PRP",
+  "rang": 281,
+  "de": "gegen",
+  "aus": "kõtr"
+ },
+ {
+  "wort": "chaque",
+  "tag": "PRO",
+  "rang": 282,
+  "de": "jeder, jede, jedes",
+  "aus": "schak"
+ },
+ {
+  "wort": "oublier",
+  "tag": "VER",
+  "rang": 283,
+  "de": "vergessen",
+  "aus": "ublie"
+ },
+ {
+  "wort": "surtout",
+  "tag": "ADV",
+  "rang": 284,
+  "de": "vor allem, besonders",
+  "aus": "ßürtu"
+ },
+ {
+  "wort": "demande",
+  "tag": "NOM",
+  "rang": 285,
+  "de": "Anfrage, Bitte",
+  "aus": "d(ö)mãd"
+ },
+ {
+  "wort": "mer",
+  "tag": "NOM",
+  "rang": 286,
+  "de": "Meer",
+  "aus": "mär"
+ },
+ {
+  "wort": "jeudi",
+  "tag": "NOM",
+  "rang": 287,
+  "de": "Donnerstag",
+  "aus": "schödi"
+ },
+ {
+  "wort": "copain",
+  "tag": "NOM",
+  "rang": 288,
+  "de": "Kumpel, Freund",
+  "aus": "kopä̃"
+ },
+ {
+  "wort": "bientôt",
+  "tag": "ADV",
+  "rang": 289,
+  "de": "bald",
+  "aus": "bjä̃to"
+ },
+ {
+  "wort": "noir",
+  "tag": "ADJ",
+  "rang": 290,
+  "de": "schwarz",
+  "aus": "nuar"
+ },
+ {
+  "wort": "classe",
+  "tag": "NOM",
+  "rang": 291,
+  "de": "Klasse",
+  "aus": "klaß"
+ },
+ {
+  "wort": "mari",
+  "tag": "NOM",
+  "rang": 292,
+  "de": "Ehemann",
+  "aus": "mari"
+ },
+ {
+  "wort": "terre",
+  "tag": "NOM",
+  "rang": 293,
+  "de": "Erde",
+  "aus": "tär"
+ },
+ {
+  "wort": "peur",
+  "tag": "NOM",
+  "rang": 294,
+  "de": "Angst",
+  "aus": "pör"
+ },
+ {
+  "wort": "midi",
+  "tag": "NOM",
+  "rang": 295,
+  "de": "Mittag",
+  "aus": "midi"
+ },
+ {
+  "wort": "anglais",
+  "tag": "ADJ",
+  "rang": 296,
+  "de": "englisch",
+  "aus": "ãglä"
+ },
+ {
+  "wort": "sport",
+  "tag": "NOM",
+  "rang": 297,
+  "de": "Sport",
+  "aus": "ßpor"
+ },
+ {
+  "wort": "prochain",
+  "tag": "ADJ",
+  "rang": 298,
+  "de": "nächste",
+  "aus": "proschä̃"
+ },
+ {
+  "wort": "célèbre",
+  "tag": "ADJ",
+  "rang": 299,
+  "de": "berühmt",
+  "aus": "ßeläbr"
+ },
+ {
+  "wort": "château",
+  "tag": "NOM",
+  "rang": 300,
+  "de": "Schloss, Burg",
+  "aus": "schato"
+ },
+ {
+  "wort": "téléphoner",
+  "tag": "VER",
+  "rang": 301,
+  "de": "telefonieren",
+  "aus": "telefone"
+ },
+ {
+  "wort": "naître",
+  "tag": "VER",
+  "rang": 302,
+  "de": "geboren werden",
+  "aus": "nätr"
+ },
+ {
+  "wort": "revoir",
+  "tag": "VER",
+  "rang": 303,
+  "de": "wiedersehen",
+  "aus": "r(ö)wuar"
+ },
+ {
+  "wort": "minute",
+  "tag": "NOM",
+  "rang": 304,
+  "de": "Minute",
+  "aus": "minüt"
+ },
+ {
+  "wort": "enfin",
+  "tag": "ADV",
+  "rang": 305,
+  "de": "endlich · schließlich",
+  "aus": "ãfä̃"
+ },
+ {
+  "wort": "pièce",
+  "tag": "NOM",
+  "rang": 306,
+  "de": "Zimmer · Stück",
+  "aus": "piäß"
+ },
+ {
+  "wort": "jeu",
+  "tag": "NOM",
+  "rang": 307,
+  "de": "Spiel",
+  "aus": "schö"
+ },
+ {
+  "wort": "tourner",
+  "tag": "VER",
+  "rang": 308,
+  "de": "drehen · abbiegen",
+  "aus": "turne"
+ },
+ {
+  "wort": "nombreux",
+  "tag": "ADJ",
+  "rang": 309,
+  "de": "zahlreich",
+  "aus": "nõbrö"
+ },
+ {
+  "wort": "attention",
+  "tag": "NOM",
+  "rang": 310,
+  "de": "Achtung · Aufmerksamkeit",
+  "aus": "atãßjõ"
+ },
+ {
+  "wort": "plein",
+  "tag": "ADJ",
+  "rang": 311,
+  "de": "voll",
+  "aus": "plä̃"
+ },
+ {
+  "wort": "choisir",
+  "tag": "VER",
+  "rang": 312,
+  "de": "wählen · aussuchen",
+  "aus": "schuasir"
+ },
+ {
+  "wort": "super",
+  "tag": "ADJ",
+  "rang": 313,
+  "de": "toll · super",
+  "aus": "ßüpär"
+ },
+ {
+  "wort": "samedi",
+  "tag": "NOM",
+  "rang": 314,
+  "de": "Samstag",
+  "aus": "ßam(ö)di"
+ },
+ {
+  "wort": "suite",
+  "tag": "NOM",
+  "rang": 315,
+  "de": "Fortsetzung · Folge",
+  "aus": "ßüit"
+ },
+ {
+  "wort": "retour",
+  "tag": "NOM",
+  "rang": 316,
+  "de": "Rückkehr",
+  "aus": "r(ö)tur"
+ },
+ {
+  "wort": "carte",
+  "tag": "NOM",
+  "rang": 317,
+  "de": "Karte",
+  "aus": "kart"
+ },
+ {
+  "wort": "important",
+  "tag": "ADJ",
+  "rang": 318,
+  "de": "wichtig",
+  "aus": "ä̃portã"
+ },
+ {
+  "wort": "revenir",
+  "tag": "VER",
+  "rang": 319,
+  "de": "zurückkommen",
+  "aus": "r(ö)w(ö)nir"
+ },
+ {
+  "wort": "exemple",
+  "tag": "NOM",
+  "rang": 320,
+  "de": "Beispiel",
+  "aus": "ägsãpl"
+ },
+ {
+  "wort": "proposer",
+  "tag": "VER",
+  "rang": 321,
+  "de": "vorschlagen",
+  "aus": "propose"
+ },
+ {
+  "wort": "mal",
+  "tag": "ADV",
+  "rang": 322,
+  "de": "schlecht",
+  "aus": "mal"
+ },
+ {
+  "wort": "boîte",
+  "tag": "NOM",
+  "rang": 323,
+  "de": "Schachtel · Dose",
+  "aus": "buat"
+ },
+ {
+  "wort": "rire",
+  "tag": "VER",
+  "rang": 324,
+  "de": "lachen",
+  "aus": "rir"
+ },
+ {
+  "wort": "ensemble",
+  "tag": "ADV",
+  "rang": 325,
+  "de": "zusammen",
+  "aus": "ãßãbl"
+ },
+ {
+  "wort": "copine",
+  "tag": "NOM",
+  "rang": 326,
+  "de": "Freundin",
+  "aus": "kopin"
+ },
+ {
+  "wort": "siècle",
+  "tag": "NOM",
+  "rang": 327,
+  "de": "Jahrhundert",
+  "aus": "ßiäkl"
+ },
+ {
+  "wort": "rouge",
+  "tag": "ADJ",
+  "rang": 328,
+  "de": "rot",
+  "aus": "rusch"
+ },
+ {
+  "wort": "détester",
+  "tag": "VER",
+  "rang": 329,
+  "de": "hassen",
+  "aus": "detäßte"
+ },
+ {
+  "wort": "bleu",
+  "tag": "ADJ",
+  "rang": 330,
+  "de": "blau",
+  "aus": "blö"
+ },
+ {
+  "wort": "étudiant",
+  "tag": "NOM",
+  "rang": 331,
+  "de": "Student",
+  "aus": "etüdjã"
+ },
+ {
+  "wort": "déjeuner",
+  "tag": "NOM",
+  "rang": 332,
+  "de": "Mittagessen",
+  "aus": "deschöne"
+ },
+ {
+  "wort": "couleur",
+  "tag": "NOM",
+  "rang": 333,
+  "de": "Farbe",
+  "aus": "kulör"
+ },
+ {
+  "wort": "moment",
+  "tag": "NOM",
+  "rang": 334,
+  "de": "Moment · Augenblick",
+  "aus": "momã"
+ },
+ {
+  "wort": "porter",
+  "tag": "VER",
+  "rang": 335,
+  "de": "tragen",
+  "aus": "porte"
+ },
+ {
+  "wort": "lever",
+  "tag": "VER",
+  "rang": 336,
+  "de": "heben · aufstehen",
+  "aus": "l(ö)we"
+ },
+ {
+  "wort": "ancien",
+  "tag": "ADJ",
+  "rang": 337,
+  "de": "alt · ehemalig",
+  "aus": "ãßjä̃"
+ },
+ {
+  "wort": "chance",
+  "tag": "NOM",
+  "rang": 338,
+  "de": "Glück · Chance",
+  "aus": "schãß"
+ },
+ {
+  "wort": "pont",
+  "tag": "NOM",
+  "rang": 339,
+  "de": "Brücke",
+  "aus": "põ"
+ },
+ {
+  "wort": "plage",
+  "tag": "NOM",
+  "rang": 340,
+  "de": "Strand",
+  "aus": "plasch"
+ },
+ {
+  "wort": "présenter",
+  "tag": "VER",
+  "rang": 341,
+  "de": "vorstellen",
+  "aus": "presãte"
+ },
+ {
+  "wort": "île",
+  "tag": "NOM",
+  "rang": 342,
+  "de": "Insel",
+  "aus": "il"
+ },
+ {
+  "wort": "là-bas",
+  "tag": "ADV",
+  "rang": 343,
+  "de": "dort drüben",
+  "aus": "laba"
+ },
+ {
+  "wort": "cadeau",
+  "tag": "NOM",
+  "rang": 344,
+  "de": "Geschenk",
+  "aus": "kado"
+ },
+ {
+  "wort": "combien",
+  "tag": "ADV",
+  "rang": 345,
+  "de": "wie viel",
+  "aus": "kõbjä̃"
+ },
+ {
+  "wort": "décider",
+  "tag": "VER",
+  "rang": 346,
+  "de": "entscheiden",
+  "aus": "deßide"
+ },
+ {
+  "wort": "fort",
+  "tag": "ADJ",
+  "rang": 347,
+  "de": "stark · laut",
+  "aus": "for"
+ },
+ {
+  "wort": "froid",
+  "tag": "ADJ",
+  "rang": 348,
+  "de": "kalt",
+  "aus": "frua"
+ },
+ {
+  "wort": "vélo",
+  "tag": "NOM",
+  "rang": 349,
+  "de": "Fahrrad",
+  "aus": "welo"
+ },
+ {
+  "wort": "fermer",
+  "tag": "VER",
+  "rang": 350,
+  "de": "schließen · zumachen",
+  "aus": "färme"
+ },
+ {
+  "wort": "dimanche",
+  "tag": "NOM",
+  "rang": 351,
+  "de": "Sonntag",
+  "aus": "dimãsch"
+ },
+ {
+  "wort": "retourner",
+  "tag": "VER",
+  "rang": 352,
+  "de": "zurückkehren · umdrehen",
+  "aus": "r(ö)turne"
+ },
+ {
+  "wort": "expliquer",
+  "tag": "VER",
+  "rang": 353,
+  "de": "erklären",
+  "aus": "äkßplike"
+ },
+ {
+  "wort": "fenêtre",
+  "tag": "NOM",
+  "rang": 354,
+  "de": "Fenster",
+  "aus": "f(ö)nätr"
+ },
+ {
+  "wort": "changer",
+  "tag": "VER",
+  "rang": 355,
+  "de": "ändern · wechseln",
+  "aus": "schãsche"
+ },
+ {
+  "wort": "espérer",
+  "tag": "VER",
+  "rang": 356,
+  "de": "hoffen",
+  "aus": "äßpere"
+ },
+ {
+  "wort": "lieu",
+  "tag": "NOM",
+  "rang": 357,
+  "de": "Ort",
+  "aus": "liö"
+ },
+ {
+  "wort": "week-end",
+  "tag": "NOM",
+  "rang": 358,
+  "de": "Wochenende",
+  "aus": "wikänd"
+ },
+ {
+  "wort": "presque",
+  "tag": "ADV",
+  "rang": 359,
+  "de": "fast · beinahe",
+  "aus": "präßk"
+ },
+ {
+  "wort": "sac",
+  "tag": "NOM",
+  "rang": 360,
+  "de": "Tasche",
+  "aus": "ßak"
+ },
+ {
+  "wort": "meilleur",
+  "tag": "ADJ",
+  "rang": 361,
+  "de": "besser · beste",
+  "aus": "mäiör"
+ },
+ {
+  "wort": "rappeler",
+  "tag": "VER",
+  "rang": 362,
+  "de": "zurückrufen · erinnern",
+  "aus": "rap(ö)le"
+ },
+ {
+  "wort": "pied",
+  "tag": "NOM",
+  "rang": 363,
+  "de": "Fuß",
+  "aus": "pie"
+ },
+ {
+  "wort": "accompagner",
+  "tag": "VER",
+  "rang": 364,
+  "de": "begleiten",
+  "aus": "akõpanje"
+ },
+ {
+  "wort": "coup",
+  "tag": "NOM",
+  "rang": 365,
+  "de": "Schlag · Mal",
+  "aus": "ku"
+ },
+ {
+  "wort": "différent",
+  "tag": "ADJ",
+  "rang": 366,
+  "de": "verschieden · anders",
+  "aus": "diferã"
+ },
+ {
+  "wort": "soirée",
+  "tag": "NOM",
+  "rang": 367,
+  "de": "Abend",
+  "aus": "ßuare"
+ },
+ {
+  "wort": "vendredi",
+  "tag": "NOM",
+  "rang": 368,
+  "de": "Freitag",
+  "aus": "wãdr(ö)di"
+ },
+ {
+  "wort": "juste",
+  "tag": "ADJ",
+  "rang": 369,
+  "de": "richtig · gerecht",
+  "aus": "schüßt"
+ },
+ {
+  "wort": "dîner",
+  "tag": "VER",
+  "rang": 370,
+  "de": "zu Abend essen",
+  "aus": "dine"
+ },
+ {
+  "wort": "internet",
+  "tag": "NOM",
+  "rang": 371,
+  "de": "Internet",
+  "aus": "ä̃tärnät"
+ },
+ {
+  "wort": "gauche",
+  "tag": "ADJ",
+  "rang": 372,
+  "de": "linke · links",
+  "aus": "gosch"
+ },
+ {
+  "wort": "est",
+  "tag": "NOM",
+  "rang": 373,
+  "de": "Osten",
+  "aus": "äßt"
+ },
+ {
+  "wort": "magasin",
+  "tag": "NOM",
+  "rang": 374,
+  "de": "Geschäft · Laden",
+  "aus": "magasä̃"
+ },
+ {
+  "wort": "apprendre",
+  "tag": "VER",
+  "rang": 375,
+  "de": "lernen",
+  "aus": "aprãdr"
+ },
+ {
+  "wort": "marier",
+  "tag": "VER",
+  "rang": 376,
+  "de": "heiraten",
+  "aus": "marie"
+ },
+ {
+  "wort": "cher",
+  "tag": "ADV",
+  "rang": 377,
+  "de": "teuer",
+  "aus": "schär"
+ },
+ {
+  "wort": "apporter",
+  "tag": "VER",
+  "rang": 378,
+  "de": "bringen · mitbringen",
+  "aus": "aporte"
+ },
+ {
+  "wort": "poser",
+  "tag": "VER",
+  "rang": 379,
+  "de": "stellen · legen",
+  "aus": "pose"
+ },
+ {
+  "wort": "besoin",
+  "tag": "NOM",
+  "rang": 380,
+  "de": "Bedürfnis · Bedarf",
+  "aus": "b(ö)suä̃"
+ },
+ {
+  "wort": "mercredi",
+  "tag": "NOM",
+  "rang": 381,
+  "de": "Mittwoch",
+  "aus": "märkr(ö)di"
+ },
+ {
+  "wort": "désoler",
+  "tag": "VER",
+  "rang": 382,
+  "de": "bedauern · leidtun",
+  "aus": "desole"
+ },
+ {
+  "wort": "hier",
+  "tag": "ADV",
+  "rang": 383,
+  "de": "gestern",
+  "aus": "iär"
+ },
+ {
+  "wort": "million",
+  "tag": "NOM",
+  "rang": 384,
+  "de": "Million",
+  "aus": "miljõ"
+ },
+ {
+  "wort": "hôpital",
+  "tag": "NOM",
+  "rang": 385,
+  "de": "Krankenhaus",
+  "aus": "opital"
+ },
+ {
+  "wort": "poisson",
+  "tag": "NOM",
+  "rang": 386,
+  "de": "Fisch",
+  "aus": "puaßõ"
+ },
+ {
+  "wort": "inviter",
+  "tag": "VER",
+  "rang": 387,
+  "de": "einladen",
+  "aus": "ä̃wite"
+ },
+ {
+  "wort": "quitter",
+  "tag": "VER",
+  "rang": 388,
+  "de": "verlassen",
+  "aus": "kite"
+ },
+ {
+  "wort": "étudier",
+  "tag": "VER",
+  "rang": 389,
+  "de": "lernen · studieren",
+  "aus": "etüdie"
+ },
+ {
+  "wort": "gros",
+  "tag": "ADJ",
+  "rang": 390,
+  "de": "dick · groß",
+  "aus": "gro"
+ },
+ {
+  "wort": "danser",
+  "tag": "VER",
+  "rang": 391,
+  "de": "tanzen",
+  "aus": "dãße"
+ },
+ {
+  "wort": "raison",
+  "tag": "NOM",
+  "rang": 392,
+  "de": "Grund · Recht",
+  "aus": "räsõ"
+ },
+ {
+  "wort": "continuer",
+  "tag": "VER",
+  "rang": 393,
+  "de": "fortsetzen · weitermachen",
+  "aus": "kõtinüe"
+ },
+ {
+  "wort": "dame",
+  "tag": "NOM",
+  "rang": 394,
+  "de": "Dame",
+  "aus": "dam"
+ },
+ {
+  "wort": "excellent",
+  "tag": "ADJ",
+  "rang": 395,
+  "de": "ausgezeichnet",
+  "aus": "äkßälã"
+ },
+ {
+  "wort": "derrière",
+  "tag": "PRP",
+  "rang": 396,
+  "de": "hinter",
+  "aus": "däriär"
+ },
+ {
+  "wort": "facile",
+  "tag": "ADJ",
+  "rang": 397,
+  "de": "einfach · leicht",
+  "aus": "faßil"
+ },
+ {
+  "wort": "allô",
+  "tag": "INT",
+  "rang": 398,
+  "de": "hallo (am Telefon)",
+  "aus": "alo"
+ },
+ {
+  "wort": "autour",
+  "tag": "ADV",
+  "rang": 399,
+  "de": "herum · ringsum",
+  "aus": "otur"
+ },
+ {
+  "wort": "gagner",
+  "tag": "VER",
+  "rang": 400,
+  "de": "gewinnen · verdienen",
+  "aus": "ganje"
+ }
+]
