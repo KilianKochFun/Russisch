@@ -22,10 +22,12 @@ const BUECHER = [
   {
     datei: 'franzoesisch.pdf',
     titel: '🇫🇷 Französisch für Deutschsprachige',
-    unter: '80 Seiten · bis A1 · Teil I: Aussprache',
+    unter: '51 Seiten · bis A1 · Lektion 1–4 (wird gerade geschrieben)',
     beschreibung: 'Auf Deutsch. Aussprache in deutscher Näherung statt ' +
                   'Lautschrift. Der Kern sind die Brücken: das Dach auf forêt ' +
-                  'markiert ein verlorenes s — und das steht in „Forst“ noch da.',
+                  'markiert ein verlorenes s — und das steht in „Forst“ noch da. ' +
+                  'Der Wortschatz ist nicht handverlesen, sondern aus Frequenz- ' +
+                  'listen und thematischen Quellen abgeleitet.',
   },
   {
     datei: 'chinesisch.pdf',
