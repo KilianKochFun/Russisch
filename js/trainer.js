@@ -870,8 +870,9 @@ export function trainerShowDetail(deckKey, key) {
   show('tr-detail-screen');
 
   const d = it.data;
-  const c = T.srs.cards[it.key];
-  const stage = (c && c.srs >= 1) ? SRS_STAGES[Math.min(c.srs, 9)] : null;
+  // Ein Item hat je Prüfung einen eigenen Stand.
+  const staende = (PRUEFUNGEN[it.typ] || ['bedeutung'])
+    .map(p => ({ pruefung: p, c: T.srs.cards[it.key + '#' + p] }));
 
   let html = `<div style="text-align:center;">
     <span class="category-tag blue">${TYP_LABEL[it.typ] || it.typ} · Level ${it.level}</span>
@@ -923,11 +924,18 @@ export function trainerShowDetail(deckKey, key) {
     if (woerter.length) html += zeile('In Wörtern', woerter.join(' · '));
   }
 
-  // SRS-Status + nächster Termin
-  html += zeile('SRS-Stufe', stage
-    ? `<span style="background:${stage.color};color:#fff;padding:2px 10px;border-radius:3px;font-family:var(--mono);font-size:11px;">${stage.name}</span>`
-    : '<span style="color:var(--muted)">Noch nicht gelernt</span>');
-  html += zeile('Nächstes Review', formatNaechstesReview(c));
+  // SRS-Status je Prüfung — Bedeutung und Lesung laufen getrennt.
+  const NAME = { bedeutung: 'Bedeutung', lesung: 'Lesung' };
+  for (const { pruefung, c } of staende) {
+    const stage = (c && c.srs >= 1) ? SRS_STAGES[Math.min(c.srs, 9)] : null;
+    const label = staende.length > 1 ? `${NAME[pruefung]} — Stufe` : 'SRS-Stufe';
+    html += zeile(label, stage
+      ? `<span style="background:${stage.color};color:#fff;padding:2px 10px;border-radius:3px;font-family:var(--mono);font-size:11px;">${stage.name}</span>`
+        + (c.fehler ? ` <span style="font-family:var(--mono);font-size:10px;color:var(--muted);">${c.fehler}× falsch von ${c.versuche || c.fehler}</span>` : '')
+      : '<span style="color:var(--muted)">Noch nicht gelernt</span>');
+    html += zeile(staende.length > 1 ? `${NAME[pruefung]} — nächstes Review` : 'Nächstes Review',
+                  formatNaechstesReview(c));
+  }
 
   el('tr-detail-content').innerHTML = html;
   animiereZeichen(el('tr-detail-strokes'), (it.typ === 'character' || it.typ === 'word') ? d.zeichen : null, 130, true);
