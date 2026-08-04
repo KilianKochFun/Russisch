@@ -128,8 +128,9 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
 - **Französisch** (`js/trainer.js`, Sprache `french`): vier Decks — `aussprache`
   (19 Lautregeln), `bruecken` (10 Regeln, die Wortbündel über Deutsch/Englisch
   erschließen: das Dach auf forêt markiert ein verlorenes s), `frwoerter`
-  (400 Wörter in 8 Leveln) und `reise` (24 Wendungen). Wörter sind gesperrt,
-  bis alle Ausspracheregeln sitzen.
+  (400 Wörter in 8 Leveln) und `reise` (24 Wendungen). **Keine Sperre** — anders
+  als bei Mandarin hängt die Bedeutung eines Worts an keiner Lautregel, und die
+  Aussprache steht ohnehin auf der Karte.
   **Der Wortschatz ist nicht handverlesen**, sondern die häufigsten 400 der
   1196 A1-Wörter aus FLELex (Beacco-Fassung, folgt dem Europarat-Referential):
   `data/french-a1-400.json`, deckt ~93 % ab. Die 1196 sind KEINE Lernvorgabe —

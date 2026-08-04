@@ -94,6 +94,13 @@ function migriereAufPruefungen(srs) {
   return srs;
 }
 
+// Lernstand eines ANDEREN Decks derselben Sprache. Die Sperren brauchen das.
+// Bis zur Umstellung auf Einzelzeilen stand hier getSetting(); das las danach
+// den veralteten Klumpen und hätte auf einem zweiten Gerät falsch gesperrt.
+function standVon(deckKey) {
+  return T.alleSrs[`trainer-${T.lang}-${deckKey}`] || { cards: {}, unlockedLevel: 1 };
+}
+
 function ladeSrs() {
   T.srs = T.alleSrs[srsKey()] || { cards: {}, unlockedLevel: 1 };
 }
@@ -191,7 +198,7 @@ function neue(items) {
     a.level - b.level || TYP_RANG[a.typ] - TYP_RANG[b.typ] || a.position - b.position);
 
   if (T.deck.key === 'hanzi') {
-    const radikale = getSetting(`trainer-${T.lang}-radikale`);
+    const radikale = standVon('radikale');
     const gelernt = new Set(Object.entries(radikale?.cards || {})
       .filter(([, c]) => c.srs >= 1).map(([k]) => k.split('#')[0]));
     kandidaten = kandidaten.filter(it => {
@@ -199,22 +206,19 @@ function neue(items) {
       return komponenten.every(k => gelernt.has('component:' + k.data.zeichen));
     });
   }
-  if (T.deck.key === 'frwoerter' || T.deck.key === 'reise') {
-    const aus = getSetting(`trainer-${T.lang}-aussprache`);
-    const offen = (T.items || []).filter(i => i.item_type === 'aussprache').length;
-    const gelernt = Object.entries(aus?.cards || {})
-      .filter(([k, c]) => k.startsWith('aussprache:') && c.srs >= 1).length;
-    if (gelernt < offen) kandidaten = [];
-  }
+  // Französisch hat bewusst KEINE Sperre. Anders als bei Mandarin, wo ein
+  // Zeichen ohne seine Radikale nicht zerlegbar ist, hängt die Bedeutung von
+  // `merci` an keiner Lautregel — und die Aussprache steht auf der Karte.
+  // Das Aussprache-Deck steht trotzdem zuerst in der Liste.
   if (T.deck.key === 'ruwoerter') {
-    const bau = getSetting(`trainer-${T.lang}-bausteine`);
+    const bau = standVon('bausteine');
     const gelernt = new Set(Object.entries(bau?.cards || {})
       .filter(([k, c]) => k.startsWith('morph:') && c.srs >= 1)
       .map(([k]) => k.split('#')[0].slice('morph:'.length)));
     kandidaten = kandidaten.filter(it => (it.data.teile || []).every(t => gelernt.has(t)));
   }
   if (T.deck.key === 'woerter') {
-    const hanzi = getSetting(`trainer-${T.lang}-hanzi`);
+    const hanzi = standVon('hanzi');
     const gelernt = new Set(Object.entries(hanzi?.cards || {})
       .filter(([k, c]) => k.startsWith('character:') && c.srs >= 1)
       .map(([k]) => k.split('#')[0].split(':')[1]));
@@ -536,7 +540,7 @@ function backHtml(it) {
 // ersten Wort ist die Zeile leer, später wächst sie mit — so sieht man das
 // Netz entstehen, statt eine fertige Liste vorgesetzt zu bekommen.
 function bausteinWoerter(form, ausser) {
-  const stand = getSetting(`trainer-${T.lang}-ruwoerter`)?.cards || {};
+  const stand = standVon('ruwoerter').cards;
   const treffer = (T.items || [])
     .filter(x => x.item_type === 'rusword'
               && (x.data.teile || []).includes(form)
