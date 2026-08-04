@@ -20,6 +20,14 @@ const BUECHER = [
                   'Englisch, Übersetzungen zeilenweise im Lösungsteil.',
   },
   {
+    datei: 'franzoesisch.pdf',
+    titel: '🇫🇷 Französisch für Deutschsprachige',
+    unter: '80 Seiten · bis A1 · Teil I: Aussprache',
+    beschreibung: 'Auf Deutsch. Aussprache in deutscher Näherung statt ' +
+                  'Lautschrift. Der Kern sind die Brücken: das Dach auf forêt ' +
+                  'markiert ein verlorenes s — und das steht in „Forst“ noch da.',
+  },
+  {
     datei: 'chinesisch.pdf',
     titel: '🇹🇼 Chinese from the Inside Out',
     unter: '278 Seiten · Traditionell · 160 Zeichen, 88 Wörter',
