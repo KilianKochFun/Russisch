@@ -29,6 +29,13 @@ const DECKS = {
     { key: 'frwoerter',  titel: 'Wörter — A1 nach Häufigkeit', typen: ['fword'] },
     { key: 'reise',      titel: 'Unterwegs', typen: ['reise'] },
   ],
+  // Kurdisch (Kurmancî): erst die Buchstaben, die ein Deutschsprachiger falsch
+  // liest, dann der Grundwortschatz. Keine Sperre — die Bedeutung von `masî`
+  // hängt an keiner Buchstabenregel. Siehe scripts/seed_kurdish.js.
+  kurdish: [
+    { key: 'alfabe',    titel: 'Alfabe — die Buchstaben', typen: ['alfabe'] },
+    { key: 'kuwoerter', titel: 'Wörter — Swadesh-Grundwortschatz', typen: ['kuwort'] },
+  ],
 };
 
 // Kopfzeile des Dashboards je Sprache — vorher stand hier fest 中文 台灣,
@@ -37,14 +44,19 @@ const KOPF = {
   'chinese-tw':    { zeile1: '中文', zeile2: '台灣', unter: '// Zhuyin zuerst, dann Zeichen' },
   'russian-morph': { zeile1: 'РУССКИЙ', zeile2: 'ПО ЧАСТЯМ', unter: '// Erst die Bausteine, dann die Wörter' },
   french:          { zeile1: 'FRAN', zeile2: 'ÇAIS', unter: '// Erst lesen können, dann die Brücken' },
+  kurdish:         { zeile1: 'KURDÎ', zeile2: 'KURMANCÎ', unter: '// Erst die Buchstaben, dann die Wörter' },
 };
 const VORSCHAU_TITEL = {
   'chinese-tw':    '中文 — Mandarin',
   'russian-morph': 'Русский — Wortbausteine',
   french:          'Français — A1',
+  kurdish:         'Kurdî — Kurmancî',
 };
 // Sprache für die Sprachausgabe, je Inhaltssprache
-const TTS_SPRACHE = { 'chinese-tw': 'zh-TW', 'russian-morph': 'ru-RU', french: 'fr-FR' };
+// Kurmancî hat keine eigene Web-Speech-Stimme. `ku` ist der richtige Code und
+// wird auf Geräten, die ihn kennen, benutzt; fehlt er, meldet tts.js das in der
+// Konsole und bleibt still — kein Fehler.
+const TTS_SPRACHE = { 'chinese-tw': 'zh-TW', 'russian-morph': 'ru-RU', french: 'fr-FR', kurdish: 'ku' };
 
 // Trainer-State (bewusst getrennt vom Alt-App-State in S — nur S.state wird geteilt)
 const T = {
@@ -70,7 +82,8 @@ const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin ||
 const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter', zhuyin: 'Zhuyin',
                    morph: 'Bausteine', rusword: 'Wörter',
                    aussprache: 'Aussprache', bruecke: 'Brücken', fword: 'Wörter',
-                   reise: 'Unterwegs' };
+                   reise: 'Unterwegs',
+                   alfabe: 'Buchstaben', kuwort: 'Wörter' };
 
 function srsKey() { return `trainer-${T.lang}-${T.deck.key}`; }
 
@@ -147,6 +160,11 @@ const PRUEFUNGEN = {
   // abzufragen und damit die Kartenzahl zu verdoppeln.
   aussprache: ['lesung'],
   bruecke:    ['bedeutung'],
+  // Kurdisch genauso: die Buchstabenregel wird auf ihren Klang geprüft, das
+  // Wort auf seine Bedeutung. Die Aussprache steht auf der Karte und folgt
+  // ohnehin aus der Schreibung.
+  alfabe:     ['lesung'],
+  kuwort:     ['bedeutung'],
   fword:      ['bedeutung'],
   reise:      ['bedeutung'],
   zhuyin:    ['lesung'],
@@ -433,7 +451,8 @@ function zhuyinFarbig(zhuyin) {
 const TYP_LABEL = { component: 'Komponente 部', character: 'Zeichen 字', word: 'Wort 詞', zhuyin: 'Zhuyin ㄅ',
                     morph: 'Baustein', rusword: 'Wort',
                     aussprache: 'Ausspracheregel', bruecke: 'Brücke', fword: 'Wort',
-                    reise: 'Unterwegs' };
+                    reise: 'Unterwegs',
+                    alfabe: 'Buchstabe', kuwort: 'Wort' };
 
 // Sagt an, worauf die Karte hinauswill. Ohne das wüsste man bei Zeichen nicht,
 // ob Bedeutung oder Lesung gefragt ist — beide werden getrennt abgefragt.

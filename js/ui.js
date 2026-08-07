@@ -75,6 +75,12 @@ function getSprachenItems() {
     desc: 'Aussprache · Brücken zum Deutschen · die häufigsten Wörter',
   });
   items.push({
+    trainer: 'kurdish',
+    sprache: { id: 'kurdish', sprache: 'Kurdî', icon: '🌞' },
+    name: '🌞 Kurdî — Kurmancî',
+    desc: 'Lateinische Schrift · die Buchstaben, dann der Grundwortschatz',
+  });
+  items.push({
     isVergleich: true, name: '🏆 Vergleich',
     desc: 'Wie du gegen die anderen stehst — gesamt und je Sprache',
   });
@@ -138,6 +144,8 @@ function sprachenSelect() {
     window.trainerShowDashboard?.('russian-morph');
   } else if (item.trainer === 'french') {
     window.trainerShowDashboard?.('french');
+  } else if (item.trainer === 'kurdish') {
+    window.trainerShowDashboard?.('kurdish');
   } else {
     // Mandarin-Trainer (js/trainer.js hängt sich an window, um Zyklen zu vermeiden)
     window.trainerShowDashboard?.('chinese-tw');

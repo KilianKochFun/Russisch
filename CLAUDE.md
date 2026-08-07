@@ -140,6 +140,22 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   `oi` wird **`ua`** geschrieben, nie `wa` — deutsches w spricht man /v/, und
   `w` steht schon für französisches v (`voir` gäbe sonst `wwar`).
 
+- **Kurdisch** (`js/trainer.js`, Sprache `kurdish`): Kurmancî im Hawar-Alphabet —
+  „lateinische Schrift" legt die Varietät fest (Soranî schreibt arabisch, Zazakî
+  ist eine eigene Sprache). Zwei Decks: `alfabe` (18 Buchstaben, die ein
+  Deutschsprachiger falsch liest) und `kuwoerter` (207 Wörter in 9 Leveln).
+  **Keine Sperre**, wie beim Französischen.
+  **Der Wortschatz ist nicht handverlesen**, sondern die **Swadesh-Liste** —
+  207 Grundbegriffe, seit den 1950ern veröffentlicht, kurmancî Spalte aus dem
+  englischen Wiktionary, gesichert in `data/kurdish/swadesh-207-kmr.json`.
+  Wo die Quelle mehrere Varianten nennt (`se, seg, kûçik`), gilt die erste.
+  Für Kurmancî gibt es weder eine CEFR-Liste noch eine freie Frequenzliste
+  (FrequencyWords hat kein Kurdisch, Leipzig nur Soranî) — und
+  Wikipedia-Häufigkeit gäbe einem Anfänger `bajarê` statt `av`.
+  Klangnäherung wie beim Französischen, aber **als Regel im Code**
+  (`KLANG` in `seed_kurdish.js`), nicht 207-mal von Hand.
+  Pflegen mit `scripts/seed_kurdish.js`.
+
   Inhalte pflegen: `scripts/seed_zhuyin.js` / `seed_hanzi.js` / `seed_words.js`
   (WK-Daten in `content-private/`, gitignored — NIE committen!).
 
@@ -191,6 +207,14 @@ gespeichert als `pedalKeys` in settings). Zusätzlich ist alles klick-/antippbar
 | Ergebnis | — | weiter | — |
 
 \* Rückgängig nur, solange eine Antwort zurückzunehmen ist; sonst deckt auch A auf.
+
+**Vergleich:** `js/vergleich.js` zeigt eine Bestenliste — gesamt und je Sprache.
+Die Zahlen kommen aus der Datenbankfunktion `bestenliste()`, die mit
+`security definer` an der RLS vorbei rechnet, aber **nur Summen** zurückgibt;
+fremde Einzelkarten sieht niemand. Ohne Anmeldung liefert sie null Zeilen.
+Sortiert wird nach Karten ab Guru, nicht nach Kartenzahl. Namen stehen in
+`profiles` (lesbar für alle Angemeldeten, änderbar nur der eigene) — **nie** die
+E-Mail-Adresse. Migrationen einspielen mit `python3 scripts/migrate.py <datei.sql>`.
 
 **Speichern:** Lernstände liegen als **eine Zeile je Karte** in `srs_cards`/`srs_decks`
 (nicht mehr als Klumpen in `settings.data` — das führte dazu, dass zwei Geräte sich
