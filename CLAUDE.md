@@ -96,7 +96,11 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   Tonfarben (1 orange/2 grün/3 blau/4 violett/neutral grau) auf Rückseiten + Lessons.
   Strichfolge via `vendor/hanzi-writer.min.js` (Zeichendaten vom CDN, offline still).
   PWA: `manifest.json` + `sw.js` (stale-while-revalidate; bei Shell-Änderungen VERSION
-  in sw.js NICHT nötig zu bumpen — Updates greifen beim nächsten Start). **Ausnahme:
+  in sw.js NICHT nötig zu bumpen — Updates greifen beim nächsten Start).
+  **Aber:** „beim nächsten Start" heißt einen Start *später*, weil stale-while-revalidate
+  erst die alte Datei ausliefert. Bei einem Fehler, der aus dem alten Stand kommt
+  (z.B. eine neue Sprache trifft auf ein `js/` von gestern), VERSION hochziehen —
+  sonst sucht man den Fehler im Code, der längst richtig ist. **Ausnahme:
   geänderte Icons** — die hängen sonst im alten Cache, dann VERSION hochziehen.
   **iOS ignoriert `icon.svg` und die Manifest-Icons komplett**: ohne
   `<link rel="apple-touch-icon">` auf ein PNG landet beim „Zum Home-Bildschirm“ ein

@@ -457,6 +457,11 @@ function tonVon(silbe) {
 }
 
 function mitTonfarben(zeichen, zhuyin) {
+  // Ohne diese Zeile wirft [...zeichen] bei undefined, und der ganze
+  // Kartenbildschirm bleibt leer statt bloß farblos. Passiert ist genau das,
+  // als kurdische Karten in den Mandarin-Zweig fielen — ein fehlender Eintrag
+  // in KARTEN_ART soll die Karte schlechter machen, nicht kaputt.
+  if (!zeichen) return '';
   const silben = (zhuyin || '').trim().split(/\s+/);
   const chars = [...zeichen];
   if (silben.length !== chars.length) return zeichen;
@@ -517,7 +522,9 @@ function frontHtml(it, farben) {
   if (it.typ === 'zhuyin') return marke + `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zhuyin}</div>`;
   // Bei der Lesungsfrage keine Tonfarben zeigen — die verrieten den Ton.
   const anzeige = (farben && it.pruefung !== 'lesung') ? mitTonfarben(d.zeichen, d.zhuyin) : d.zeichen;
-  return marke + `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${anzeige}</div>`;
+  // Letzte Rettung: Steht ein Typ nicht in KARTEN_ART, landet er hier. Dann
+  // wenigstens das anzeigen, was anzeigeVon findet, statt „undefined“.
+  return marke + `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${anzeige || anzeigeVon(it).vorne}</div>`;
 }
 
 function backHtml(it) {
@@ -578,6 +585,14 @@ function backHtml(it) {
       <div class="tr-strokes"></div>
       <div class="karte-de" style="font-size:clamp(28px,6vw,48px);">${d.name}</div>
       <div class="karte-merksatz">Komponente</div>`;
+  }
+  // Letzte Rettung wie in frontHtml: Ein Typ ohne Eintrag in KARTEN_ART landet
+  // hier, im Mandarin-Fall. Dann zeigen wir, was anzeigeVon hergibt, statt an
+  // d.zeichen zu zerschellen.
+  if (!d.zeichen) {
+    const a = anzeigeVon(it);
+    return `<div class="karte-wort karte-back-klein">${a.vorne}</div>
+      <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${a.hinten}</div>`;
   }
   const b = d.beispiel_de;
   return `
