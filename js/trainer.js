@@ -21,12 +21,18 @@ const DECKS = {
     { key: 'bausteine', titel: 'Bausteine', typen: ['morph'] },
     { key: 'ruwoerter', titel: 'Wörter', typen: ['rusword'] },
   ],
-  // Französisch: erst lesen können, dann die Brücken zum Deutschen, dann Wörter.
-  // Morphologie hilft hier nicht — siehe scripts/seed_french.js.
+  // Französisch. Morphologie hilft hier nicht — siehe scripts/seed_french.js.
+  //
+  // Die Wörter stehen ZUERST. Anfangs stand die Aussprache vorn („erst lesen
+  // können“), aber gesperrt war sie nie, und der Dashboard-Cursor landet auf
+  // dem ersten freigeschalteten Eintrag: Wer Wörter lernen wollte, musste sich
+  // mit dem Pedal jedes Mal fünfmal nach unten hangeln. Die Ausspracheregeln
+  // sind ein Nachschlagewerk, keine Vorstufe — die Aussprache steht auf jeder
+  // Wortkarte mit drauf.
   french: [
+    { key: 'frwoerter',  titel: 'Wörter — A1 nach Häufigkeit', typen: ['fword'] },
     { key: 'aussprache', titel: 'Aussprache', typen: ['aussprache'] },
     { key: 'bruecken',   titel: 'Brücken zum Deutschen', typen: ['bruecke'] },
-    { key: 'frwoerter',  titel: 'Wörter — A1 nach Häufigkeit', typen: ['fword'] },
     { key: 'reise',      titel: 'Unterwegs', typen: ['reise'] },
   ],
   // Kurdisch (Kurmancî): erst die Buchstaben, die ein Deutschsprachiger falsch
@@ -279,8 +285,22 @@ export async function trainerShowDashboard(lang) {
     el('tr-dash-list').innerHTML = `<div class="menu-item"><span class="menu-item-body"><span class="menu-item-name">⚠ ${e.message}</span></span></div>`;
     return;
   }
-  T.cursor = Math.max(0, dashItems().findIndex(it => it.enabled));
+  T.cursor = startCursor(dashItems());
   trainerRenderDashboard();
+}
+
+// Wo der Cursor beim Öffnen steht. Nicht stumpf auf dem ersten Eintrag: Mit
+// drei Pedaltasten ist jede Zeile, an der man vorbeimuss, echte Arbeit. Also
+// dort, wo man zuletzt war — und wenn dessen Reviews fällig sind, auf denen.
+function startCursor(eintraege) {
+  const letztes = getSetting('trainer-letztesDeck-' + T.lang);
+  if (letztes) {
+    const review = eintraege.findIndex(e => e.deck?.key === letztes && e.art === 'review' && e.enabled);
+    if (review >= 0) return review;
+    const lesson = eintraege.findIndex(e => e.deck?.key === letztes && e.art === 'lesson' && e.enabled);
+    if (lesson >= 0) return lesson;
+  }
+  return Math.max(0, eintraege.findIndex(e => e.enabled));
 }
 
 function dashItems() {
@@ -408,6 +428,7 @@ export function trainerDashSelect() {
   if (item.art === 'forecast') { trainerZeigeVorschau(); return; }
   if (item.art === 'stats') { trainerZeigeStatistik(); return; }
   T.deck = item.deck;
+  setSetting('trainer-letztesDeck-' + T.lang, item.deck.key);   // startCursor liest das
   ladeSrs();
   const items = pruefItems(item.deck);
   checkLevelUp(items);

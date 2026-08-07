@@ -130,7 +130,9 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   erschließen: das Dach auf forêt markiert ein verlorenes s), `frwoerter`
   (400 Wörter in 8 Leveln) und `reise` (24 Wendungen). **Keine Sperre** — anders
   als bei Mandarin hängt die Bedeutung eines Worts an keiner Lautregel, und die
-  Aussprache steht ohnehin auf der Karte.
+  Aussprache steht ohnehin auf der Karte. **`frwoerter` steht deshalb zuerst**
+  in der Deckliste: Der Dashboard-Cursor landet auf dem ersten freigeschalteten
+  Eintrag, und mit drei Pedaltasten ist jede Zeile davor echte Arbeit.
   **Der Wortschatz ist nicht handverlesen**, sondern die häufigsten 400 der
   1196 A1-Wörter aus FLELex (Beacco-Fassung, folgt dem Europarat-Referential):
   `data/french-a1-400.json`, deckt ~93 % ab. Die 1196 sind KEINE Lernvorgabe —
@@ -221,6 +223,11 @@ E-Mail-Adresse. Migrationen einspielen mit `python3 scripts/migrate.py <datei.sq
 gegenseitig überschrieben). `js/sync.js` sammelt Änderungen, schreibt nach 2,5 s Ruhe
 gebündelt, puffert bei Fehlschlag und offline in localStorage und zeigt den Status
 oben rechts. Alte Stände werden beim ersten Betreten des Trainers übernommen.
+
+**Dashboard-Cursor:** steht beim Öffnen auf dem **zuletzt benutzten Deck**
+(`trainer-letztesDeck-<sprache>` in den Settings), bei fälligen Reviews auf
+denen. Reihenfolge der Decks ist damit nicht mehr egal, aber auch nicht mehr
+alles.
 
 **Design:** Markenfarbe Indigo (`--accent`), Rot nur semantisch (falsch/nochmal).
 Light-/Dark-Mode automatisch via `prefers-color-scheme`.
