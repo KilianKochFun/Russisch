@@ -84,25 +84,30 @@ function klang(wort) {
 // ── Deck 1: das Alphabet ──────────────────────────────────────────────────
 // Nur die Buchstaben, bei denen ein Deutschsprachiger daneben liegt. b, d, f,
 // g, l, m, n, p, t liest er richtig und braucht keine Karte.
+//
+// `bsp` sind Paare [Wort, Bedeutung]; die Klangnäherung dazwischen setzt das
+// Skript selbst ein. Dieselbe Form wie im Französisch-Deck — die Karte rendert
+// beide über denselben Zweig, und eine zweite Datenform hätte dort „undefined“
+// ergeben.
 const ALFABE = [
-  { form: 'c',  de: 'dsch',  merk: 'Wie in „Dschungel“ — nicht wie deutsches k oder z.', bsp: 'ciwan — jung' },
-  { form: 'ç',  de: 'tsch',  merk: 'Wie in „Tscheche“. Das Häkchen macht aus dem dsch ein tsch.', bsp: 'çav — Auge' },
-  { form: 'ş',  de: 'sch',   merk: 'Das harte sch wie in „Schule“.', bsp: 'şev — Nacht' },
-  { form: 'j',  de: 'sch',   merk: 'Das WEICHE sch wie in „Journal“ — nicht das deutsche j.', bsp: 'jin — Frau' },
-  { form: 'x',  de: 'ch',    merk: 'Das ch aus „Bach“, hinten im Hals. Kein ks.', bsp: 'xwîn — Blut' },
-  { form: 'q',  de: 'k',     merk: 'Ein k, aber tiefer im Rachen gebildet als das normale k. Für den Anfang: sprich k.', bsp: 'qelp — Rinde' },
-  { form: 'v',  de: 'w',     merk: 'Genau das deutsche w. Kurdisch schreibt v, wo Deutsch w schreibt.', bsp: 'av — Wasser' },
-  { form: 'w',  de: 'w (englisch)', merk: 'Das englische w aus „water“, mit gerundeten Lippen. Deutsches w wäre v — dafür steht das kurdische v.', bsp: 'welat — Land' },
-  { form: 's',  de: 'ß',     merk: 'Immer scharf wie in „Fass“, nie weich.', bsp: 'se — Hund' },
-  { form: 'z',  de: 's',     merk: 'Das weiche s aus „Rose“.', bsp: 'zik — Bauch' },
-  { form: 'y',  de: 'j',     merk: 'Wie das deutsche j in „ja“.', bsp: 'yek — eins' },
-  { form: 'e',  de: 'ä',     merk: 'Kurzes offenes ä wie in „hätte“ — nicht wie deutsches e.', bsp: 'ez — ich' },
-  { form: 'ê',  de: 'e',     merk: 'Langes geschlossenes e wie in „See“. Der Hut macht es lang.', bsp: 'mêr — Mann' },
-  { form: 'i',  de: '(e)',   merk: 'Ein sehr kurzes, unbetontes e — kaum hörbar. In diesem Trainer in Klammern.', bsp: 'kirm — Wurm' },
-  { form: 'î',  de: 'i',     merk: 'Langes i wie in „Bier“.', bsp: 'masî — Fisch' },
-  { form: 'u',  de: 'u',     merk: 'Kurzes u.', bsp: 'kurt — kurz' },
-  { form: 'û',  de: 'u',     merk: 'Langes u wie in „Hut“.', bsp: 'xûn — Blut' },
-  { form: 'r / rr', de: 'r / rr', merk: 'Einfaches r wird geschlagen, doppeltes rr gerollt. Der Unterschied trägt Bedeutung.', bsp: 'pir — Brücke · pirr — viel' },
+  { form: 'c',  de: 'dsch',  merk: 'Wie in „Dschungel“ — nicht wie deutsches k oder z.', bsp: [['ciwan', 'jung']] },
+  { form: 'ç',  de: 'tsch',  merk: 'Wie in „Tscheche“. Das Häkchen macht aus dem dsch ein tsch.', bsp: [['çav', 'Auge']] },
+  { form: 'ş',  de: 'sch',   merk: 'Das harte sch wie in „Schule“.', bsp: [['şev', 'Nacht']] },
+  { form: 'j',  de: 'sch',   merk: 'Das WEICHE sch wie in „Journal“ — nicht das deutsche j.', bsp: [['jin', 'Frau']] },
+  { form: 'x',  de: 'ch',    merk: 'Das ch aus „Bach“, hinten im Hals. Kein ks.', bsp: [['xwîn', 'Blut']] },
+  { form: 'q',  de: 'k',     merk: 'Ein k, aber tiefer im Rachen gebildet als das normale k. Für den Anfang: sprich k.', bsp: [['qelp', 'Rinde']] },
+  { form: 'v',  de: 'w',     merk: 'Genau das deutsche w. Kurdisch schreibt v, wo Deutsch w schreibt.', bsp: [['av', 'Wasser']] },
+  { form: 'w',  de: 'w (englisch)', merk: 'Das englische w aus „water“, mit gerundeten Lippen. Deutsches w wäre v — dafür steht das kurdische v.', bsp: [['welat', 'Land']] },
+  { form: 's',  de: 'ß',     merk: 'Immer scharf wie in „Fass“, nie weich.', bsp: [['se', 'Hund']] },
+  { form: 'z',  de: 's',     merk: 'Das weiche s aus „Rose“.', bsp: [['zik', 'Bauch']] },
+  { form: 'y',  de: 'j',     merk: 'Wie das deutsche j in „ja“.', bsp: [['yek', 'eins']] },
+  { form: 'e',  de: 'ä',     merk: 'Kurzes offenes ä wie in „hätte“ — nicht wie deutsches e.', bsp: [['ez', 'ich']] },
+  { form: 'ê',  de: 'e',     merk: 'Langes geschlossenes e wie in „See“. Der Hut macht es lang.', bsp: [['mêr', 'Mann']] },
+  { form: 'i',  de: '(e)',   merk: 'Ein sehr kurzes, unbetontes e — kaum hörbar. In diesem Trainer in Klammern.', bsp: [['kirm', 'Wurm']] },
+  { form: 'î',  de: 'i',     merk: 'Langes i wie in „Bier“.', bsp: [['masî', 'Fisch']] },
+  { form: 'u',  de: 'u',     merk: 'Kurzes u.', bsp: [['kurt', 'kurz']] },
+  { form: 'û',  de: 'u',     merk: 'Langes u wie in „Hut“.', bsp: [['xûn', 'Blut']] },
+  { form: 'r / rr', de: 'r / rr', merk: 'Einfaches r wird geschlagen, doppeltes rr gerollt. Der Unterschied trägt Bedeutung.', bsp: [['pir', 'Brücke'], ['pirr', 'viel']] },
 ];
 
 // ── Deck 2: die Swadesh-Begriffe ──────────────────────────────────────────
@@ -141,7 +146,8 @@ const PRO_LEVEL = 25;
 const rows = [];
 ALFABE.forEach((a, i) => {
   rows.push({ language: 'kurdish', item_type: 'alfabe', level: 1, position: i,
-    data: { form: a.form, de: a.de, merk: a.merk, bsp: a.bsp } });
+    data: { form: a.form, de: a.de, merk: a.merk,
+            bsp: a.bsp.map(([w, de]) => [w, klang(w), de]) } });
 });
 
 const woerter = [];

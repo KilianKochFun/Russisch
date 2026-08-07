@@ -110,7 +110,12 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   (`migriereAufPruefungen`). Im Review wird die Vorderseite **nicht** vorgelesen —
   die Aussprache ist Teil der Antwort.
   `scripts/check_trainer.js` prüft, dass jede Inhaltssprache vollständig verdrahtet
-  ist (Deck, Kopfzeile, Vorschau-Titel, TTS-Sprache, Typnamen, Anzeigetext je Item).
+  ist (Deck, Kopfzeile, Vorschau-Titel, TTS-Sprache, Typnamen, Anzeigetext je Item)
+  — und dass jeder Item-Typ in **`KARTEN_ART`** steht. Diese Tabelle sagt, welche
+  Bauform eine Karte hat (`regel` · `wort` · `morph` · `rusword` · `zhuyin` ·
+  `hanzi`). Vorher stand die Zuordnung als `it.typ === 'a' || it.typ === 'b'` an
+  vier Stellen einzeln; ein neuer Typ fiel durch alle Ketten bis in den
+  Mandarin-Zweig, wo `d.zeichen` steht — auf der Karte stand „undefined“.
 - **Russisch morphologisch** (`js/trainer.js`, Sprache `russian-morph`): zweites,
   eigenständiges Vorgehen neben dem Russisch-SRS. Wörter werden aus Präfix + Wurzel
   zusammengeklebt, statt als Ganzes gelernt. Zwei Decks: `bausteine` (morph) und

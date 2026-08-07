@@ -42,6 +42,7 @@ const VORSCHAU_TITEL = tabelle('VORSCHAU_TITEL');
 const TTS_SPRACHE = tabelle('TTS_SPRACHE');
 const TYP_NAME = tabelle('TYP_NAME');
 const TYP_LABEL = tabelle('TYP_LABEL');
+const KARTEN_ART = tabelle('KARTEN_ART');
 
 // Die Anzeigefunktion selbst aus der Datei ziehen, damit wirklich sie geprüft wird
 const anzI = src.indexOf('function anzeigeVon');
@@ -80,6 +81,20 @@ async function main() {
     for (const typ of [...new Set(items.map(i => i.item_type))]) {
       if (!TYP_NAME[typ])  meld(`Typ "${typ}" fehlt in TYP_NAME — Vorschau gruppiert ihn roh`);
       if (!TYP_LABEL[typ]) meld(`Typ "${typ}" fehlt in TYP_LABEL — Kartenmarke zeigt den rohen Typ`);
+      // Der teuerste der drei: Ohne Eintrag fällt die Karte durch alle Zweige
+      // von frontHtml/backHtml bis in den Mandarin-Fall, wo `d.zeichen` steht.
+      // Auf der Karte stand dann „undefined“ — genau so passiert, als Kurdisch
+      // dazukam.
+      if (!KARTEN_ART[typ]) meld(`Typ "${typ}" fehlt in KARTEN_ART — die Karte rendert „undefined“`);
+    }
+
+    // Und die Bauform muss zu den Feldern passen, die das Item wirklich hat.
+    const FELDER = { regel: 'form', wort: 'wort', morph: 'form', rusword: 'wort', zhuyin: 'zhuyin', hanzi: 'zeichen' };
+    for (const typ of [...new Set(items.map(i => i.item_type))]) {
+      const feld = FELDER[KARTEN_ART[typ]];
+      if (!feld) continue;
+      const fehlt = items.filter(i => i.item_type === typ && !i.data?.[feld]);
+      if (fehlt.length) meld(`${fehlt.length}× Typ "${typ}": Bauform „${KARTEN_ART[typ]}“ erwartet data.${feld}, das fehlt`);
     }
 
     // Und jedes einzelne Item muss etwas Anzeigbares hergeben

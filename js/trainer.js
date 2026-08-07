@@ -486,14 +486,29 @@ function frageMarke(it) {
     color:${farbe};margin-bottom:14px;text-transform:uppercase;">${text}</div>`;
 }
 
+// Welche Bauform eine Karte hat. Vorher stand diese Zuordnung als
+// `it.typ === 'a' || it.typ === 'b'` an vier Stellen einzeln — und beim
+// Hinzufügen von Kurdisch fiel `kuwort` durch alle Ketten hindurch bis in den
+// Mandarin-Zweig, wo `d.zeichen` steht: auf der Karte stand „undefined“.
+// Jetzt eine Tabelle, und scripts/check_trainer.js prüft, dass jeder Typ, der
+// in der Datenbank vorkommt, hier auch drinsteht.
+const KARTEN_ART = {
+  aussprache: 'regel',  bruecke: 'regel',  alfabe: 'regel',
+  fword: 'wort',        reise: 'wort',     kuwort: 'wort',
+  morph: 'morph',       rusword: 'rusword',
+  zhuyin: 'zhuyin',
+  component: 'hanzi',   character: 'hanzi', word: 'hanzi',
+};
+const art = it => KARTEN_ART[it.typ] || 'hanzi';
+
 function frontHtml(it, farben) {
   const d = it.data;
   // Russisch: Baustein bzw. Wort schlicht groß — abgefragt wird nur diese
   // Richtung, also Form sehen und Bedeutung denken.
   const marke = frageMarke(it);
-  if (it.typ === 'aussprache' || it.typ === 'bruecke')
+  if (art(it) === 'regel')
     return marke + `<div class="karte-wort" style="font-size:clamp(30px,8vw,56px);">${d.form}</div>`;
-  if (it.typ === 'fword' || it.typ === 'reise')
+  if (art(it) === 'wort')
     return marke + `<div class="karte-wort" style="font-size:clamp(36px,10vw,68px);">${d.wort}</div>`;
   if (it.typ === 'morph')
     return marke + `<div class="karte-wort" style="font-size:clamp(44px,12vw,84px);">${d.form}</div>`;
@@ -508,7 +523,7 @@ function frontHtml(it, farben) {
 function backHtml(it) {
   const d = it.data;
 
-  if (it.typ === 'aussprache' || it.typ === 'bruecke') {
+  if (art(it) === 'regel') {
     const bsp = (d.bsp || []).map(([a, b, c]) =>
       `<div style="margin-top:3px;"><b>${a}</b> &nbsp;<span style="color:var(--muted)">${b}</span>` +
       (c ? ` &nbsp;·&nbsp; ${c}` : '') + `</div>`).join('');
@@ -519,7 +534,7 @@ function backHtml(it) {
       <div class="tr-beispiel" style="text-align:left;display:inline-block;">${bsp}</div>`;
   }
 
-  if (it.typ === 'fword' || it.typ === 'reise') {
+  if (art(it) === 'wort') {
     return `
       <div class="karte-wort karte-back-klein">${d.wort}</div>
       <div class="karte-de" style="font-size:clamp(18px,4vw,28px);color:var(--muted);">[${d.aussprache}]</div>
@@ -635,20 +650,22 @@ function malStrichfolge(it) {
 
 function sprich(it) {
   const d = it.data;
-  if (it.typ === 'rusword') { speak(d.wort, 'ru-RU'); return; }
-  if (it.typ === 'fword' || it.typ === 'reise') { speak(d.wort, 'fr-FR'); return; }
-  if (it.typ === 'aussprache' || it.typ === 'bruecke') {
+  // Die Sprache kommt aus TTS_SPRACHE, nicht fest verdrahtet: Vorher stand hier
+  // 'fr-FR' für jedes Wort-Deck, was kurdische Karten französisch gesprochen hätte.
+  const tts = TTS_SPRACHE[T.lang] || 'zh-TW';
+  if (it.typ === 'rusword') { speak(d.wort, tts); return; }
+  if (art(it) === 'wort') { speak(d.wort, tts); return; }
+  if (art(it) === 'regel') {
     const b = (d.bsp || [])[0];
-    if (b) speak(b[0], 'fr-FR');   // die Regel selbst ist nicht sprechbar, das Beispiel schon
+    if (b) speak(b[0], tts);   // die Regel selbst ist nicht sprechbar, das Beispiel schon
     return;
   }
   if (it.typ === 'morph') {
     // Die Bindestriche markieren nur die Anschlussstelle — gesprochen wird
     // die blanke Lautfolge, sonst buchstabiert die Stimme das Minus mit.
-    speak(d.form.replace(/-/g, ''), 'ru-RU');
+    speak(d.form.replace(/-/g, ''), tts);
     return;
   }
-  const tts = TTS_SPRACHE[T.lang] || 'zh-TW';
   if (it.typ === 'zhuyin') { if (d.beispiel?.zh) speak(d.beispiel.zh, tts); }
   else if (it.typ === 'character' || it.typ === 'word') speak(d.zeichen, tts);
 }
