@@ -75,6 +75,10 @@ function getSprachenItems() {
     desc: 'Aussprache · Brücken zum Deutschen · die häufigsten Wörter',
   });
   items.push({
+    isVergleich: true, name: '🏆 Vergleich',
+    desc: 'Wie du gegen die anderen stehst — gesamt und je Sprache',
+  });
+  items.push({
     isBuecher: true, name: '📚 Bücherregal',
     desc: 'Japanisch N3→N2 · Chinesisch von innen heraus — im Browser lesen',
   });
@@ -125,6 +129,7 @@ function sprachenSelect() {
     });
     return;
   }
+  if (item.isVergleich) { window.vergleichZeige?.(); return; }
   if (item.isBuecher) { S.buecherCursor = 0; window.buecherShowListe?.(); return; }
   S.aktiveSprache = item.sprache;
   if (item.trainer === 'russisch-srs') {

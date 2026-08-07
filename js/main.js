@@ -9,6 +9,7 @@ import { progressInit, ladeProgress, ladeSettings } from './progress.js';
 import { aufSyncStatus, schreibe, syncInit } from './sync.js';
 import './forecast.js';  // hängt sich an window, wie trainer.js
 import './buecher.js';   // hängt sich an window, wie trainer.js
+import './vergleich.js'; // ebenso
 
 initInput();
 

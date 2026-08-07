@@ -91,6 +91,11 @@ export function initInput() {
       else if (key === 'C') window.forecastMove?.(1);
       else if (key === 'B') window.forecastSelect?.();
 
+    } else if (S.state === 'vergleich') {
+      if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
+      else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
+      else if (key === 'B') window.renderSprachenGlobal?.();
+
     } else if (S.state === 'buecher-liste') {
       if (key === 'A') window.buecherMove?.(-1);
       else if (key === 'C') window.buecherMove?.(1);
