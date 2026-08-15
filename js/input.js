@@ -15,6 +15,7 @@ import {
   trRueckgaengig,
   trZurueckZurUebersicht,
 } from './trainer.js';
+import { zeigeScreen } from './screen.js';
 
 // ── Pedal-Belegung ──────────────────────────────────────────────────────────
 const STANDARD_PEDALE = { A: 'A', B: 'B', C: 'C' };
@@ -36,8 +37,7 @@ const _setupMap = {};
 export function startePedalSetup() {
   S.state = 'pedal-setup';
   _setupSlot = 0;
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('pedal-setup-screen').classList.add('active');
+  zeigeScreen('pedal-setup-screen');
   zeigePedalSlot();
 }
 

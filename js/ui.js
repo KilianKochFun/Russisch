@@ -4,6 +4,7 @@
 import { S, SRS_STAGES } from './state.js';
 import { speak } from './tts.js';
 import { getSetting, setSetting, istEingeloggt, abmelden } from './progress.js';
+import { zeigeScreen } from './screen.js';
 
 const GENUS_FARBEN = { m: 'var(--blue)', f: '#e05080', n: '#a78bfa' };
 
@@ -17,10 +18,7 @@ function shuffle(arr) {
   return a;
 }
 
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+const show = zeigeScreen;
 
 function getGenus(karte) {
   if (!karte.m) return null;

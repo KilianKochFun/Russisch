@@ -9,6 +9,7 @@
 // Hängt sich wie trainer.js an `window`, um Import-Zyklen mit ui.js zu vermeiden.
 
 import { S } from './state.js';
+import { zeigeScreen } from './screen.js';
 
 const BUECHER = [
   {
@@ -43,11 +44,7 @@ const BUECHER = [
 // eine neue Runde zum Server kostet.
 const _urlCache = {}; // datei → { url, bis }
 
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
+const show = zeigeScreen;
 
 // ── Liste ──────────────────────────────────────────────────────────────────
 

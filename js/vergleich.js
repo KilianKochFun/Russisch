@@ -10,6 +10,8 @@
 
 import { S } from './state.js';
 import { getClient } from './progress.js';
+import { zeigeScreen } from './screen.js';
+import { escapeHtml } from './html.js';
 
 // Anzeigenamen der Sprachen. Was hier fehlt, wird mit seinem rohen Schlüssel
 // angezeigt — besser eine hässliche Zeile als eine verschwundene Sprache.
@@ -24,11 +26,7 @@ const SPRACH_NAME = {
 let _zeilen = null;      // Rohdaten der letzten Abfrage
 let _meineId = null;
 
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
+const show = zeigeScreen;
 
 // ── Daten ──────────────────────────────────────────────────────────────────
 
@@ -87,7 +85,7 @@ function tabelle(eintraege, zeigeSprachen) {
       const ich = e.user_id === _meineId;
       return `<tr style="${ich ? 'background:var(--accent-soft,rgba(99,102,241,.12));font-weight:700;' : ''}border-top:1px solid var(--border);">
         <td style="padding:6px;color:var(--muted);">${i + 1}</td>
-        <td style="padding:6px;">${e.name}${ich ? ' <span style="color:var(--accent);">· du</span>' : ''}${
+        <td style="padding:6px;">${escapeHtml(e.name)}${ich ? ' <span style="color:var(--accent);">· du</span>' : ''}${
           zeigeSprachen && e.sprachen > 1 ? ` <span style="color:var(--muted);font-weight:400;">· ${e.sprachen} Sprachen</span>` : ''}</td>
         <td style="padding:6px;text-align:right;">${e.guru}</td>
         <td style="padding:6px;text-align:right;color:var(--muted);">${e.gelernt}</td>
@@ -138,7 +136,7 @@ function render() {
     .sort((a, b) => b.eintraege.length - a.eintraege.length);
 
   for (const s of sprachen) {
-    html += abschnitt(SPRACH_NAME[s.lang] || s.lang,
+    html += abschnitt(SPRACH_NAME[s.lang] || escapeHtml(s.lang),
       `${s.eintraege.length} ${s.eintraege.length === 1 ? 'Lernender' : 'Lernende'}`,
       s.eintraege, false);
   }
@@ -179,7 +177,7 @@ export async function vergleichZeige() {
     _zeilen = await hole();
   } catch (e) {
     document.getElementById('vergleich-content').innerHTML =
-      `<p style="color:var(--bad,#c0392b);">Die Bestenliste ließ sich nicht laden: ${e.message}</p>`;
+      `<p style="color:var(--bad,#c0392b);">Die Bestenliste ließ sich nicht laden: ${escapeHtml(e.message)}</p>`;
     return;
   }
   render();

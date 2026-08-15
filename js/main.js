@@ -10,6 +10,7 @@ import { aufSyncStatus, schreibe, syncInit } from './sync.js';
 import './forecast.js';  // hängt sich an window, wie trainer.js
 import './buecher.js';   // hängt sich an window, wie trainer.js
 import './vergleich.js'; // ebenso
+import { zeigeScreen } from './screen.js';
 
 initInput();
 
@@ -68,8 +69,7 @@ async function startApp(session) {
 
 function zeigeLogin(hinweis) {
   S.state = 'login';
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('login-screen').classList.add('active');
+  zeigeScreen('login-screen');
 
   const fehler = document.getElementById('login-fehler');
   const submit = document.getElementById('login-submit');

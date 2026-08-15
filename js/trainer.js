@@ -8,6 +8,7 @@ import { getSetting, setSetting } from './progress.js';
 import { ladeDeckItems } from './decks.js';
 import { ladeMerksaetze, merksatzHtml, bearbeiteMerksatz } from './merksatz.js';
 import { ladeDeck as syncLadeDeck, merkeKarte, merkeDeck } from './sync.js';
+import { zeigeScreen } from './screen.js';
 
 const DECKS = {
   'chinese-tw': [
@@ -77,10 +78,7 @@ const T = {
 };
 
 const el = id => document.getElementById(id);
-const show = id => {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  el(id).classList.add('active');
-};
+const show = zeigeScreen;
 // Schlüssel, unter dem der Lernstand einer Karte liegt. Wörter tragen ihr Wort
 // ebenfalls in data.zeichen, deshalb reicht diese Kette.
 // Der Schlüssel, an dem der Lernstand hängt. Er muss innerhalb einer Sprache
@@ -221,8 +219,16 @@ function faellig(items) {
 
 // Lesson-Reihenfolge: erst Komponenten, dann Zeichen (WaniKani-Gating);
 // Wörter erst, wenn alle ihre Zeichen im Hanzi-Deck gelernt sind (srs ≥ 1).
-const TYP_RANG = { component: 0, zhuyin: 0, word: 0, character: 1, morph: 0, rusword: 0,
-                   aussprache: 0, bruecke: 0, fword: 0, reise: 0 };
+// Reihenfolge innerhalb eines Levels: Komponenten vor Zeichen (WaniKani-Modell).
+// Alles andere ist gleichrangig und wird nach Position sortiert.
+//
+// Als Tabelle mit Standardwert, nicht als Liste aller Typen: Vorher fehlten
+// `alfabe` und `kuwort`, was `undefined - undefined` = NaN ergab. Dass die
+// Sortierung trotzdem stimmte, war Glück — NaN ist falsy, also fiel der
+// Vergleich auf die Position durch. Beim nächsten Typ muss man sich nicht
+// wieder darauf verlassen.
+const TYP_RANG = { character: 1 };
+const rang = typ => TYP_RANG[typ] ?? 0;
 
 function neue(items) {
   let kandidaten = items.filter(it => {
@@ -230,7 +236,7 @@ function neue(items) {
     return it.level <= T.srs.unlockedLevel && (!c || c.srs === 0);
   });
   kandidaten.sort((a, b) =>
-    a.level - b.level || TYP_RANG[a.typ] - TYP_RANG[b.typ] || a.position - b.position);
+    a.level - b.level || rang(a.typ) - rang(b.typ) || a.position - b.position);
 
   if (T.deck.key === 'hanzi') {
     const radikale = standVon('radikale');
@@ -972,7 +978,7 @@ export function trainerShowBrowse() {
     html += `<div style="font-family:var(--display);font-weight:900;font-size:16px;margin:28px 0 4px;">${deck.titel}</div>`;
     for (let lvl = 1; lvl <= max; lvl++) {
       const level = items.filter(i => i.level === lvl)
-        .sort((a, b) => TYP_RANG[a.typ] - TYP_RANG[b.typ] || a.position - b.position);
+        .sort((a, b) => rang(a.typ) - rang(b.typ) || a.position - b.position);
       if (!level.length) continue;
       const locked = lvl > T.srs.unlockedLevel;
       const stats = levelStats(pruefItems(deck), lvl);
@@ -1002,7 +1008,12 @@ export function trainerShowBrowse() {
 
 // ── Detail-Ansicht (Klick in der Übersicht) ────────────────────────────────
 function formatNaechstesReview(c) {
-  if (!c || !c.srs) return 'Noch nicht gelernt';
+  if (!c) return 'Noch nicht gelernt';
+  // Stufe 0 heißt zweierlei: nie gelernt, oder so oft falsch, dass die Karte
+  // zurückgefallen ist. Der Unterschied ist für den Lernenden wichtig — im
+  // zweiten Fall wartet sie nicht auf ein Review, sondern kommt als Lektion
+  // wieder. (Derselbe Unterschied, der die Tagesübersicht falsch zählen ließ.)
+  if (!c.srs) return c.nextReview ? 'Zurückgefallen — kommt wieder als Lektion' : 'Noch nicht gelernt';
   if (c.srs >= 9) return 'Burned — für immer gemeistert 🎉';
   if (!c.nextReview) return '—';
   const diff = new Date(c.nextReview).getTime() - Date.now();

@@ -27,6 +27,10 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `js/content.js` | Lädt `content/sprachen.json` |
 | `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
 | `js/config.js` | Supabase-URL + Publishable Key (öffentlich OK) |
+| `js/screen.js` | Bildschirmwechsel — **eine** Fassung; stand vorher siebenmal im Projekt |
+| `js/html.js` | `escapeHtml` für alles, was ein Mensch eingetippt hat |
+| `js/merksatz.js` | Eigene Merksätze je Karte (Tabelle `merksaetze`, privat) |
+| `js/vergleich.js` | Bestenliste über `bestenliste()` |
 | `js/supabase.js` | Supabase-Client + Auth (dynamisch importiert, Offline-Fallback) |
 | `js/progress.js` | Fortschritt/SRS-Upserts + Settings (Weiter lernen, Fällige Karten) |
 | `supabase/schema.sql` | DB-Schema (progress, settings, RLS) — im SQL-Editor ausführen |
@@ -37,6 +41,18 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `scripts/` | Build- und Generator-Skripte |
 | `server.js` | Nur lokale Entwicklung (TTS-Proxy, `/api/image`-Bildproxy, SRS-API) |
 | `LERNPLAN.md` | A1–B1 Lehrplan mit Vokabeln/Grammatik |
+
+## Prüfskripte
+
+```bash
+node scripts/check_js.js       # jede Datei in js/ als ES-Modul parsen
+node scripts/check_sw.js       # sw.js führt jedes Modul (sonst offline kaputt)
+node scripts/check_trainer.js  # Sprachen vollständig verdrahtet, Schlüssel eindeutig
+```
+
+Alle drei sind aus konkreten Fehlern entstanden, nicht aus Prinzip. `check_sw.js`
+zum Beispiel, weil vier neue Module in der Offline-Liste fehlten — online fällt
+das nie auf, erst im Funkloch steht die App.
 
 ## Starten & Bauen
 

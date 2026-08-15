@@ -10,6 +10,7 @@
 
 import { S } from './state.js';
 import { SRS_STAGES } from './state.js';
+import { zeigeScreen } from './screen.js';
 
 const STUNDE = 3600000;
 const TAG = 86400000;
@@ -81,8 +82,7 @@ export function zeigeForecast(ctx) {
   if (!_ctx) return;
 
   S.state = 'forecast';
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('forecast-screen').classList.add('active');
+  zeigeScreen('forecast-screen');
 
   const { faellig, tage, spaeter } = berechneEimer(_ctx.cards);
   const max = Math.max(1, ...tage.map(t => t.anzahl));

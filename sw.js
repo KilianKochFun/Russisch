@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v15';   // v15: Tagesübersicht + Legende in der Übersicht
+const VERSION = 'sprachen-v16';   // v16: Merksätze, Vergleich, geteilte Module
 
 const SHELL = [
   '.',
@@ -15,9 +15,13 @@ const SHELL = [
   'srs-data.json',
   'content/sprachen.json',
   'vendor/hanzi-writer.min.js',
+  // Jede Datei aus js/ muss hier stehen, sonst fehlt sie offline. Die Liste
+  // wird von Hand gepflegt und ist deshalb schon einmal auseinandergelaufen —
+  // `node scripts/check_sw.js` vergleicht sie mit dem Ordner.
   'js/main.js', 'js/state.js', 'js/ui.js', 'js/input.js', 'js/content.js',
   'js/tts.js', 'js/config.js', 'js/supabase.js', 'js/progress.js',
   'js/decks.js', 'js/trainer.js', 'js/buecher.js', 'js/forecast.js', 'js/sync.js',
+  'js/vergleich.js', 'js/merksatz.js', 'js/screen.js', 'js/html.js',
 ];
 
 self.addEventListener('install', (e) => {

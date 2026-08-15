@@ -12,6 +12,7 @@
 // zugreifen kann — sie baut HTML-Strings und kann nicht warten.
 
 import { getClient } from './progress.js';
+import { escapeHtml } from './html.js';
 
 const _cache = {};          // lang → { key: text }
 let _aktuelleSprache = null;
@@ -94,9 +95,9 @@ export async function bearbeiteMerksatz(lang, key, nachher) {
 export function merksatzHtml(key, lang = _aktuelleSprache) {
   const t = merksatzVon(key, lang);
   const inhalt = t
-    ? `<span style="white-space:pre-wrap;">${t.replace(/</g, '&lt;')}</span>`
+    ? `<span style="white-space:pre-wrap;">${escapeHtml(t)}</span>`
     : '<span style="opacity:.55;">✎ eigenen Merksatz hinzufügen</span>';
-  return `<div class="mein-merksatz" data-merksatz="${String(key).replace(/"/g, '&quot;')}"
+  return `<div class="mein-merksatz" data-merksatz="${escapeHtml(key)}"
     title="Antippen zum Bearbeiten"
     style="margin-top:12px;padding:8px 12px;border:1px dashed var(--border);border-radius:8px;
            font-size:14px;cursor:pointer;text-align:left;">${inhalt}</div>`;
