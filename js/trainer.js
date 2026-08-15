@@ -935,7 +935,24 @@ export function trainerShowBrowse() {
   S.state = 'tr-browse';
   show('tr-browse-screen');
   const c = el('tr-browse-content');
-  let html = '';
+
+  // Legende. Die beiden Farbcodes standen hier von Anfang an, erklärt wurden
+  // sie nie — insbesondere der gestrichelte Rahmen, der einen BAUSTEIN meint:
+  // ein Radikal oder ein russisches Wortteil ist kein eigenes Wort, sondern
+  // ein Stück, aus dem Wörter gebaut werden. Wer das nicht weiß, hält es für
+  // Zufall.
+  const hatBausteine = (DECKS[T.lang] || []).some(d => d.typen.some(t => t === 'component' || t === 'morph'));
+  let html = `<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:12px;color:var(--muted);
+      border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:6px;">
+    <span><span style="display:inline-block;padding:2px 7px;border-radius:3px;border:1px solid var(--border);"></span>
+      &nbsp;noch nicht gelernt</span>
+    ${SRS_STAGES.map((st, i) => i === 0 || i === 1 || i === 5 || i === 7 || i === 8 || i === 9
+      ? `<span><span style="display:inline-block;padding:2px 7px;border-radius:3px;border:1px solid ${st.color};"></span> &nbsp;${st.name.replace(/ [0-9]$/, '')}</span>`
+      : '').filter(Boolean).slice(1).join('')}
+    ${hatBausteine ? `<span><span style="display:inline-block;padding:2px 7px;border-radius:3px;border:1px dashed var(--fg);"></span>
+      &nbsp;<b>gestrichelt = Baustein</b>, kein eigenes Wort</span>` : ''}
+  </div>`;
+
   for (const deck of (DECKS[T.lang] || [])) {
     T.deck = deck; ladeSrs();
     const items = deckItems(deck);

@@ -43,6 +43,13 @@ function highlightRu(text) {
 // ihr Trainer-Dashboard.
 const ZEIGE_ALTEN_RUSSISCH_SRS = false;
 
+// Hängt „N fällig“ vor die Beschreibung, wenn etwas ansteht.
+function mitFaellig(lang, text) {
+  const z = _faellig?.[lang];
+  if (!z || !z.jetzt) return text;
+  return `<b style="color:var(--accent);">${z.jetzt} fällig</b> · ${text}`;
+}
+
 function getSprachenItems() {
   const items = [];
   // Der alte Russisch-SRS (482 Einzelvokabeln) ist vorerst ausgeblendet — der
@@ -60,25 +67,25 @@ function getSprachenItems() {
   items.push({
     trainer: 'chinese-tw', sprache: { id: 'chinese-tw', sprache: '中文（台灣）', icon: '🇹🇼' },
     name: '🇹🇼 中文 — Mandarin (traditionell)',
-    desc: 'Zhuyin ㄅㄆㄇ · Zeichen · Wörter',
+    desc: mitFaellig('chinese-tw', 'Zhuyin ㄅㄆㄇ · Zeichen · Wörter'),
   });
   items.push({
     trainer: 'russian-morph',
     sprache: { id: 'russian-morph', sprache: 'Русский', icon: '🇷🇺' },
     name: '🇷🇺 Русский — Wortbausteine',
-    desc: 'Wörter aus Präfixen und Wurzeln zusammensetzen',
+    desc: mitFaellig('russian-morph', 'Wörter aus Präfixen und Wurzeln zusammensetzen'),
   });
   items.push({
     trainer: 'french',
     sprache: { id: 'french', sprache: 'Français', icon: '🇫🇷' },
     name: '🇫🇷 Français — A1',
-    desc: 'Aussprache · Brücken zum Deutschen · die häufigsten Wörter',
+    desc: mitFaellig('french', 'die häufigsten Wörter · Aussprache · Brücken zum Deutschen'),
   });
   items.push({
     trainer: 'kurdish',
     sprache: { id: 'kurdish', sprache: 'Kurdî', icon: '🌞' },
     name: '🌞 Kurdî — Kurmancî',
-    desc: 'Lateinische Schrift · die Buchstaben, dann der Grundwortschatz',
+    desc: mitFaellig('kurdish', 'Lateinische Schrift · Buchstaben, dann Grundwortschatz'),
   });
   items.push({
     isVergleich: true, name: '🏆 Vergleich',
@@ -95,9 +102,64 @@ function getSprachenItems() {
   return items;
 }
 
+// ── Tagesübersicht über ALLE Sprachen ──────────────────────────────────────
+// Bisher musste man in jede Sprache hineingehen, um zu sehen, ob dort etwas
+// fällig ist. Bei vier Sprachen sind das vier Wege mit drei Pedaltasten, nur
+// um festzustellen, dass nichts ansteht. Die Zahlen kommen aus srs_cards und
+// brauchen die Vokabeldaten nicht — siehe faelligkeiten() in sync.js.
+let _faellig = null;
+let _faelligLaeuft = false;
+
+const SPRACH_KURZ = {
+  'chinese-tw': '🇹🇼 Mandarin', 'russian-morph': '🇷🇺 Bausteine',
+  french: '🇫🇷 Französisch', kurdish: '🌞 Kurdisch', russian: '🇷🇺 Vokabeln',
+};
+
+async function ladeFaellig() {
+  if (_faelligLaeuft) return;
+  _faelligLaeuft = true;
+  try {
+    const { faelligkeiten } = await import('./sync.js');
+    _faellig = await faelligkeiten();
+  } catch { _faellig = {}; }
+  _faelligLaeuft = false;
+  if (S.state === 'sprachen-menu') renderSprachen();
+}
+
+function renderHeute() {
+  const el = document.getElementById('heute-panel');
+  if (!el) return;
+  if (_faellig === null) { el.innerHTML = ''; ladeFaellig(); return; }
+
+  const jetzt = Object.values(_faellig).reduce((n, z) => n + z.jetzt, 0);
+  const spaeter = Object.values(_faellig).reduce((n, z) => n + z.heuteNoch, 0);
+  const umlauf = Object.values(_faellig).reduce((n, z) => n + z.imUmlauf, 0);
+  if (!umlauf) { el.innerHTML = ''; return; }   // wer nichts gelernt hat, braucht keinen Kasten
+
+  const proSprache = Object.entries(_faellig)
+    .filter(([, z]) => z.jetzt + z.heuteNoch > 0)
+    .sort((a, b) => b[1].jetzt - a[1].jetzt)
+    .map(([lang, z]) => `<span style="white-space:nowrap;">${SPRACH_KURZ[lang] || lang}
+        <b style="color:${z.jetzt ? 'var(--accent)' : 'var(--muted)'};">${z.jetzt}</b>${
+        z.heuteNoch ? `<span style="color:var(--muted);"> +${z.heuteNoch}</span>` : ''}</span>`)
+    .join(' &nbsp;·&nbsp; ');
+
+  const kopf = jetzt
+    ? `<b style="font-size:22px;color:var(--accent);">${jetzt}</b> jetzt fällig`
+    : `<b style="font-size:22px;">Nichts fällig</b>`;
+  const rest = spaeter ? ` &nbsp;·&nbsp; ${spaeter} kommen heute noch` : (jetzt ? '' : ' — du bist durch für heute');
+
+  el.innerHTML = `<div style="margin:0 0 20px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;">
+    <div style="font-size:11px;letter-spacing:.08em;color:var(--muted);font-family:var(--display);font-weight:900;">HEUTE</div>
+    <div style="margin:2px 0 6px;">${kopf}<span style="color:var(--muted);">${rest}</span></div>
+    ${proSprache ? `<div style="font-size:13px;">${proSprache}</div>` : ''}
+  </div>`;
+}
+
 function renderSprachen() {
   S.state = 'sprachen-menu';
   show('sprachen-screen');
+  renderHeute();
   const list = document.getElementById('sprachen-list');
   list.innerHTML = '';
 

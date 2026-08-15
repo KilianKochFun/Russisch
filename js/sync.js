@@ -52,6 +52,7 @@ function melde() { for (const f of _horcher) { try { f(status()); } catch {} } }
 // ── Eintragen ──────────────────────────────────────────────────────────────
 
 export function merkeKarte(lang, deck, key, karte) {
+  _faelligCache = null;   // die Tagesübersicht stimmt jetzt nicht mehr
   _puffer[`${lang}/${deck}/${key}`] = {
     lang, deck, key,
     srs: karte.srs ?? 0,
@@ -154,6 +155,55 @@ export async function ladeDeck(lang, deck) {
   if (dp) out.unlockedLevel = dp.unlocked_level;
   return out;
 }
+
+// ── Tagesübersicht ─────────────────────────────────────────────────────────
+
+// Wie viel heute in JEDER Sprache ansteht — ohne die Vokabeldaten zu laden.
+//
+// Das ist der Punkt: Der Trainer weiß erst, was fällig ist, wenn er die Items
+// einer Sprache aus `vocab_items` geholt hat. Für eine Übersicht über alle
+// Sprachen müsste er das viermal tun, bevor überhaupt ein Menü steht. Die
+// Fälligkeit hängt aber gar nicht an den Items, sondern allein an
+// `srs_cards.next_review` — eine Abfrage, ein paar hundert Zeilen.
+//
+// Gezählt wird nach Karten, nicht nach Prüfungen: Ein Zeichen mit Bedeutungs-
+// und Lesungsfrage sind hier zwei Zeilen, und das ist richtig — es sind zwei
+// Abfragen, die du machen musst.
+
+let _faelligCache = null;   // { zeit, daten }
+const FAELLIG_FRISCH_MS = 60_000;
+
+export async function faelligkeiten({ neu = false } = {}) {
+  if (!neu && _faelligCache && Date.now() - _faelligCache.zeit < FAELLIG_FRISCH_MS)
+    return _faelligCache.daten;
+
+  const jetzt = Date.now();
+  const tagesende = new Date(); tagesende.setHours(23, 59, 59, 999);
+
+  // Erst der Puffer: Was noch nicht hochgeschrieben ist, ist trotzdem wahr.
+  const karten = new Map();   // lang/deck/key → next_review
+  if (_sb && _userId) {
+    const { data, error } = await _sb.from('srs_cards').select('lang, deck, card_key, next_review');
+    if (error) return _faelligCache?.daten || {};
+    for (const r of (data || [])) karten.set(`${r.lang}/${r.deck}/${r.card_key}`, { lang: r.lang, next: r.next_review });
+  }
+  for (const p of Object.values(_puffer)) karten.set(`${p.lang}/${p.deck}/${p.key}`, { lang: p.lang, next: p.next_review });
+
+  const daten = {};
+  for (const { lang, next } of karten.values()) {
+    const z = daten[lang] || (daten[lang] = { jetzt: 0, heuteNoch: 0, imUmlauf: 0, fertig: 0 });
+    if (!next) { z.fertig++; continue; }          // gebrannt oder nie gelernt
+    const t = new Date(next).getTime();
+    z.imUmlauf++;
+    if (t <= jetzt) z.jetzt++;
+    else if (t <= tagesende.getTime()) z.heuteNoch++;
+  }
+  _faelligCache = { zeit: Date.now(), daten };
+  return daten;
+}
+
+// Nach jeder Antwort stimmt der Cache nicht mehr.
+export function faelligVeraltet() { _faelligCache = null; }
 
 // ── Ausfuhr ────────────────────────────────────────────────────────────────
 

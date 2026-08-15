@@ -233,6 +233,18 @@ gegenseitig überschrieben). `js/sync.js` sammelt Änderungen, schreibt nach 2,5
 gebündelt, puffert bei Fehlschlag und offline in localStorage und zeigt den Status
 oben rechts. Alte Stände werden beim ersten Betreten des Trainers übernommen.
 
+**Tagesübersicht:** Über dem Sprachen-Menü steht, wie viel *jetzt* fällig ist und
+was *heute noch* dazukommt — gesamt und je Sprache. Die Zahlen kommen aus
+`faelligkeiten()` in `js/sync.js`, das **nur `srs_cards` liest**: Fälligkeit hängt
+an `next_review`, nicht an den Vokabeldaten. Sonst müsste die App vier Sprachen
+aus `vocab_items` laden, bevor überhaupt ein Menü steht. Eine Minute gecacht,
+nach jeder Antwort verworfen.
+
+**Gestrichelte Rahmen** in der Übersicht heißen **Baustein** — Radikal
+(`component`) oder russisches Wortteil (`morph`), also kein eigenes Wort. Der
+Rahmen*farbe* ist die SRS-Stufe. Beides steht seit v15 als Legende im Kopf der
+Übersicht; vorher musste man es raten.
+
 **Dashboard-Cursor:** steht beim Öffnen auf dem **zuletzt benutzten Deck**
 (`trainer-letztesDeck-<sprache>` in den Settings), bei fälligen Reviews auf
 denen. Reihenfolge der Decks ist damit nicht mehr egal, aber auch nicht mehr
