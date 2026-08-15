@@ -100,12 +100,22 @@ export async function raeumeAuf(uid) {
 // Karten für den Testnutzer setzen — damit ein Test einen bestimmten Zustand
 // herstellen kann, statt ihn sich zusammenzuklicken. `srs` und `next_review`
 // sind genau die zwei Werte, an denen Fälligkeit hängt.
+//
+// Der Schlüssel bekommt automatisch das Prüfungssuffix, wenn keines dasteht.
+// Ohne das schrieb ein Test Zeilen, wie die App sie nie schreibt: der Trainer
+// legte beim Antworten NEUE Zeilen mit Suffix an, die alten blieben ewig
+// fällig stehen — und ein Rundgang meldete daraufhin einen Fehler, den es gar
+// nicht gab. Ein Testgerüst, das unrealistische Daten erzeugt, ist schlimmer
+// als keines.
+const PRUEFUNG_STANDARD = 'bedeutung';
+
 export async function setzeKarten(uid, karten) {
   const k = env('SUPABASE_SECRET_KEY');
   const h = { apikey: k, Authorization: 'Bearer ' + k, 'Content-Type': 'application/json',
               Prefer: 'resolution=merge-duplicates' };
   const zeilen = karten.map(c => ({
-    user_id: uid, lang: c.lang, deck: c.deck, card_key: c.key,
+    user_id: uid, lang: c.lang, deck: c.deck,
+    card_key: c.key.includes('#') ? c.key : `${c.key}#${PRUEFUNG_STANDARD}`,
     srs: c.srs, next_review: c.faelligIn === undefined ? null
       : new Date(Date.now() + c.faelligIn).toISOString(),
     updated_at: new Date().toISOString(),
