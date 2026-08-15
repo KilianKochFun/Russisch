@@ -2,10 +2,11 @@
 // WaniKani-Mechanik: Level → Lessons (5er-Batches) → Reviews (Apprentice→Burned),
 // Level-Up bei 80 % der Level-Items auf Guru+. Fortschritt landet in settings
 // (Cloud) + localStorage — über js/progress.js setSetting/getSetting.
-import { S, SRS_STAGES } from './state.js';
+import { S, SRS_STAGES, istFaellig } from './state.js';
 import { speak } from './tts.js';
 import { getSetting, setSetting } from './progress.js';
 import { ladeDeckItems } from './decks.js';
+import { ladeMerksaetze, merksatzHtml, bearbeiteMerksatz } from './merksatz.js';
 import { ladeDeck as syncLadeDeck, merkeKarte, merkeDeck } from './sync.js';
 
 const DECKS = {
@@ -214,7 +215,7 @@ function faellig(items) {
   const now = Date.now();
   return items.filter(it => {
     const c = T.srs.cards[it.key];
-    return c && c.srs >= 1 && c.srs < 9 && c.nextReview && new Date(c.nextReview).getTime() <= now;
+    return c && istFaellig(c.srs, c.nextReview, now);
   });
 }
 
@@ -290,7 +291,7 @@ export async function trainerShowDashboard(lang) {
   el('tr-dash-list').innerHTML = '<div class="menu-item"><span class="menu-item-body"><span class="menu-item-name">Lade Inhalte…</span></span></div>';
   try {
     T.items = await ladeDeckItems(lang);
-    await ladeAlleSrs(lang);
+    await Promise.all([ladeAlleSrs(lang), ladeMerksaetze(lang)]);
   } catch (e) {
     el('tr-dash-list').innerHTML = `<div class="menu-item"><span class="menu-item-body"><span class="menu-item-name">⚠ ${e.message}</span></span></div>`;
     return;
@@ -711,7 +712,7 @@ function zeigeLessonKarte() {
   el('tr-counter').textContent = `${T.lessonIdx + 1} / ${T.lessonCards.length}`;
   el('tr-progress').style.width = (T.lessonIdx / T.lessonCards.length * 100) + '%';
   el('tr-front').innerHTML = frontHtml(it, true);
-  el('tr-back').innerHTML = backHtml(it);
+  el('tr-back').innerHTML = backHtml(it) + merksatzHtml(it.key);
   zeigeKarte(true);
   sprich(it);
 }
@@ -766,7 +767,7 @@ function zeigeReviewKarte(it, aufgedeckt = false) {
   el('tr-stage-badge').textContent = stage.name;
   el('tr-stage-badge').style.background = stage.color;
   el('tr-front').innerHTML = frontHtml(it, false);
-  el('tr-back').innerHTML = backHtml(it);
+  el('tr-back').innerHTML = backHtml(it) + merksatzHtml(it.key);
   zeigeKarte(!aufgedeckt);
   const rg = el('tr-rueckgang');
   if (rg) {
@@ -1097,12 +1098,27 @@ export function trainerShowDetail(deckKey, key) {
                   formatNaechstesReview(c));
   }
 
+  html += zeile('Mein Merksatz', merksatzHtml(it.key));
+
   el('tr-detail-content').innerHTML = html;
   animiereZeichen(el('tr-detail-strokes'), (it.typ === 'character' || it.typ === 'word') ? d.zeichen : null, 130, true);
   const wortEl = el('tr-detail-wort');
   if (wortEl) wortEl.onclick = () => sprich(it);
   sprich(it);
 }
+
+// Ein Klickfänger für jeden Merksatz-Kasten, egal auf welchem Bildschirm.
+// Delegiert am document — die Kästen entstehen erst beim Zeichnen der Karte,
+// ein direkter Handler müsste an vier Stellen neu gesetzt werden.
+document.addEventListener('click', (e) => {
+  const box = e.target.closest?.('.mein-merksatz');
+  if (!box) return;
+  e.stopPropagation();
+  const key = box.dataset.merksatz;
+  // Nur den Kasten selbst ersetzen — das gilt auf der Karte wie auf der
+  // Detailseite, ohne den Bildschirm neu aufzubauen.
+  bearbeiteMerksatz(T.lang, key, () => { box.outerHTML = merksatzHtml(key); });
+});
 
 export function trZurueckZurUebersicht() {
   trainerShowBrowse();

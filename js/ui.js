@@ -118,18 +118,27 @@ const SPRACH_KURZ = {
 async function ladeFaellig() {
   if (_faelligLaeuft) return;
   _faelligLaeuft = true;
+  let neu;
   try {
     const { faelligkeiten } = await import('./sync.js');
-    _faellig = await faelligkeiten();
-  } catch { _faellig = {}; }
+    neu = await faelligkeiten();
+  } catch { neu = {}; }
   _faelligLaeuft = false;
-  if (S.state === 'sprachen-menu') renderSprachen();
+  // Nur neu zeichnen, wenn sich wirklich etwas geändert hat — sonst dreht sich
+  // renderSprachen → ladeFaellig → renderSprachen im Kreis.
+  const anders = JSON.stringify(neu) !== JSON.stringify(_faellig);
+  _faellig = neu;
+  if (anders && S.state === 'sprachen-menu') renderSprachen();
 }
 
 function renderHeute() {
   const el = document.getElementById('heute-panel');
   if (!el) return;
-  if (_faellig === null) { el.innerHTML = ''; ladeFaellig(); return; }
+  // Bei JEDEM Betreten nachladen, nicht nur beim ersten Mal. Sonst zeigt die
+  // Übersicht nach einer Lernrunde noch die Zahlen von vorher — der Cache in
+  // sync.js macht das billig und wird nach jeder Antwort verworfen.
+  ladeFaellig();
+  if (_faellig === null) { el.innerHTML = ''; return; }
 
   const jetzt = Object.values(_faellig).reduce((n, z) => n + z.jetzt, 0);
   const spaeter = Object.values(_faellig).reduce((n, z) => n + z.heuteNoch, 0);

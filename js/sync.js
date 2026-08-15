@@ -12,6 +12,8 @@
 // Karte), bei Fehlschlag im Puffer behalten und erneut versuchen. Der Puffer
 // liegt in localStorage und übersteht damit Neuladen und Flugmodus.
 
+import { istFaellig } from './state.js';
+
 const PUFFER_KEY = 'srs-sync-puffer';
 const RUHE_MS = 2500;        // so lange nach der letzten Antwort warten
 const MAX_STAU = 40;         // … oder sofort, wenn so viel aufgelaufen ist
@@ -181,22 +183,26 @@ export async function faelligkeiten({ neu = false } = {}) {
   const tagesende = new Date(); tagesende.setHours(23, 59, 59, 999);
 
   // Erst der Puffer: Was noch nicht hochgeschrieben ist, ist trotzdem wahr.
-  const karten = new Map();   // lang/deck/key → next_review
+  const karten = new Map();   // lang/deck/key → {srs, next}
   if (_sb && _userId) {
-    const { data, error } = await _sb.from('srs_cards').select('lang, deck, card_key, next_review');
+    const { data, error } = await _sb.from('srs_cards').select('lang, deck, card_key, srs, next_review');
     if (error) return _faelligCache?.daten || {};
-    for (const r of (data || [])) karten.set(`${r.lang}/${r.deck}/${r.card_key}`, { lang: r.lang, next: r.next_review });
+    for (const r of (data || [])) karten.set(`${r.lang}/${r.deck}/${r.card_key}`, { lang: r.lang, srs: r.srs, next: r.next_review });
   }
-  for (const p of Object.values(_puffer)) karten.set(`${p.lang}/${p.deck}/${p.key}`, { lang: p.lang, next: p.next_review });
+  for (const p of Object.values(_puffer)) karten.set(`${p.lang}/${p.deck}/${p.key}`, { lang: p.lang, srs: p.srs, next: p.next_review });
 
   const daten = {};
-  for (const { lang, next } of karten.values()) {
+  for (const { lang, srs, next } of karten.values()) {
     const z = daten[lang] || (daten[lang] = { jetzt: 0, heuteNoch: 0, imUmlauf: 0, fertig: 0 });
-    if (!next) { z.fertig++; continue; }          // gebrannt oder nie gelernt
-    const t = new Date(next).getTime();
+    // Dieselbe Regel wie im Trainer, aus state.js — nicht noch einmal
+    // hingeschrieben. Vorher zählte diese Stelle Karten auf Stufe 0 mit, die
+    // in den Lektionsstapel gehören: im Menü stand „1 fällig“, im Trainer
+    // war nichts.
+    if (srs >= 9 || !next) { z.fertig++; continue; }
+    if (srs < 1) continue;                        // zurückgefallen → Lektion, kein Review
     z.imUmlauf++;
-    if (t <= jetzt) z.jetzt++;
-    else if (t <= tagesende.getTime()) z.heuteNoch++;
+    if (istFaellig(srs, next, jetzt)) z.jetzt++;
+    else if (new Date(next).getTime() <= tagesende.getTime()) z.heuteNoch++;
   }
   _faelligCache = { zeit: Date.now(), daten };
   return daten;

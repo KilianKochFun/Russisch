@@ -32,6 +32,23 @@ export const S = {
   srsCurrentReview: null,   // {poolIdx, pair, direction}
 };
 
+// Wann ist eine Karte fällig? Genau eine Definition, von allen benutzt.
+//
+// Der Anlass: Die Tagesübersicht hat sich ihre eigene gebaut („next_review
+// liegt in der Vergangenheit“) und zählte damit Karten mit, die auf Stufe 0
+// zurückgefallen sind. Die gehören aber in den Lektionsstapel, nicht in die
+// Reviews — im Menü stand „1 fällig“, im Trainer war nichts. Wer die Regel
+// ändern will, ändert sie hier und nirgends sonst.
+//
+//   Stufe 0  = neu oder zurückgefallen  → Lektion, kein Review
+//   Stufe 9  = gebrannt                 → kommt nie wieder
+export function istFaellig(srs, nextReview, jetzt = Date.now()) {
+  if (!(srs >= 1 && srs < 9)) return false;
+  if (!nextReview) return false;
+  const t = typeof nextReview === 'number' ? nextReview : new Date(nextReview).getTime();
+  return Number.isFinite(t) && t <= jetzt;
+}
+
 export const SRS_STAGES = [
   { name: 'Neu',          interval: 0,             color: '#666' },
   { name: 'Apprentice 1', interval: 4*3600000,     color: '#e05080' },
