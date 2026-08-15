@@ -627,7 +627,15 @@
     <button class="karte-btn gewusst" onclick="trGewusst()"><kbd>A</kbd> &nbsp; gewusst ✓</button>
     <button class="karte-btn nochmal" onclick="trNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
   </div>
-  <p class="key-hint" id="tr-weiter-hint" style="display:none;">Tippen oder Taste → weiter</p>
+  <!-- Sichtbare Knöpfe statt bloßer Hinweistexte: Vorher stand auf der
+       Vorderseite gar nichts und auf der Lektionsrückseite nur „Tippen oder
+       Taste → weiter“. Man musste raten, wohin man drückt. -->
+  <div id="tr-aufdecken-buttons" class="karte-buttons" style="display:none;">
+    <button class="karte-btn" onclick="trFlip()"><kbd>B</kbd> &nbsp; aufdecken 👁</button>
+  </div>
+  <div id="tr-weiter-buttons" class="karte-buttons" style="display:none;">
+    <button class="karte-btn" onclick="trNext()"><kbd>B</kbd> &nbsp; weiter →</button>
+  </div>
 </div>
 
 <!-- TRAINER STATISTIK -->

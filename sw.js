@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v19';   // v19: Nutzerprofile
+const VERSION = 'sprachen-v20';   // v20: kein Pinyin bei Zeichen, sichtbare Knöpfe
 
 const SHELL = [
   '.',

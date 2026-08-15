@@ -355,7 +355,11 @@ function anzeigeVon(it) {
   const d = it.data || {};
   return {
     vorne: d.betont || d.zeichen || d.zhuyin || d.form || d.wort || '?',
-    hinten: [d.pinyin || d.aussprache, d.de || d.meaning || d.name].filter(Boolean).join(' · '),
+    // Lesung im Tooltip: bei Zeichen und Wörtern Zhuyin, nicht Pinyin — das
+    // wäre ein zweites Lesesystem neben dem, das gelernt wird. Auf einer
+    // Zhuyin-Karte bleibt Pinyin, dort ist es die Antwort.
+    hinten: [d.zeichen ? d.zhuyin : (d.pinyin || d.aussprache),
+             d.de || d.meaning || d.name].filter(Boolean).join(' · '),
   };
 }
 
@@ -615,7 +619,7 @@ function backHtml(it) {
   return `
     <div class="karte-wort karte-back-klein">${mitTonfarben(d.zeichen, d.zhuyin)}</div>
     ${[...d.zeichen].length === 1 ? '<div class="tr-strokes"></div>' : ''}
-    <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${zhuyinFarbig(d.zhuyin)} &nbsp;·&nbsp; ${d.pinyin}</div>
+    <div class="karte-de" style="font-size:clamp(24px,5vw,40px);">${zhuyinFarbig(d.zhuyin)}</div>
     <div class="karte-de" style="font-size:clamp(20px,4vw,32px);">${d.de || d.meaning}</div>
     ${d.zerlegung ? `<div class="karte-merksatz" style="font-size:14px;">= ${d.zerlegung.map(t => `<b>${t.z}</b> ${t.name}`).join(' &nbsp;+&nbsp; ')}</div>` : ''}
     ${(!d.zerlegung && d.zerlegung_text) ? `<div class="karte-merksatz" style="font-size:14px;">${d.zerlegung_text}</div>` : ''}
@@ -705,8 +709,12 @@ function sprich(it) {
 function zeigeKarte(vorne) {
   el('tr-front').style.display = vorne ? 'block' : 'none';
   el('tr-back').style.display = vorne ? 'none' : 'block';
-  el('tr-review-buttons').style.display = (!vorne && T.phase === 'review') ? 'grid' : 'none';
-  el('tr-weiter-hint').style.display = (!vorne && T.phase === 'lesson') ? 'block' : 'none';
+  // Auf jedem Zustand der Karte steht jetzt ein sichtbarer Knopf mit der Taste
+  // darauf. Vorher trug die Vorderseite gar keinen und die Lektionsrückseite
+  // nur einen grauen Hinweistext — man musste raten, wo man hindrückt.
+  el('tr-review-buttons').style.display   = (!vorne && T.phase === 'review') ? 'grid' : 'none';
+  el('tr-weiter-buttons').style.display   = (!vorne && T.phase === 'lesson') ? 'grid' : 'none';
+  el('tr-aufdecken-buttons').style.display = vorne ? 'grid' : 'none';
 }
 
 // ── Lesson ─────────────────────────────────────────────────────────────────
@@ -1052,7 +1060,9 @@ export function trainerShowDetail(deckKey, key) {
     ${it.typ !== 'zhuyin' && [...(d.zeichen || '')].length === 1 ? '<div id="tr-detail-strokes"></div>' : ''}
   </div>`;
 
-  if (d.zhuyin || d.pinyin) html += zeile('Lesung', `${zhuyinFarbig(d.zhuyin || '')} &nbsp;·&nbsp; ${d.pinyin || ''}`);
+  if (d.zhuyin || d.pinyin) html += zeile('Lesung', it.typ === 'zhuyin'
+    ? `${zhuyinFarbig(d.zhuyin || '')} &nbsp;·&nbsp; ${d.pinyin || ''}`
+    : zhuyinFarbig(d.zhuyin || ''));
   html += zeile('Bedeutung', d.de || d.name || d.meaning || '');
   if (d.defs_de && d.defs_de.length > 1) html += zeile('Auch', d.defs_de.slice(1).join(' · '));
   if (d.meaning && d.de) html += zeile('Englisch', [d.meaning, ...(d.defs || []).slice(1)].join(' · '));
@@ -1061,7 +1071,9 @@ export function trainerShowDetail(deckKey, key) {
   if (it.typ === 'character' && !d.zerlegung && !d.zerlegung_text) html += zeile('Zerlegung', '<span style="color:var(--muted)">Urzeichen — nicht weiter zerlegbar</span>');
   if (d.striche) html += zeile('Striche', `${d.striche} — Animation oben antippen zum Wiederholen`);
   if (d.hinweis) html += zeile('Aussprache', d.hinweis);
-  if (d.beispiel) html += zeile('Beispiel', `${d.beispiel.zh} &nbsp;${d.beispiel.zy || ''} &nbsp;<span style="color:var(--muted)">${d.beispiel.py || ''} — ${d.beispiel.de || ''}</span>`);
+  if (d.beispiel) html += zeile('Beispiel', it.typ === 'zhuyin'
+    ? `${d.beispiel.zh} &nbsp;${d.beispiel.zy || ''} &nbsp;<span style="color:var(--muted)">${d.beispiel.py || ''} — ${d.beispiel.de || ''}</span>`
+    : `${d.beispiel.zh} &nbsp;${zhuyinFarbig(d.beispiel.zy || '')} &nbsp;<span style="color:var(--muted)">${d.beispiel.de || ''}</span>`);
   if (d.beispiel_de) html += zeile('Beispielsatz', `${d.beispiel_de.zh} — <span style="color:var(--muted)">${d.beispiel_de.de}</span>`);
 
   if (it.typ === 'morph') {

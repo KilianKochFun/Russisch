@@ -134,6 +134,10 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   (MAX_LEVEL in seed_hanzi.js erhöhen zum Erweitern). Leere Level werden übersprungen.
   Gating: Komponenten vor Zeichen; Wörter erst, wenn alle ihre Zeichen gelernt sind.
   Tonfarben (1 orange/2 grün/3 blau/4 violett/neutral grau) auf Rückseiten + Lessons.
+  **Kein Pinyin bei Zeichen und Wörtern** — dort steht die Lesung nur als Zhuyin,
+  auf der Karte wie auf der Detailseite wie im Tooltip. Ein zweites Lesesystem
+  neben dem, das gelernt wird, hilft nicht. Auf der **Zhuyin-Karte selbst** bleibt
+  Pinyin stehen; dort ist es die Antwort.
   Strichfolge via `vendor/hanzi-writer.min.js` (Zeichendaten vom CDN, offline still).
   PWA: `manifest.json` + `sw.js` (stale-while-revalidate; bei Shell-Änderungen VERSION
   in sw.js NICHT nötig zu bumpen — Updates greifen beim nächsten Start).
@@ -300,6 +304,11 @@ einmal je Seitenaufruf; danach gehört der Cursor dem, der ihn bewegt.
 (`trainer-letztesDeck-<sprache>` in den Settings), bei fälligen Reviews auf
 denen. Reihenfolge der Decks ist damit nicht mehr egal, aber auch nicht mehr
 alles.
+
+**Sichtbare Knöpfe:** Jeder Kartenzustand trägt einen Knopf mit der Taste
+darauf — „aufdecken 👁" vorne, „weiter →" auf der Lektionsrückseite,
+„gewusst ✓ / nochmal ↩" im Review. Vorher trug die Vorderseite gar keinen und
+die Lektionsrückseite nur einen grauen Hinweistext; man musste raten.
 
 **Design:** Markenfarbe Indigo (`--accent`), Rot nur semantisch (falsch/nochmal).
 Light-/Dark-Mode automatisch via `prefers-color-scheme`.
