@@ -574,141 +574,15 @@
   <p class="key-hint"><kbd>A</kbd> zurück &nbsp;·&nbsp; <kbd>B</kbd> herunterladen &nbsp;·&nbsp; <kbd>C</kbd> zurück</p>
 </div>
 
-<!-- SRS DASHBOARD SCREEN -->
-<div id="srs-dashboard-screen" class="screen">
-  <div style="text-align:center; margin-bottom:32px;">
-    <div class="star-badge" style="border-color:var(--green);color:var(--green);">SRS VOKABELTRAINER</div>
-    <h1 style="font-family:var(--display);font-size:clamp(28px,6vw,52px);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">
-      VOKABELN<br><span style="color:var(--green)">LERNEN</span>
-    </h1>
-  </div>
-  <div id="srs-level-info" style="text-align:center;margin-bottom:24px;">
-    <div style="font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.1em;margin-bottom:8px;" id="srs-level-label">LEVEL 1</div>
-    <div class="progress-bar-track" style="margin-bottom:8px;">
-      <div class="progress-bar-fill" id="srs-level-progress" style="background:var(--green);width:0%"></div>
-    </div>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);" id="srs-level-stats"></div>
-  </div>
-  <div id="srs-stage-bars" style="display:flex;gap:4px;height:24px;margin-bottom:16px;border-radius:2px;overflow:hidden;"></div>
-  <div id="srs-forecast" style="margin-bottom:24px;"></div>
-  <div id="srs-dashboard-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
-  <p class="key-hint"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
-</div>
 
-<!-- SRS LESSON SCREEN (Phase 1: Anschauen) -->
-<div id="srs-lesson-screen" class="screen">
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill" id="srs-lesson-progress" style="background:var(--green);width:0%"></div>
-  </div>
-  <div class="meta-row">
-    <span class="category-tag" style="color:var(--green);border-color:var(--green-dim);">NEUE KARTE</span>
-    <span class="q-counter" id="srs-lesson-counter"></span>
-  </div>
-  <div id="srs-lesson-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
-  <div id="srs-lesson-front" onclick="srsLessonFlip()" style="cursor:pointer;">
-    <div class="karte-wort" id="srs-lesson-ru" style="margin-bottom:24px;font-size:clamp(36px,8vw,64px);"></div>
-    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;">beliebige Taste → aufdecken</p>
-  </div>
-  <div id="srs-lesson-back" onclick="srsLessonNext()" style="display:none;cursor:pointer;">
-    <div class="karte-wort karte-back-klein" id="srs-lesson-back-ru"></div>
-    <div class="srs-card-image" style="display:none;"></div>
-    <div class="karte-de" id="srs-lesson-back-de" style="font-size:clamp(28px,6vw,48px);"></div>
-    <div class="karte-merksatz" id="srs-lesson-m"></div>
-    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:20px;">beliebige Taste → weiter</p>
-  </div>
-</div>
 
-<!-- SRS REVIEW SCREEN (Karteikarte) -->
-<div id="srs-review-screen" class="screen">
-  <div class="progress-bar-track">
-    <div class="progress-bar-fill" id="srs-review-progress" style="background:var(--green);width:0%"></div>
-  </div>
-  <div class="meta-row">
-    <span class="category-tag" style="color:var(--green);border-color:var(--green-dim);" id="srs-review-direction">РУ → DE</span>
-    <span class="q-counter" id="srs-review-counter"></span>
-  </div>
-  <div id="srs-review-srs-badge" style="position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:2px;"></div>
-  <div id="srs-review-genus-bar" style="height:6px;margin-bottom:20px;border-radius:2px;transition:background 0.3s;"></div>
-  <div id="srs-review-front" onclick="srsReviewFlip()" style="cursor:pointer;">
-    <div class="karte-wort" id="srs-review-front-wort" style="font-size:clamp(36px,8vw,64px);"></div>
-    <p style="font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;margin-top:20px;">beliebige Taste → aufdecken</p>
-  </div>
-  <div id="srs-review-back" style="display:none;">
-    <div class="karte-wort karte-back-klein" id="srs-review-back-oben"></div>
-    <div class="srs-card-image" style="display:none;"></div>
-    <div class="karte-de" id="srs-review-back-unten" style="font-size:clamp(28px,6vw,48px);"></div>
-    <div id="srs-review-merksatz" class="karte-merksatz" style="display:none;"></div>
-    <div class="karte-buttons">
-      <button class="karte-btn gewusst" onclick="srsReviewGewusst()"><kbd>A</kbd> &nbsp; gewusst ✓</button>
-      <button class="karte-btn nochmal" onclick="srsReviewNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
-    </div>
-  </div>
-</div>
 
 <!-- SRS STAGE CHANGE OVERLAY -->
-<div id="srs-stage-overlay" style="display:none;position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;pointer-events:none;">
-  <div id="srs-stage-overlay-inner" style="text-align:center;">
-    <div id="srs-stage-arrow" style="font-size:72px;line-height:1;"></div>
-    <div id="srs-stage-label" style="font-family:var(--mono);font-size:14px;margin-top:8px;"></div>
-  </div>
-</div>
 
-<!-- SRS RESULT SCREEN -->
-<div id="srs-result-screen" class="screen">
-  <div style="text-align:center;">
-    <div class="star-badge" style="border-color:var(--green);color:var(--green);">SRS ERGEBNIS</div>
-    <h2 style="font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:900;margin-bottom:24px;" id="srs-result-title">FERTIG</h2>
-    <div id="srs-result-stats" style="display:flex;justify-content:center;gap:32px;margin-bottom:32px;">
-      <div style="text-align:center;">
-        <div style="font-size:36px;font-weight:900;color:var(--green);" id="srs-result-up">0</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">AUFGESTIEGEN</div>
-      </div>
-      <div style="text-align:center;">
-        <div style="font-size:36px;font-weight:900;color:var(--red);" id="srs-result-down">0</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">ABGESTIEGEN</div>
-      </div>
-      <div style="text-align:center;">
-        <div style="font-size:36px;font-weight:900;color:var(--yellow);" id="srs-result-burned">0</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);">BURNED</div>
-      </div>
-    </div>
-    <div id="srs-result-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
-    <p class="key-hint" style="margin-top:24px;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
-  </div>
-</div>
 
-<!-- SRS BATCH PAUSE SCREEN -->
-<div id="srs-pause-screen" class="screen">
-  <div style="text-align:center;">
-    <div class="star-badge" style="border-color:var(--green);color:var(--green);">ZWISCHENSTAND</div>
-    <h2 style="font-family:var(--display);font-size:clamp(20px,4vw,32px);font-weight:900;margin-bottom:16px;">BATCH FERTIG</h2>
-    <div style="font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:32px;" id="srs-pause-info"></div>
-    <div id="srs-pause-list" style="display:flex;flex-direction:column;gap:8px;text-align:left;"></div>
-    <p class="key-hint" style="margin-top:24px;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> auswählen</p>
-  </div>
-</div>
 
 <!-- SRS FORECAST DETAIL SCREEN -->
 
-<!-- SRS BROWSE SCREEN -->
-<div id="srs-browse-screen" class="screen" style="max-width:780px;">
-  <div id="srs-browse-header" style="position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 0 16px;border-bottom:1px solid var(--border);margin-bottom:16px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-      <span style="font-family:var(--display);font-size:16px;font-weight:900;">VOKABEL-ÜBERSICHT</span>
-      <span style="font-family:var(--mono);font-size:10px;color:var(--muted);" id="srs-browse-summary"></span>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;font-family:var(--mono);font-size:9px;">
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#444;border-radius:2px;display:inline-block;"></span> Neu</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#e05080;border-radius:2px;display:inline-block;"></span> Apprentice</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#9b59b6;border-radius:2px;display:inline-block;"></span> Guru</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#3498db;border-radius:2px;display:inline-block;"></span> Master</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#2ecc71;border-radius:2px;display:inline-block;"></span> Enlightened</span>
-      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#95a5a6;border-radius:2px;display:inline-block;"></span> Burned</span>
-    </div>
-  </div>
-  <div id="srs-browse-content"></div>
-  <p class="key-hint" style="margin-top:24px;position:sticky;bottom:0;background:var(--bg);padding:12px 0;"><kbd>A</kbd> hoch &nbsp;·&nbsp; <kbd>C</kbd> runter &nbsp;·&nbsp; <kbd>B</kbd> zurück</p>
-</div>
 
 <!-- PEDAL SETUP SCREEN -->
 <div id="pedal-setup-screen" class="screen" style="text-align:center;">
@@ -820,7 +694,6 @@
   </div>
 </div>
 
-<script src="srs-levels.js"></script>
 <script src="vendor/hanzi-writer.min.js"></script>
 <script type="module" src="js/main.js"></script>
 </body>

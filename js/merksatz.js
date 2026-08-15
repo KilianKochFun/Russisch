@@ -68,12 +68,17 @@ export async function setzeMerksatz(lang, key, text) {
   const uid = sess?.user?.id;
   if (!uid) return;
 
-  if (sauber) {
-    await sb.from('merksaetze').upsert({
-      user_id: uid, lang, card_key: k, text: sauber, updated_at: new Date().toISOString(),
-    });
-  } else {
-    await sb.from('merksaetze').delete().eq('lang', lang).eq('card_key', k);
+  // Fehler nicht verschlucken: Der Merksatz steht lokal schon da, aber wenn er
+  // nicht hochkommt, ist er auf dem nächsten Gerät weg — und das merkt man erst
+  // dann. Lieber jetzt eine Meldung.
+  const { error } = sauber
+    ? await sb.from('merksaetze').upsert({
+        user_id: uid, lang, card_key: k, text: sauber, updated_at: new Date().toISOString(),
+      })
+    : await sb.from('merksaetze').delete().eq('lang', lang).eq('card_key', k);
+  if (error) {
+    console.error('Merksatz nicht gespeichert:', error.message);
+    throw new Error('Merksatz nicht gespeichert: ' + error.message);
   }
 }
 
@@ -86,8 +91,12 @@ export async function bearbeiteMerksatz(lang, key, nachher) {
     alt);
   if (neu === null) return;               // abgebrochen
   if (neu.trim() === alt) return;
-  await setzeMerksatz(lang, key, neu);
-  nachher?.();
+  try {
+    await setzeMerksatz(lang, key, neu);
+  } catch (e) {
+    alert(e.message);          // lokal steht er trotzdem — aber sagen muss man es
+  }
+  nachher?.();                 // in jedem Fall neu zeichnen
 }
 
 // Ein Kasten für die Kartenrückseite und die Detailseite. Immer sichtbar,

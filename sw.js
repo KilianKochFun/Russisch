@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v16';   // v16: Merksätze, Vergleich, geteilte Module
+const VERSION = 'sprachen-v17';   // v17: alter Russisch-SRS entfernt
 
 const SHELL = [
   '.',
@@ -11,8 +11,6 @@ const SHELL = [
   'icon.svg', 'favicon.ico',
   'icons/apple-touch-icon.png', 'icons/icon-192.png',
   'icons/icon-512.png', 'icons/icon-maskable-512.png',
-  'srs-levels.js',
-  'srs-data.json',
   'content/sprachen.json',
   'vendor/hanzi-writer.min.js',
   // Jede Datei aus js/ muss hier stehen, sonst fehlt sie offline. Die Liste

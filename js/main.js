@@ -3,7 +3,7 @@
 // startet die App trotzdem — nur ohne Login/Sync.
 import { S } from './state.js';
 import { ladeSprachen } from './content.js';
-import { renderSprachen, srsBuildCardMap, srsLoad } from './ui.js';
+import { renderSprachen } from './ui.js';
 import { initInput } from './input.js';
 import { progressInit, ladeProgress, ladeSettings } from './progress.js';
 import { aufSyncStatus, schreibe, syncInit } from './sync.js';
@@ -59,11 +59,9 @@ async function startApp(session) {
   } catch (e) {
     console.warn('Sprachen nicht geladen:', e.message);
   }
-  srsBuildCardMap();
   if (session) {
     await Promise.all([ladeProgress(), ladeSettings()]);
   }
-  await srsLoad(); // nach ladeSettings — Cloud-Stand hat Vorrang
   renderSprachen();
 }
 

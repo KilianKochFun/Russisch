@@ -1121,6 +1121,12 @@ export function trainerShowDetail(deckKey, key) {
 // Ein Klickfänger für jeden Merksatz-Kasten, egal auf welchem Bildschirm.
 // Delegiert am document — die Kästen entstehen erst beim Zeichnen der Karte,
 // ein direkter Handler müsste an vier Stellen neu gesetzt werden.
+//
+// In der EINFANGPHASE (das `true` unten). Ohne das kam der Handler zu spät:
+// Die Kartenrückseite trägt `onclick="trNext()"`, der Kasten liegt darin, und
+// beim Antippen sprang die Karte weiter, bevor der Merksatz überhaupt
+// gespeichert war. In der Einfangphase läuft dieser Handler vor dem der
+// Rückseite, und stopPropagation greift wirklich.
 document.addEventListener('click', (e) => {
   const box = e.target.closest?.('.mein-merksatz');
   if (!box) return;
@@ -1128,8 +1134,9 @@ document.addEventListener('click', (e) => {
   const key = box.dataset.merksatz;
   // Nur den Kasten selbst ersetzen — das gilt auf der Karte wie auf der
   // Detailseite, ohne den Bildschirm neu aufzubauen.
+  e.preventDefault();
   bearbeiteMerksatz(T.lang, key, () => { box.outerHTML = merksatzHtml(key); });
-});
+}, true);
 
 export function trZurueckZurUebersicht() {
   trainerShowBrowse();

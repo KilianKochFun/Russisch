@@ -5,6 +5,11 @@ Statische Web-App (Vanilla JS, ES Modules) — läuft ohne Server direkt von Git
 Komponenten/Zeichen, Wörter). Der alte Kapitelbaum (Grammatik/Dialoge/Texte/Japanisch)
 wurde entfernt — Code/Daten in Git-History (bis Commit 58632d3). Fahrplan: `PLAN.md`.
 
+Der **alte Russisch-SRS** (482 Einzelvokabeln, eigene SRS-Rechnung in `ui.js`)
+ist entfernt — Kilian lernt Russisch jetzt über die Wortbausteine. Damit fällt
+auch die zweite, parallele SRS-Implementierung weg; es gibt nur noch die in
+`trainer.js`. Code und Daten stehen in der Git-History (bis Commit 90e0542).
+
 **Login-Flow:** Beim Start prüft `main.js` die Supabase-Session → Login-Screen (E-Mail+Passwort,
 kein Registrieren) oder direkt App. **Login ist Pflicht** — ohne Anmeldung keine Inhalte.
 Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschritt/Settings:
@@ -42,13 +47,32 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `server.js` | Nur lokale Entwicklung (TTS-Proxy, `/api/image`-Bildproxy, SRS-API) |
 | `LERNPLAN.md` | A1–B1 Lehrplan mit Vokabeln/Grammatik |
 
-## Prüfskripte
+## Prüfen und Testen
 
 ```bash
 node scripts/check_js.js       # jede Datei in js/ als ES-Modul parsen
 node scripts/check_sw.js       # sw.js führt jedes Modul (sonst offline kaputt)
 node scripts/check_trainer.js  # Sprachen vollständig verdrahtet, Schlüssel eindeutig
+npm test                       # echte Browsertests (tests/, Chromium headless)
+npm test faellig               # nur tests/faellig.test.mjs
+npm test -- --sichtbar         # mit Fenster, zum Zusehen
 ```
+
+**`tests/` fährt die echte App**: eigener statischer Server, Chromium über
+`playwright-core`, Anmeldung über die echte Login-Maske. Ein **eigener
+Testnutzer** (`test-harness@example.invalid`) bekommt pro Lauf ein frisches
+Zufallspasswort über die Admin-Schnittstelle — kein Passwort steht in einer
+Datei, und echter Lernstand wird nie angefasst. Nach jedem Lauf werden seine
+Zeilen gelöscht, sonst stünde er in der Bestenliste.
+
+`tests/harness.mjs` bietet `pedal('A')`, `klick`, `text`, `screen()`,
+`oeffneSprache`, `bild()` (Screenshot) und `setzeKarten()`, um einen Zustand
+herzustellen statt ihn zusammenzuklicken. `fehlerInKonsole()` meldet auch
+fehlgeschlagene HTTP-Anfragen **mit Adresse** — die Konsole sagt sonst nur
+„404“ ohne zu verraten, wofür.
+
+Neuen Test schreiben: eine Datei `tests/<name>.test.mjs` mit `export const name`
+und `export default async (app, soll) => { … }`. Wirft sie nichts, ist sie grün.
 
 Alle drei sind aus konkreten Fehlern entstanden, nicht aus Prinzip. `check_sw.js`
 zum Beispiel, weil vier neue Module in der Offline-Liste fehlten — online fällt

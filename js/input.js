@@ -5,10 +5,6 @@ import { S } from './state.js';
 import { getSetting, setSetting } from './progress.js';
 import {
   sprachenMove, sprachenSelect, renderSprachen,
-  srsShowDashboard, srsDashboardMove, srsDashboardSelect,
-  srsLessonFlip, srsLessonNext,
-  srsReviewFlip, srsReviewGewusst, srsReviewNochmal,
-  srsPauseMove, srsPauseSelect, srsResultSelect,
 } from './ui.js';
 import {
   trainerDashMove, trainerDashSelect, trFlip, trNext, trGewusst, trNochmal, trBackToDash,
@@ -106,37 +102,6 @@ export function initInput() {
       // bringen einen nur wieder heraus bzw. laden das Buch herunter.
       if (key === 'B') window.buchHerunterladen?.();
       else window.buchZurueck?.();
-
-    } else if (S.state === 'srs-dashboard') {
-      if (key === 'A') srsDashboardMove(-1);
-      else if (key === 'C') srsDashboardMove(1);
-      else if (key === 'B') srsDashboardSelect();
-
-    } else if (S.state === 'srs-lesson-front') {
-      srsLessonFlip();
-
-    } else if (S.state === 'srs-lesson-back') {
-      srsLessonNext();
-
-    } else if (S.state === 'srs-review-front') {
-      srsReviewFlip();
-
-    } else if (S.state === 'srs-review-back') {
-      if (key === 'C') srsReviewNochmal();
-      else srsReviewGewusst(); // A und B = gewusst
-
-    } else if (S.state === 'srs-pause') {
-      if (key === 'A') srsPauseMove(-1);
-      else if (key === 'C') srsPauseMove(1);
-      else if (key === 'B') srsPauseSelect();
-
-    } else if (S.state === 'srs-result') {
-      if (key === 'B') srsResultSelect();
-
-    } else if (S.state === 'srs-browse') {
-      if (key === 'A') window.scrollBy({ top: -200, behavior: 'smooth' });
-      else if (key === 'C') window.scrollBy({ top: 200, behavior: 'smooth' });
-      else if (key === 'B') srsShowDashboard();
 
     } else if (S.state === 'tr-dashboard') {
       if (key === 'A') trainerDashMove(-1);
