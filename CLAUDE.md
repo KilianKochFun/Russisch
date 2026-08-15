@@ -285,6 +285,10 @@ nach jeder Antwort verworfen.
 Rahmen*farbe* ist die SRS-Stufe. Beides steht seit v15 als Legende im Kopf der
 Übersicht; vorher musste man es raten.
 
+**Menü-Cursor:** steht beim ersten Zeichnen auf der ersten Sprache, in der
+etwas **fällig** ist — mit drei Pedaltasten ist jede Zeile davor Arbeit. Nur
+einmal je Seitenaufruf; danach gehört der Cursor dem, der ihn bewegt.
+
 **Dashboard-Cursor:** steht beim Öffnen auf dem **zuletzt benutzten Deck**
 (`trainer-letztesDeck-<sprache>` in den Settings), bei fälligen Reviews auf
 denen. Reihenfolge der Decks ist damit nicht mehr egal, aber auch nicht mehr

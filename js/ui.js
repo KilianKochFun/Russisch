@@ -99,6 +99,26 @@ const SPRACH_KURZ = {
   french: '🇫🇷 Französisch', kurdish: '🌞 Kurdisch', russian: '🇷🇺 Vokabeln',
 };
 
+// Beim ersten Zeichnen den Cursor dorthin setzen, wo etwas ansteht. Mit drei
+// Pedaltasten ist jede Zeile davor Arbeit, und dass der Cursor stur auf dem
+// ersten Eintrag steht, hat mit dem Tag nichts zu tun. Nur beim ersten Mal —
+// danach gehört er dem, der ihn bewegt hat.
+let _cursorGesetzt = false;
+
+// Gibt zurück, ob sich dadurch etwas geändert hat — der Aufrufer entscheidet
+// dann, ob neu gezeichnet werden muss. Ohne diese Rückgabe stand hier
+// `S.sprachenCursor` als Bedingung, und weil der nach dem Setzen dauerhaft
+// ungleich Null ist, zeichnete sich das Menü endlos neu und die Seite hing.
+function cursorAufFaelliges() {
+  if (_cursorGesetzt || !_faellig) return false;
+  _cursorGesetzt = true;
+  const items = getSprachenItems();
+  const mitReviews = items.findIndex(i => i.trainer && (_faellig[i.trainer]?.jetzt || 0) > 0);
+  if (mitReviews < 0 || mitReviews === S.sprachenCursor) return false;
+  S.sprachenCursor = mitReviews;
+  return true;
+}
+
 async function ladeFaellig() {
   if (_faelligLaeuft) return;
   _faelligLaeuft = true;
@@ -112,7 +132,8 @@ async function ladeFaellig() {
   // renderSprachen → ladeFaellig → renderSprachen im Kreis.
   const anders = JSON.stringify(neu) !== JSON.stringify(_faellig);
   _faellig = neu;
-  if (anders && S.state === 'sprachen-menu') renderSprachen();
+  const cursorVersetzt = cursorAufFaelliges();
+  if ((anders || cursorVersetzt) && S.state === 'sprachen-menu') renderSprachen();
 }
 
 function renderHeute() {
