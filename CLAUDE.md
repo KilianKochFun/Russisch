@@ -259,7 +259,14 @@ gespeichert als `pedalKeys` in settings). Zusätzlich ist alles klick-/antippbar
 
 \* Rückgängig nur, solange eine Antwort zurückzunehmen ist; sonst deckt auch A auf.
 
-**Vergleich:** `js/vergleich.js` zeigt eine Bestenliste — gesamt und je Sprache.
+**Vergleich & Profile:** `js/vergleich.js` zeigt eine Bestenliste — gesamt und
+je Sprache. Jede Zeile führt ins **Profil** dieses Nutzers (`nutzer_profil()`):
+Kartenzahl je Sprache und die Verteilung über die SRS-Stufen, in denselben
+Farben wie Übersicht und Karten. Auch dort **nur Zahlen** — welche Karte jemand
+auf welcher Stufe hat, sieht weiterhin niemand. Nicht herausgegeben werden
+E-Mail, Anmeldedatum und Kartenschlüssel.
+Die Bestenliste ist mit dem Pedal eine Liste: A/C wählen, B öffnet das Profil,
+der letzte Eintrag ist „← Sprachen" — dieselbe Bauform wie die Review-Vorschau.
 Die Zahlen kommen aus der Datenbankfunktion `bestenliste()`, die mit
 `security definer` an der RLS vorbei rechnet, aber **nur Summen** zurückgibt;
 fremde Einzelkarten sieht niemand. Ohne Anmeldung liefert sie null Zeilen.
