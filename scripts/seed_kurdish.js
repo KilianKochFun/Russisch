@@ -163,6 +163,12 @@ woerter.forEach((w, i) => {
     language: 'kurdish', item_type: 'kuwort',
     level: Math.floor(i / PRO_LEVEL) + 1, position: i % PRO_LEVEL,
     data: {
+      // `id` statt bloß `wort` als Kartenschlüssel: Swadesh führt `ew` als
+      // „er“, „jenes“ und „sie“, `roj` als „Sonne“ und „Tag“. Ohne eigenen
+      // Schlüssel teilten sich diese Karten einen Lernstand, und eine davon
+      // wäre nie einzeln lernbar. Die Swadesh-Nummer ist der stabile Zusatz —
+      // sie kommt aus der Quelle und ändert sich nicht.
+      id: `${w.wort}·${w.nr}`,
       wort: w.wort, aussprache: klang(w.wort), de: w.de,
       swadesh: w.nr, gloss: w.gloss,
       ...(w.varianten.length ? { varianten: w.varianten } : {}),

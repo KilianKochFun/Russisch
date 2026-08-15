@@ -44,6 +44,11 @@ const TYP_NAME = tabelle('TYP_NAME');
 const TYP_LABEL = tabelle('TYP_LABEL');
 const KARTEN_ART = tabelle('KARTEN_ART');
 
+// itemKey aus trainer.js ziehen statt nachzubauen — sonst prüft man am Ende
+// eine andere Formel als die, die läuft.
+const ikSrc = src.match(/const itemKey = it =>[\s\S]*?;\n/);
+const itemKey = eval('(' + ikSrc[0].replace(/^const itemKey = /, '').replace(/;\n$/, '') + ')');
+
 // Die Anzeigefunktion selbst aus der Datei ziehen, damit wirklich sie geprüft wird
 const anzI = src.indexOf('function anzeigeVon');
 let d = 0, anzJ = src.indexOf('{', anzI);
@@ -95,6 +100,18 @@ async function main() {
       if (!feld) continue;
       const fehlt = items.filter(i => i.item_type === typ && !i.data?.[feld]);
       if (fehlt.length) meld(`${fehlt.length}× Typ "${typ}": Bauform „${KARTEN_ART[typ]}“ erwartet data.${feld}, das fehlt`);
+    }
+
+    // Schlüssel müssen eindeutig sein. Zwei Karten mit demselben Schlüssel
+    // teilen sich einen Lernstand — eine davon ist dann nie einzeln lernbar.
+    // Genau das ist bei Kurdisch passiert: Swadesh führt `ew` dreimal.
+    const proSchluessel = new Map();
+    for (const it of items) {
+      const k = itemKey(it);
+      (proSchluessel.get(k) || proSchluessel.set(k, []).get(k)).push(it.data?.de || it.data?.name || '?');
+    }
+    for (const [k, v] of proSchluessel) {
+      if (v.length > 1) meld(`Schlüssel "${k}" gilt für ${v.length} Karten (${v.join(' | ')}) — sie teilen sich einen Lernstand`);
     }
 
     // Und jedes einzelne Item muss etwas Anzeigbares hergeben

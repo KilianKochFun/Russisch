@@ -82,7 +82,17 @@ const show = id => {
 };
 // Schlüssel, unter dem der Lernstand einer Karte liegt. Wörter tragen ihr Wort
 // ebenfalls in data.zeichen, deshalb reicht diese Kette.
-const itemKey = it => it.item_type + ':' + (it.data.zeichen || it.data.zhuyin || it.data.form || it.data.wort || it.position);
+// Der Schlüssel, an dem der Lernstand hängt. Er muss innerhalb einer Sprache
+// EINDEUTIG sein, sonst teilen sich zwei Karten einen Fortschritt und eine
+// davon ist praktisch nicht lernbar.
+//
+// Das Wort allein reicht dafür nicht immer: Die kurdische Swadesh-Liste führt
+// `ew` als „er", „jenes“ UND „sie (mehrere)“, `roj` als „Sonne“ und „Tag“.
+// Wo das vorkommt, setzt das Seed-Skript ein `data.id` mit einem stabilen
+// Zusatz aus der Quelle (der Swadesh-Nummer), und das gewinnt hier.
+// Zeichen/Zhuyin/Form NIE ändern — daran hängt der gespeicherte Fortschritt.
+const itemKey = it => it.item_type + ':' +
+  (it.data.id || it.data.zeichen || it.data.zhuyin || it.data.form || it.data.wort || it.position);
 
 // Wie die Vorschau eine Karte benennt: Radikal, Zeichen, Wort oder Zhuyin.
 const TYP_NAME = { component: 'Radikale', character: 'Zeichen', word: 'Wörter', zhuyin: 'Zhuyin',
