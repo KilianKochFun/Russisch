@@ -7,6 +7,8 @@ export default async (app, soll) => {
   await app.oeffneSprache('Vergleich');
   soll.gleich(await app.screen(), 'vergleich-screen', 'die Bestenliste steht');
 
+  // Die Zeilen kommen aus der Datenbank nachgeladen.
+  await app.warte('#vergleich-content [data-nutzer]', 15000);
   const zeilen = await app.page.$$eval('#vergleich-content [data-nutzer]', e => e.length);
   soll.wahr(zeilen >= 2, `die Liste hat Einträge samt Zurück (waren ${zeilen})`);
 

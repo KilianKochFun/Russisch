@@ -179,7 +179,15 @@ export async function starte({ sichtbar = false } = {}) {
       await app.warte('#sprachen-screen.active');
       const treffer = app.page.locator('#sprachen-list .menu-item', { hasText: teilname }).first();
       await treffer.click();
-      await page.waitForTimeout(400);
+      // Warten, bis der Bildschirm WIRKLICH steht — nicht eine feste Zeitspanne.
+      // Mandarin lädt inzwischen 538 Items; mit einer festen Wartezeit fing ein
+      // Test das „Lade Inhalte…“ ab und meldete einen Fehler, den es nicht gab.
+      await page.waitForFunction(() => {
+        const s = document.querySelector('.screen.active')?.id;
+        if (s !== 'tr-dashboard-screen') return !!s && s !== 'sprachen-screen';
+        const liste = document.getElementById('tr-dash-list');
+        return liste && liste.children.length > 1;
+      }, { timeout: 20000 });
     },
 
     async bild(name) {
