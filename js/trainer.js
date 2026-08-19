@@ -63,7 +63,7 @@ const LEVEL_DECK = '__level';   // unter diesem Schlüssel liegt es in srs_decks
 // Kopfzeile des Dashboards je Sprache — vorher stand hier fest 中文 台灣,
 // was über dem Russisch-Trainer natürlich Unsinn war.
 const KOPF = {
-  'chinese-tw':    { zeile1: '中文', zeile2: '台灣', unter: '// Zhuyin zuerst, dann Zeichen' },
+  'chinese-tw':    { zeile1: '中文', zeile2: '台灣', unter: '// Radikale bauen Zeichen, Zeichen bauen Wörter' },
   'russian-morph': { zeile1: 'РУССКИЙ', zeile2: 'ПО ЧАСТЯМ', unter: '// Erst die Bausteine, dann die Wörter' },
   french:          { zeile1: 'FRAN', zeile2: 'ÇAIS', unter: '// Erst lesen können, dann die Brücken' },
   kurdish:         { zeile1: 'KURDÎ', zeile2: 'KURMANCÎ', unter: '// Erst die Buchstaben, dann die Wörter' },
