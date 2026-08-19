@@ -59,9 +59,21 @@ for (let k = anzJ; k < src.length; k++) {
 const anzeigeVon = eval('(' + src.slice(anzI, anzJ + 1).replace('function anzeigeVon', 'function') + ')');
 
 async function main() {
-  const res = await fetch(`${SUPA_URL}/rest/v1/vocab_items?select=language,item_type,level,data`,
-    { headers: { apikey: KEY, Authorization: `Bearer ${KEY}` } });
-  const rows = await res.json();
+  // Seitenweise laden. Supabase liefert höchstens 1000 Zeilen je Anfrage, und
+  // mit vier Sprachen sind es mehr — vorher bekam der Prüfer stillschweigend
+  // eine abgeschnittene Liste und meldete daraufhin, ein Deck finde keine
+  // Items. Ein Prüfer, der so etwas nicht merkt, ist schlimmer als keiner.
+  const rows = [];
+  const SEITE = 1000;
+  for (let von = 0; ; von += SEITE) {
+    const res = await fetch(`${SUPA_URL}/rest/v1/vocab_items?select=language,item_type,level,data`,
+      { headers: { apikey: KEY, Authorization: `Bearer ${KEY}`,
+                   Range: `${von}-${von + SEITE - 1}` } });
+    const teil = await res.json();
+    if (!Array.isArray(teil)) { console.error('Abfrage fehlgeschlagen:', teil); process.exit(1); }
+    rows.push(...teil);
+    if (teil.length < SEITE) break;
+  }
 
   const sprachen = [...new Set(rows.map(r => r.language))];
   let probleme = 0;

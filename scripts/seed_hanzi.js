@@ -14,7 +14,7 @@ const { loadCedict, pinyinToZhuyin, deutschVon } = require('./zh_lib.js');
 const SUPA_URL = 'https://qqvmovinqupunbsexiev.supabase.co';
 const CP = path.join(__dirname, '..', 'content-private');
 
-const MAX_LEVEL = 3;
+const MAX_LEVEL = 10;
 const ZEICHEN_PRO_LEVEL = 20;
 
 const env = Object.fromEntries(

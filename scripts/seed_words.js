@@ -56,7 +56,12 @@ for (let band = 1; band <= 4; band++) {
     const wort = (f[2] || '').trim();          // 展開表 = bereinigte Form
     const pinyin = (f[3] || '').trim();
     const zhuyin = (f[5] || '').replace(/　/g, ' ').trim();
-    if (wort.length < 2 || vorhanden.has(wort)) continue;
+    // Einzeichige Wörter sind ERLAUBT und wichtig: 人 ist ein Zeichen und ein
+    // Wort, 水 auch. WaniKani macht das genauso — die Zeichenkarte fragt
+    // Bedeutung und Lesung des Zeichens ab, die Wortkarte das Wort im
+    // Gebrauch. Vorher waren sie ausgeschlossen, und deshalb hatte Level 1
+    // genau ein einziges Wort (女人); jetzt sind es fünfzehn.
+    if (!wort || vorhanden.has(wort)) continue;
 
     const level = wortLevel(wort);
     if (level === null) { ohneZeichen++; continue; }
