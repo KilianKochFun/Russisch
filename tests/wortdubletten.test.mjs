@@ -1,29 +1,44 @@
-// Ein Wort darf nicht dieselbe Karte sein wie ein Zeichen.
+// Einzeichige Wörter sind erlaubt — aber nur, wenn sie WIRKLICH Wörter sind.
 //
-// Anlass: Ich hatte einzeichige Wörter aufgenommen, weil WaniKani das macht.
-// Dort haben sie ihren Sinn, weil ein Kanji als Wort anders gelesen wird als
-// im Verbund. Im Mandarin gibt es diese Spaltung nicht — 100 von 109 hatten
-// exakt dieselbe Lesung und 104 exakt dieselbe Bedeutung wie ihre
-// Zeichenkarte. Dieser Test hält fest, dass sie draußen bleiben.
+// Die Geschichte dahinter: Zuerst waren sie draußen (Dubletten der
+// Zeichenkarten), dann wieder drin, weil eine Wiederholung kein Schaden ist,
+// solange das Wort benutzt wird. Die Grenze zieht die Wortart aus der
+// TOCFL-Tabelle: Partikeln stehen nie allein.
+//
+// Dieser Test hält fest, was dabei schiefgehen kann: Partikeln als Wortkarte,
+// und Bedeutungen, die keine sind ("(wird zur Betonung verwendet)").
 import { SUPA_URL } from './harness.mjs';
 import fs from 'node:fs';
 
-export const name = 'Keine Wortkarte ist die Dublette einer Zeichenkarte';
+export const name = 'Wortkarten sind echte Wörter mit echter Bedeutung';
 
 export default async (app, soll) => {
   const key = fs.readFileSync(new URL('../.env', import.meta.url), 'utf-8')
     .split('\n').find(z => z.startsWith('SUPABASE_SECRET_KEY='))?.slice(20).trim();
-  const hole = async (typ) => {
-    const r = await fetch(`${SUPA_URL}/rest/v1/vocab_items?language=eq.chinese-tw&item_type=eq.${typ}&select=data`,
-      { headers: { apikey: key, Authorization: 'Bearer ' + key } });
-    return r.json();
-  };
-  const [zeichen, woerter] = await Promise.all([hole('character'), hole('word')]);
-  const zSet = new Set(zeichen.map(x => x.data.zeichen));
+  const r = await fetch(`${SUPA_URL}/rest/v1/vocab_items?language=eq.chinese-tw&item_type=eq.word&select=level,data`,
+    { headers: { apikey: key, Authorization: 'Bearer ' + key } });
+  const woerter = await r.json();
 
-  const dubletten = woerter.filter(w => w.data.zeichen.length === 1 && zSet.has(w.data.zeichen));
-  soll.leer(dubletten.map(w => w.data.zeichen),
-    'kein Wort besteht aus einem einzigen Zeichen, das es schon als Zeichenkarte gibt');
+  soll.wahr(woerter.length > 100, `es gibt genug Wörter (waren ${woerter.length})`);
 
-  soll.wahr(woerter.length > 40, `es gibt trotzdem genug echte Wörter (waren ${woerter.length})`);
+  // Keine Bedeutung, die NUR aus einer Klammer besteht. Eine Klammer davor ist
+  // in Ordnung: „(Höflichkeitsform) Sie“ sagt sehr wohl, was 您 heißt.
+  const klammer = woerter.filter(w => /^\s*\([^)]*\)\s*$/.test(w.data.de || ''));
+  soll.leer(klammer.map(w => `${w.data.zeichen}: ${w.data.de}`),
+    'keine Karte hat eine reine Klammer-Erklärung als Bedeutung');
+
+  // Kein Alltagswort wird als FAMILIENNAME erklärt — 那 heißt „jene“, nicht
+  // „Familie Na“. Länder- und Ortsnamen (中國 → China) sind dagegen richtig.
+  const namen = woerter.filter(w => /\(Eig, Fam\)/.test(w.data.de || ''));
+  soll.leer(namen.map(w => `${w.data.zeichen}: ${w.data.de}`),
+    'keine Karte erklärt ein Alltagswort als Familiennamen');
+
+  // Keine Lesung mit angehängter Klammer — die gehört zu einem anderen Wort
+  const lesung = woerter.filter(w => /[（(]/.test(w.data.zhuyin || ''));
+  soll.leer(lesung.map(w => `${w.data.zeichen}: ${w.data.zhuyin}`),
+    'keine Lesung schleppt die Erweiterung eines anderen Worts mit');
+
+  // Und jede Karte hat überhaupt eine Bedeutung
+  soll.leer(woerter.filter(w => !w.data.de).map(w => w.data.zeichen),
+    'jede Wortkarte hat eine deutsche Bedeutung');
 };

@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v22';   // v22: 200 Zeichen, 161 Wörter
+const VERSION = 'sprachen-v23';   // v23: echte Einzelzeichen-Wörter, bessere Bedeutungen
 
 const SHELL = [
   '.',

@@ -24,8 +24,16 @@ function loadCedict(pfad) {
     if (!m) continue;
     const [, tr, , py, defs] = m;
     if (!cedict.has(tr)) cedict.set(tr, []);
-    // Großbuchstabe im Pinyin = Eigenname (Bǐ = Belgien) → als Lern-Bedeutung nachrangig
-    cedict.get(tr).push({ py: py.toLowerCase(), eigenname: /[A-Z]/.test(py), defs: defs.split('/').slice(0, 3) });
+    // Eigennamen sind als Lern-Bedeutung nachrangig. Zwei Signale, weil eines
+    // nicht reicht: CEDICT schreibt sie mit großem Anfangsbuchstaben im Pinyin
+    // (Bǐ = Belgien), HanDeDict nicht — dort steht „na1“ für den Familiennamen
+    // 那, und nur die Bedeutung verrät es mit „(Eig, Fam)“. Ohne das zweite
+    // Signal wurde 那 („jene“) zum Familiennamen Na.
+    cedict.get(tr).push({
+      py: py.toLowerCase(),
+      eigenname: /[A-Z]/.test(py) || /\(Eig[,)]/.test(defs),
+      defs: defs.split('/').slice(0, 3),
+    });
   }
   return cedict;
 }
@@ -81,13 +89,25 @@ function pinyinToZhuyin(py) {
 // Deutsche Bedeutung + Beispielsatz aus HanDeDict (gleiche Datei-Struktur wie CEDICT).
 // Bevorzugt den Eintrag zur gewünschten Lesung und überspringt Meta-Einträge
 // ("Radikal Nr. …", "Bedeutung wie …", Kalender-Himmelsstämme, Eigennamen).
-const META_DE = /^(Radikal Nr\.|Bedeutung wie|Variante von|der \w+ der zehn|\(Kangxi)/i;
+// Bedeutungen, die keine sind: Radikal-Hinweise, Zählwort-Erklärungen — und
+// alles, was NUR aus einer Klammer besteht. „(wird zur Betonung verwendet)“
+// ist keine Antwort auf „was heißt 也“; „auch, ebenfalls“ schon.
+// Nur GANZ eingeklammerte Erklärungen sind gemeint: „(wird zur Betonung
+// verwendet)“ ist keine Antwort auf „was heißt 也“. Eine Klammer VOR dem
+// Inhalt ist dagegen in Ordnung — „(Höflichkeitsform) Sie“ und
+// „(allgemein für) Schaf“ sagen beide, was das Wort heißt.
+const META_DE = /^\s*\([^)]*\)\s*$|^(Radikal Nr\.|Bedeutung wie|Variante von|der \w+ der zehn|\(Kangxi)/i;
 
 function deutschVon(handedict, zh, pinyin) {
+  // Reihenfolge der Kriterien: Ein Eigenname oder eine Meta-Erklärung ist NIE
+  // die richtige Antwort, solange es eine gewöhnliche Bedeutung gibt — auch
+  // dann nicht, wenn seine Lesung besser passt. Vorher stand der Lesungs-
+  // treffer vorn, und deshalb wurde 那 („jene“) zum Familiennamen „Na“ und 都
+  // („alle“) zur „Hauptstadt“.
   const eintraege = [...(handedict.get(zh) || [])].sort((a, b) =>
-    ((pinyin && a.py === pinyin) ? -1 : 0) - ((pinyin && b.py === pinyin) ? -1 : 0) ||
+    (a.eigenname ? 1 : 0) - (b.eigenname ? 1 : 0) ||
     (META_DE.test(a.defs[0] || '') ? 1 : 0) - (META_DE.test(b.defs[0] || '') ? 1 : 0) ||
-    (a.eigenname ? 1 : 0) - (b.eigenname ? 1 : 0));
+    ((pinyin && a.py === pinyin) ? -1 : 0) - ((pinyin && b.py === pinyin) ? -1 : 0));
   const e = eintraege[0];
   if (!e) return {};
   // Auch INNERHALB eines Eintrags: Meta-Bedeutungen ("Radikal Nr. …") ans Ende

@@ -54,23 +54,27 @@ for (let band = 1; band <= 4; band++) {
     if (!zeile.trim()) continue;
     const f = parseCsvZeile(zeile);
     const wort = (f[2] || '').trim();          // 展開表 = bereinigte Form
-    const pinyin = (f[3] || '').trim();
-    const zhuyin = (f[5] || '').replace(/　/g, ' ').trim();
-    // Einzeichige Wörter bleiben DRAUSSEN, und das ist wichtig genug für eine
-    // Begründung, weil es naheliegt, sie aufzunehmen:
+    const wortart = (f[4] || '').trim();       // 詞類 = Wortart laut TOCFL
+    const pinyin = (f[3] || '').replace(/[（(][^）)]*[）)]/g, '').trim();
+    // TOCFL hängt an manche Einträge eine übliche Erweiterung an — 下 steht mit
+    // „(˙ㄇㄧㄢ)“ für 下面 da. Das ist die Lesung eines ANDEREN Worts und hat auf
+    // dieser Karte nichts zu suchen.
+    const zhuyin = (f[5] || '').replace(/　/g, ' ').replace(/[（(][^）)]*[）)]/g, '').trim();
+    // Einzeichige Wörter sind erlaubt, solange sie WIRKLICH Wörter sind.
     //
-    // Bei WaniKani gibt es Einzelkanji-Vokabeln, weil ein Kanji als Wort
-    // anders gelesen wird als im Verbund — 人 allein ist „hito“, in 人口
-    // „jin“. Diese Spaltung (kun'yomi/on'yomi) ist japanisch. Im Mandarin
-    // hat ein Zeichen praktisch immer dieselbe Lesung.
+    // Das ist eine bewusste Kehrtwende: Zuerst waren sie draußen, weil 100 von
+    // 109 dieselbe Lesung und 104 dieselbe Bedeutung hatten wie ihre
+    // Zeichenkarte — also Dubletten. Kilians Einwand dagegen sticht aber: Eine
+    // Wiederholung ist kein Schaden, wenn das Wort tatsächlich benutzt wird.
+    // 水 IST ein Wort, 看 IST ein Wort, und wer sie nur als Zeichen kennt,
+    // kennt sie halb.
     //
-    // Nachgemessen, als sie einmal drin waren: von 109 Einzelzeichen-Wörtern
-    // hatten 100 exakt dieselbe Lesung wie ihre Zeichenkarte und 104 exakt
-    // dieselbe Bedeutung. Die fünf Abweichler waren SCHLECHTER — 那 wurde zum
-    // Familiennamen „Na“, 都 zur „Hauptstadt“, 尺 zu einer Musiknote. Es waren
-    // also Dubletten, die zweimal dieselbe Karte abfragen und die Kartenzahl
-    // aufblähen, ohne etwas beizubringen.
-    if (wort.length < 2 || vorhanden.has(wort)) continue;
+    // Die Grenze zieht die Wortart aus der TOCFL-Tabelle, nicht mein Gefühl:
+    // Partikeln (Ptc) sind keine Wörter, die man einzeln benutzt — 著 steht
+    // nie allein. Alles andere schon, auch die Adverbien (很, 不, 也) und die
+    // Zähleinheiten (次, 天, 片).
+    if (!wort || vorhanden.has(wort)) continue;
+    if (wort.length === 1 && wortart === 'Ptc') continue;
 
     const level = wortLevel(wort);
     if (level === null) { ohneZeichen++; continue; }
