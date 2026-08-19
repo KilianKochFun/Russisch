@@ -128,11 +128,20 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
 - **Russisch-SRS** (`js/ui.js`): Karten aus `content/sprachen.json` (nur noch `vokabeln`-
   Einheiten relevant), Level aus `srs-levels.js`, beide Richtungen RU↔DE pro Karte.
   Erststand aus `srs-data.json` (Mai 2026), danach localStorage + Cloud (`settings.data`).
-- **Mandarin** (`js/trainer.js`): 4 Decks aus `vocab_items` — `zhuyin` (42), `radikale`,
-  `hanzi`, `word`. Curriculum V2: strukturell einfach→schwer aus TOCFL-Vorrat,
+- **Mandarin** (`js/trainer.js`): 3 SRS-Decks aus `vocab_items` — `radikale`,
+  `hanzi`, `word` — plus **Zhuyin als Schnelldurchlauf** (kein SRS). Curriculum V2: strukturell einfach→schwer aus TOCFL-Vorrat,
   deutsche Radikal-Namen, Zerlegungs-Hinweise; bewusst erst Level 1–3 gebaut
   (MAX_LEVEL in seed_hanzi.js erhöhen zum Erweitern). Leere Level werden übersprungen.
   Gating: Komponenten vor Zeichen; Wörter erst, wenn alle ihre Zeichen gelernt sind.
+  **Ein gemeinsames Level für alle drei Decks** (`GEMEINSAMES_LEVEL`, gespeichert
+  unter dem Pseudo-Deck `__level`) — wie bei WaniKani gehören Radikale, Zeichen
+  und Wörter eines Levels zusammen. Aufstieg bei **90 % der ZEICHEN** dieses
+  Levels auf Guru; ein Zeichen zählt erst, wenn Bedeutung UND Lesung dort sind.
+  Vorher hatte jedes Deck ein eigenes Level, und man war bei den Radikalen auf 3
+  und bei den Zeichen auf 1.
+  **Zhuyin ist ein Spiel**: alle 42 am Stück, falsche kommen wieder, es entstehen
+  keine SRS-Karten. 42 Zeichen sind ein Nachmittag, kein Halbjahr — und solange
+  man sie nicht kann, kann man keine Lesung nachschlagen.
   Tonfarben (1 orange/2 grün/3 blau/4 violett/neutral grau) auf Rückseiten + Lessons.
   **Kein Pinyin bei Zeichen und Wörtern** — dort steht die Lesung nur als Zhuyin,
   auf der Karte wie auf der Detailseite wie im Tooltip. Ein zweites Lesesystem
@@ -277,6 +286,13 @@ fremde Einzelkarten sieht niemand. Ohne Anmeldung liefert sie null Zeilen.
 Sortiert wird nach Karten ab Guru, nicht nach Kartenzahl. Namen stehen in
 `profiles` (lesbar für alle Angemeldeten, änderbar nur der eigene) — **nie** die
 E-Mail-Adresse. Migrationen einspielen mit `python3 scripts/migrate.py <datei.sql>`.
+
+**Level sind Höchstmarken.** Ein erreichtes Level bleibt erreicht — auch wenn
+Karten zurückfallen, auch offline, auch wenn eine Abfrage fehlschlägt.
+`merkeDeck` in `js/sync.js` lässt keinen kleineren Wert durch als den bekannten
+und führt eine lokale Höchstmarke (`srs-level-hoechstmarke`). Vorher startete
+`ladeDeck` bei Level 1, wenn die Abfrage scheiterte; der Trainer leitete von
+dort neu her, blieb tiefer hängen und schrieb das Ergebnis über den echten Stand.
 
 **Speichern:** Lernstände liegen als **eine Zeile je Karte** in `srs_cards`/`srs_decks`
 (nicht mehr als Klumpen in `settings.data` — das führte dazu, dass zwei Geräte sich

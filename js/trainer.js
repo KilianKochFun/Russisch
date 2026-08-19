@@ -12,7 +12,6 @@ import { zeigeScreen } from './screen.js';
 
 const DECKS = {
   'chinese-tw': [
-    { key: 'zhuyin', titel: 'ㄅㄆㄇ Zhuyin-Alphabet', typen: ['zhuyin'] },
     { key: 'radikale', titel: '部首 Radikale', typen: ['component'] },
     { key: 'hanzi', titel: '漢字 Zeichen', typen: ['character'] },
     { key: 'woerter', titel: '詞 Wörter', typen: ['word'] },
@@ -46,6 +45,21 @@ const DECKS = {
   ],
 };
 
+// Sprachen, deren Decks EIN gemeinsames Level teilen — das WaniKani-Modell.
+//
+// Bei WaniKani gehören Radikale, Zeichen und Wörter eines Levels zusammen: Die
+// Radikale schalten die Zeichen frei, die Zeichen die Wörter, und man steigt
+// auf, wenn 90 % der ZEICHEN dieses Levels auf Guru stehen. Vorher hatte hier
+// jedes Deck sein eigenes Level, was dazu führte, dass man bei den Radikalen
+// auf Level 3 war, bei den Zeichen auf 1 und bei den Wörtern auf 1 — drei
+// Fortschritte, die nichts miteinander zu tun hatten.
+//
+// `leitTyp` ist die Kartenart, die über den Aufstieg entscheidet.
+const GEMEINSAMES_LEVEL = {
+  'chinese-tw': { leitTyp: 'character', schwelle: 90 },
+};
+const LEVEL_DECK = '__level';   // unter diesem Schlüssel liegt es in srs_decks
+
 // Kopfzeile des Dashboards je Sprache — vorher stand hier fest 中文 台灣,
 // was über dem Russisch-Trainer natürlich Unsinn war.
 const KOPF = {
@@ -69,6 +83,7 @@ const TTS_SPRACHE = { 'chinese-tw': 'zh-TW', 'russian-morph': 'ru-RU', french: '
 // Trainer-State (bewusst getrennt vom Alt-App-State in S — nur S.state wird geteilt)
 const T = {
   lang: null, deck: null,
+  gemeinsamesLevel: null,   // WaniKani-Modell: ein Level für alle Decks der Sprache
   items: [],          // [{key, typ, level, data}]
   srs: null,          // {cards: {key: {srs, nextReview}}, unlockedLevel}
   cursor: 0,
@@ -131,6 +146,8 @@ function standVon(deckKey) {
 
 function ladeSrs() {
   T.srs = T.alleSrs[srsKey()] || { cards: {}, unlockedLevel: 1 };
+  // Teilt die Sprache ein Level, gilt dieses für jedes Deck.
+  if (GEMEINSAMES_LEVEL[T.lang] && T.gemeinsamesLevel) T.srs.unlockedLevel = T.gemeinsamesLevel;
 }
 
 // Einmal beim Betreten des Trainers: alle Decks der Sprache aus der Zeilen-
@@ -163,6 +180,25 @@ async function ladeAlleSrs(lang) {
       stand = migriereAufPruefungen(stand);
     }
     T.alleSrs[key] = stand;
+  }
+
+  // Gemeinsames Level laden. Beim ersten Mal gibt es noch keines — dann gilt
+  // das höchste der bisherigen Deck-Level, damit niemand Fortschritt verliert.
+  if (GEMEINSAMES_LEVEL[lang]) {
+    const gespeichert = (await syncLadeDeck(lang, LEVEL_DECK)).unlockedLevel || 0;
+    const ausDecks = Math.max(1, ...(DECKS[lang] || [])
+      .map(d => T.alleSrs[`trainer-${lang}-${d.key}`]?.unlockedLevel || 1));
+    T.gemeinsamesLevel = Math.max(gespeichert, ausDecks);
+    if (T.gemeinsamesLevel > gespeichert) {
+      merkeDeck(lang, LEVEL_DECK, T.gemeinsamesLevel);
+      console.info(`Gemeinsames Level für ${lang} auf ${T.gemeinsamesLevel} gesetzt (aus den bisherigen Deck-Leveln).`);
+    }
+    for (const d of (DECKS[lang] || [])) {
+      const st = T.alleSrs[`trainer-${lang}-${d.key}`];
+      if (st) st.unlockedLevel = T.gemeinsamesLevel;
+    }
+  } else {
+    T.gemeinsamesLevel = null;
   }
 }
 
@@ -268,15 +304,32 @@ function neue(items) {
   return kandidaten;
 }
 
-function levelStats(items, lvl) {
+function levelStats(items, lvl, cards = T.srs.cards) {
   const level = items.filter(it => it.level === lvl);
-  const guru = level.filter(it => (T.srs.cards[it.key]?.srs || 0) >= 5).length;
+  const guru = level.filter(it => (cards[it.key]?.srs || 0) >= 5).length;
   return { total: level.length, guru, pct: level.length ? Math.round(guru / level.length * 100) : 0 };
+}
+
+// Alle Karten einer Sprache in einer Map — das gemeinsame Level rechnet über
+// alle Decks, nicht nur über das gerade geöffnete.
+function alleKarten() {
+  const m = {};
+  for (const d of (DECKS[T.lang] || []))
+    Object.assign(m, T.alleSrs[`trainer-${T.lang}-${d.key}`]?.cards || {});
+  return m;
+}
+function alleItems() {
+  return (DECKS[T.lang] || []).flatMap(d => pruefItems(d));
 }
 
 function maxLevel(items) { return items.reduce((m, it) => Math.max(m, it.level), 1); }
 
+// Prüft, ob ein Level dazukommt. Steigt NUR — ein einmal erreichtes Level
+// bleibt erreicht, auch wenn Karten zurückfallen. Siehe merkeDeck in sync.js.
 function checkLevelUp(items) {
+  const cfg = GEMEINSAMES_LEVEL[T.lang];
+  if (cfg) return checkLevelUpGemeinsam(cfg);
+
   let aufstieg = false;
   const max = maxLevel(items);
   while (T.srs.unlockedLevel < max) {
@@ -286,6 +339,50 @@ function checkLevelUp(items) {
     break;
   }
   if (aufstieg) merkeDeck(T.lang, T.deck.key, T.srs.unlockedLevel);
+  return aufstieg;
+}
+
+// Aufstieg im WaniKani-Modell: Es zählen nur die Leitkarten (bei Mandarin die
+// Zeichen), und zwar über alle Decks der Sprache hinweg. Radikale und Wörter
+// gehören zum selben Level, entscheiden aber nicht über den Aufstieg — genau
+// wie dort.
+function checkLevelUpGemeinsam(cfg) {
+  const leit = alleItems().filter(it => it.typ === cfg.leitTyp);
+  const karten = alleKarten();
+  const max = maxLevel(alleItems());
+  let stufe = T.gemeinsamesLevel || 1;
+  let aufstieg = false;
+
+  // Gezählt werden ZEICHEN, nicht Abfragen. Ein Zeichen hat zwei Karten
+  // (Bedeutung und Lesung) und gilt als sitzend, wenn beide auf Guru sind —
+  // so wie ein WaniKani-Item eine Stufe hat und nicht zwei.
+  const zeichenAufGuru = (lvl) => {
+    const proZeichen = new Map();
+    for (const it of leit) {
+      if (it.level !== lvl) continue;
+      const s = karten[it.key]?.srs ?? 0;
+      proZeichen.set(it.basisKey, Math.min(proZeichen.get(it.basisKey) ?? 99, s));
+    }
+    const total = proZeichen.size;
+    const guru = [...proZeichen.values()].filter(s => s >= 5).length;
+    return { total, guru, pct: total ? Math.round(guru / total * 100) : 0 };
+  };
+
+  while (stufe < max) {
+    const s = zeichenAufGuru(stufe);
+    if (s.total === 0) { stufe++; continue; }          // Level ohne Leitkarten überspringen
+    if (s.pct >= cfg.schwelle) { stufe++; aufstieg = true; continue; }
+    break;
+  }
+  if (aufstieg) {
+    T.gemeinsamesLevel = stufe;
+    merkeDeck(T.lang, LEVEL_DECK, stufe);
+    for (const d of (DECKS[T.lang] || [])) {
+      const st = T.alleSrs[`trainer-${T.lang}-${d.key}`];
+      if (st) st.unlockedLevel = stufe;
+    }
+    if (T.srs) T.srs.unlockedLevel = stufe;
+  }
   return aufstieg;
 }
 
@@ -336,8 +433,16 @@ function dashItems() {
     eintraege.push({
       deck, art: 'lesson', enabled: frisch > 0,
       label: `${deck.titel} — Neue lernen`,
-      desc: `${Math.min(5, frisch)} von ${frisch} · Level ${T.srs.unlockedLevel}/${maxLevel(items)} (${stats.pct}% Guru+)`,
+      desc: `${Math.min(5, frisch)} von ${frisch} · Level ${T.srs.unlockedLevel}/${
+        GEMEINSAMES_LEVEL[T.lang] ? maxLevel(alleItems()) : maxLevel(items)} (${stats.pct}% Guru+)`,
     });
+  }
+  // Zhuyin ist kein SRS-Deck mehr, sondern ein Schnelldurchlauf. 42 Zeichen
+  // sind an einem Nachmittag zu lernen; sie über Monate zu verteilen hält nur
+  // davon ab, endlich Zeichen zu lesen.
+  if (T.items.some(i => i.item_type === 'zhuyin')) {
+    eintraege.push({ art: 'spiel', enabled: true, label: 'ㄅㄆㄇ Zhuyin — Schnelldurchlauf',
+      desc: 'Alle 42 am Stück, ohne SRS. Falsche kommen wieder, bis alle sitzen.' });
   }
   eintraege.push({ art: 'stats', enabled: true, label: 'Statistik',
     desc: 'Trefferquote, Verteilung — und welche Karten dich immer wieder erwischen' });
@@ -448,6 +553,7 @@ export function trainerDashSelect() {
   if (item.art === 'browse') { trainerShowBrowse(); return; }
   if (item.art === 'forecast') { trainerZeigeVorschau(); return; }
   if (item.art === 'stats') { trainerZeigeStatistik(); return; }
+  if (item.art === 'spiel') { starteZhuyinSpiel(); return; }
   T.deck = item.deck;
   setSetting('trainer-letztesDeck-' + T.lang, item.deck.key);   // startCursor liest das
   ladeSrs();
@@ -464,6 +570,78 @@ export function trainerDashSelect() {
     T.phase = 'review';
     starteReviews(faellig(items));
   }
+}
+
+// ── Zhuyin-Schnelldurchlauf ────────────────────────────────────────────────
+// Kein SRS. 42 Zeichen sind ein Nachmittag, kein Halbjahr — und solange man
+// sie nicht kann, kann man keine Lesung nachschlagen. Deshalb: alle am Stück,
+// falsche kommen wieder, fertig ist man, wenn alle einmal saßen.
+//
+// Es wird nichts gespeichert außer dem besten Durchlauf. Ein Spiel, das
+// Karteikarten anlegt, ist wieder ein Karteikasten.
+const Z = { pool: [], falsch: 0, gesamt: 0, aktuell: null, offen: false };
+
+export function starteZhuyinSpiel() {
+  const alle = T.items.filter(i => i.item_type === 'zhuyin')
+    .map(it => ({ key: itemKey(it), typ: 'zhuyin', level: it.level, data: it.data }));
+  // Mischen, damit nicht immer ㄅ zuerst kommt
+  for (let i = alle.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [alle[i], alle[j]] = [alle[j], alle[i]];
+  }
+  Z.pool = alle; Z.falsch = 0; Z.gesamt = alle.length; Z.offen = false;
+  S.state = 'zhuyin-spiel';
+  show('tr-card-screen');
+  naechstesZhuyin();
+}
+
+function naechstesZhuyin() {
+  if (!Z.pool.length) return zhuyinErgebnis();
+  Z.aktuell = Z.pool[0];
+  Z.offen = false;
+  const d = Z.aktuell.data;
+  el('tr-tag').textContent = 'ㄅㄆㄇ Schnelldurchlauf';
+  el('tr-counter').textContent = `noch ${Z.pool.length}`;
+  el('tr-progress').style.width = `${Math.round((1 - Z.pool.length / Math.max(Z.gesamt, 1)) * 100)}%`;
+  el('tr-stage-badge').style.display = 'none';
+  el('tr-front').innerHTML = `<div class="karte-wort" style="font-size:clamp(64px,18vw,120px);">${d.zhuyin}</div>`;
+  el('tr-back').innerHTML = `
+    <div class="karte-wort karte-back-klein">${d.zhuyin}</div>
+    <div class="karte-de" style="font-size:clamp(28px,6vw,48px);">${d.pinyin}</div>
+    <div class="karte-merksatz">${d.hinweis || ''}</div>`;
+  zeigeKarte(true);
+}
+
+export function zhuyinAufdecken() {
+  if (Z.offen) return;
+  Z.offen = true;
+  zeigeKarte(false);
+  el('tr-review-buttons').style.display = 'grid';
+  el('tr-weiter-buttons').style.display = 'none';
+  sprich(Z.aktuell);
+}
+
+export function zhuyinAntwort(gewusst) {
+  if (!Z.offen) return zhuyinAufdecken();
+  const k = Z.pool.shift();
+  if (!gewusst) { Z.falsch++; Z.pool.splice(Math.min(3, Z.pool.length), 0, k); }  // kommt gleich wieder
+  naechstesZhuyin();
+}
+
+function zhuyinErgebnis() {
+  S.state = 'zhuyin-ergebnis';
+  show('tr-result-screen');
+  // Der Ergebnisbildschirm ist für SRS-Runden gebaut (aufgestiegen/abgestiegen/
+  // burned). Für den Schnelldurchlauf zählt etwas anderes: wie viele saßen
+  // sofort. Die Kacheln werden entsprechend umbeschriftet.
+  el('tr-result-up').textContent = Z.gesamt - Z.falsch;
+  el('tr-result-down').textContent = Z.falsch;
+  el('tr-result-burned').textContent = Z.gesamt;
+  el('tr-result-up').nextElementSibling.textContent = 'AUF ANHIEB';
+  el('tr-result-down').nextElementSibling.textContent = 'FEHLVERSUCHE';
+  el('tr-result-burned').nextElementSibling.textContent = 'ZEICHEN';
+  el('tr-result-levelup').textContent = Z.falsch === 0 ? '🎉 Alle auf Anhieb!' : '';
+  el('tr-result-level').textContent = 'Kein SRS — der Durchlauf legt keine Karten an.';
 }
 
 // ── Tonfarben (1 orange · 2 grün · 3 blau · 4 violett · neutral grau) ──────
@@ -732,6 +910,10 @@ function zeigeLessonKarte() {
 }
 
 export function trFlip() {
+  // Der Schnelldurchlauf benutzt denselben Kartenbildschirm und damit dieselben
+  // Klick-Handler aus dem Markup. Ohne diese Umleitung wären Maus und Touch
+  // dort tot, weil die Wächter unten nur SRS-Zustände kennen.
+  if (S.state === 'zhuyin-spiel') return zhuyinAufdecken();
   if (S.state === 'tr-lesson-front') S.state = 'tr-lesson-back';
   else if (S.state === 'tr-review-front') S.state = 'tr-review-back';
   else return;
@@ -742,6 +924,7 @@ export function trFlip() {
 }
 
 export function trNext() {
+  if (S.state === 'zhuyin-spiel') return zhuyinAufdecken();
   if (S.state !== 'tr-lesson-back') return;
   T.lessonIdx++;
   if (T.lessonIdx >= T.lessonCards.length) {
@@ -845,6 +1028,7 @@ export function trRueckgaengig() {
 }
 
 export function trGewusst() {
+  if (S.state === 'zhuyin-spiel') return zhuyinAntwort(true);
   if (S.state !== 'tr-review-back') return;
   merkeFuerRueckgang(T.current);
   T.pool.splice(T.pool.indexOf(T.current), 1);
@@ -854,6 +1038,7 @@ export function trGewusst() {
 }
 
 export function trNochmal() {
+  if (S.state === 'zhuyin-spiel') return zhuyinAntwort(false);
   if (S.state !== 'tr-review-back') return;
   merkeFuerRueckgang(T.current);
   if (!T.failed.has(T.current.key)) {
@@ -1149,6 +1334,8 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   bearbeiteMerksatz(T.lang, key, () => { box.outerHTML = merksatzHtml(key); });
 }, true);
+
+Object.assign(window, { starteZhuyinSpiel, zhuyinAufdecken, zhuyinAntwort });
 
 export function trZurueckZurUebersicht() {
   trainerShowBrowse();

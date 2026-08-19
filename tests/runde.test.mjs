@@ -16,6 +16,10 @@ export default async (app, soll) => {
   ]);
 
   await app.oeffne();
+  // Die Zahlen kommen nachgeladen; direkt nach dem Öffnen ist der Kasten leer.
+  await app.page.waitForFunction(
+    () => (document.getElementById('heute-panel')?.textContent || '').includes('fällig'),
+    { timeout: 15000 });
   soll.enthaelt(await app.text('#heute-panel'), '3 jetzt fällig', 'vorher stehen drei an');
 
   await app.oeffneSprache('Kurdî');

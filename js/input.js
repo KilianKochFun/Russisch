@@ -133,6 +133,15 @@ export function initInput() {
       if (key === 'C') trNochmal();
       else trGewusst(); // A und B = gewusst
 
+    } else if (S.state === 'zhuyin-spiel') {
+      // Vorne deckt jede Taste auf, hinten sind A/B „gewusst“ und C „nochmal“ —
+      // dieselbe Belegung wie im Review, damit man nicht umdenken muss.
+      if (key === 'C') window.zhuyinAntwort?.(false);
+      else window.zhuyinAntwort?.(true);
+
+    } else if (S.state === 'zhuyin-ergebnis') {
+      trBackToDash();
+
     } else if (S.state === 'tr-result') {
       trBackToDash();
 

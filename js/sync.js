@@ -66,8 +66,40 @@ export function merkeKarte(lang, deck, key, karte) {
   plane(Object.keys(_puffer).length >= MAX_STAU ? 0 : RUHE_MS);
 }
 
+// Das freigeschaltete Level ist eine HÖCHSTMARKE, kein aktueller Messwert.
+//
+// Wer ein Level einmal erreicht hat, hat es. So funktioniert WaniKani, und so
+// erwartet man es auch — sonst verliert man Fortschritt, weil ein paar Karten
+// zurückgefallen sind. Vorher konnte genau das passieren: Schlug die Abfrage
+// von srs_decks fehl oder war man offline, kam ladeDeck mit Level 1 zurück,
+// der Trainer leitete von dort neu her, blieb tiefer hängen — und schrieb das
+// Ergebnis über den echten Stand.
+//
+// Deshalb zwei Sicherungen: eine lokale Höchstmarke, die auch ohne Netz gilt,
+// und die Regel, dass hier nie ein kleinerer Wert durchgeht als der bekannte.
+const HOECHSTMARKE_KEY = 'srs-level-hoechstmarke';
+
+function hoechstmarken() {
+  try { return JSON.parse(localStorage.getItem(HOECHSTMARKE_KEY) || '{}'); } catch { return {}; }
+}
+
+export function hoechstesLevel(lang, deck) {
+  return hoechstmarken()[`${lang}/${deck}`] || 0;
+}
+
 export function merkeDeck(lang, deck, unlockedLevel) {
-  _decks[`${lang}/${deck}`] = { lang, deck, unlocked_level: unlockedLevel, ts: Date.now() };
+  const k = `${lang}/${deck}`;
+  const marken = hoechstmarken();
+  const bekannt = Math.max(marken[k] || 0, _decks[k]?.unlocked_level || 0);
+  if (unlockedLevel < bekannt) {
+    // Nicht abwärts. Das ist kein Sonderfall, den man still schlucken darf —
+    // wenn es passiert, stimmt etwas mit dem geladenen Stand nicht.
+    console.warn(`Level ${unlockedLevel} für ${k} ignoriert — bekannt ist ${bekannt}.`);
+    return;
+  }
+  marken[k] = unlockedLevel;
+  try { localStorage.setItem(HOECHSTMARKE_KEY, JSON.stringify(marken)); } catch {}
+  _decks[k] = { lang, deck, unlocked_level: unlockedLevel, ts: Date.now() };
   melde();
   plane(RUHE_MS);
 }
@@ -139,7 +171,10 @@ window.addEventListener('pagehide', () => { schreibe(); });
 // Liefert { cards: {key: {srs, nextReview}}, unlockedLevel } für ein Deck.
 // Was im Puffer liegt, gewinnt gegen den Server — es ist neuer.
 export async function ladeDeck(lang, deck) {
-  const out = { cards: {}, unlockedLevel: 1 };
+  // Startwert ist die lokale Höchstmarke, nicht 1. Wenn der Server nicht
+  // antwortet, ist „was ich zuletzt wusste“ die richtige Annahme — „ganz von
+  // vorn“ ist die schlechteste von allen.
+  const out = { cards: {}, unlockedLevel: Math.max(1, hoechstesLevel(lang, deck)) };
   if (_sb && _userId) {
     const [k, d] = await Promise.all([
       _sb.from('srs_cards').select('card_key, srs, next_review').eq('lang', lang).eq('deck', deck),
@@ -148,13 +183,15 @@ export async function ladeDeck(lang, deck) {
     if (!k.error) for (const r of (k.data || [])) {
       out.cards[r.card_key] = { srs: r.srs, nextReview: r.next_review };
     }
-    if (!d.error && d.data) out.unlockedLevel = d.data.unlocked_level;
+    // Server und lokale Marke: die höhere gewinnt. Ein Gerät, das ein Level
+    // freigeschaltet hat, darf es einem anderen nicht wegnehmen.
+    if (!d.error && d.data) out.unlockedLevel = Math.max(out.unlockedLevel, d.data.unlocked_level);
   }
   for (const p of Object.values(_puffer)) {
     if (p.lang === lang && p.deck === deck) out.cards[p.key] = { srs: p.srs, nextReview: p.next_review };
   }
   const dp = _decks[`${lang}/${deck}`];
-  if (dp) out.unlockedLevel = dp.unlocked_level;
+  if (dp) out.unlockedLevel = Math.max(out.unlockedLevel, dp.unlocked_level);
   return out;
 }
 
