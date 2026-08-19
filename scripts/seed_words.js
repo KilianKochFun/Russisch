@@ -56,12 +56,21 @@ for (let band = 1; band <= 4; band++) {
     const wort = (f[2] || '').trim();          // 展開表 = bereinigte Form
     const pinyin = (f[3] || '').trim();
     const zhuyin = (f[5] || '').replace(/　/g, ' ').trim();
-    // Einzeichige Wörter sind ERLAUBT und wichtig: 人 ist ein Zeichen und ein
-    // Wort, 水 auch. WaniKani macht das genauso — die Zeichenkarte fragt
-    // Bedeutung und Lesung des Zeichens ab, die Wortkarte das Wort im
-    // Gebrauch. Vorher waren sie ausgeschlossen, und deshalb hatte Level 1
-    // genau ein einziges Wort (女人); jetzt sind es fünfzehn.
-    if (!wort || vorhanden.has(wort)) continue;
+    // Einzeichige Wörter bleiben DRAUSSEN, und das ist wichtig genug für eine
+    // Begründung, weil es naheliegt, sie aufzunehmen:
+    //
+    // Bei WaniKani gibt es Einzelkanji-Vokabeln, weil ein Kanji als Wort
+    // anders gelesen wird als im Verbund — 人 allein ist „hito“, in 人口
+    // „jin“. Diese Spaltung (kun'yomi/on'yomi) ist japanisch. Im Mandarin
+    // hat ein Zeichen praktisch immer dieselbe Lesung.
+    //
+    // Nachgemessen, als sie einmal drin waren: von 109 Einzelzeichen-Wörtern
+    // hatten 100 exakt dieselbe Lesung wie ihre Zeichenkarte und 104 exakt
+    // dieselbe Bedeutung. Die fünf Abweichler waren SCHLECHTER — 那 wurde zum
+    // Familiennamen „Na“, 都 zur „Hauptstadt“, 尺 zu einer Musiknote. Es waren
+    // also Dubletten, die zweimal dieselbe Karte abfragen und die Kartenzahl
+    // aufblähen, ohne etwas beizubringen.
+    if (wort.length < 2 || vorhanden.has(wort)) continue;
 
     const level = wortLevel(wort);
     if (level === null) { ohneZeichen++; continue; }
