@@ -6,45 +6,12 @@ import { S, SRS_STAGES, istFaellig } from './state.js';
 import { speak } from './tts.js';
 import { getSetting, setSetting } from './progress.js';
 import { ladeDeckItems } from './decks.js';
+import { DECKS } from './deckliste.js';
 import { ladeMerksaetze, merksatzHtml, bearbeiteMerksatz } from './merksatz.js';
 import { ladeMeldungen, meldungHtml, melde } from './meldung.js';
 import { ladeDeck as syncLadeDeck, merkeKarte, merkeDeck } from './sync.js';
 import { zeigeScreen } from './screen.js';
 
-const DECKS = {
-  'chinese-tw': [
-    { key: 'radikale', titel: '部首 Radikale', typen: ['component'] },
-    { key: 'hanzi', titel: '漢字 Zeichen', typen: ['character'] },
-    { key: 'woerter', titel: '詞 Wörter', typen: ['word'] },
-  ],
-  // Russisch morphologisch: erst die Bausteine, dann die Wörter, die aus
-  // ihnen zusammenkleben. Gesperrt, bis alle Teile eines Worts sitzen.
-  'russian-morph': [
-    { key: 'bausteine', titel: 'Bausteine', typen: ['morph'] },
-    { key: 'ruwoerter', titel: 'Wörter', typen: ['rusword'] },
-  ],
-  // Französisch. Morphologie hilft hier nicht — siehe scripts/seed_french.js.
-  //
-  // Die Wörter stehen ZUERST. Anfangs stand die Aussprache vorn („erst lesen
-  // können“), aber gesperrt war sie nie, und der Dashboard-Cursor landet auf
-  // dem ersten freigeschalteten Eintrag: Wer Wörter lernen wollte, musste sich
-  // mit dem Pedal jedes Mal fünfmal nach unten hangeln. Die Ausspracheregeln
-  // sind ein Nachschlagewerk, keine Vorstufe — die Aussprache steht auf jeder
-  // Wortkarte mit drauf.
-  french: [
-    { key: 'frwoerter',  titel: 'Wörter — A1 nach Häufigkeit', typen: ['fword'] },
-    { key: 'aussprache', titel: 'Aussprache', typen: ['aussprache'] },
-    { key: 'bruecken',   titel: 'Brücken zum Deutschen', typen: ['bruecke'] },
-    { key: 'reise',      titel: 'Unterwegs', typen: ['reise'] },
-  ],
-  // Kurdisch (Kurmancî): erst die Buchstaben, die ein Deutschsprachiger falsch
-  // liest, dann der Grundwortschatz. Keine Sperre — die Bedeutung von `masî`
-  // hängt an keiner Buchstabenregel. Siehe scripts/seed_kurdish.js.
-  kurdish: [
-    { key: 'alfabe',    titel: 'Alfabe — die Buchstaben', typen: ['alfabe'] },
-    { key: 'kuwoerter', titel: 'Wörter — Swadesh-Grundwortschatz', typen: ['kuwort'] },
-  ],
-};
 
 // Sprachen, deren Decks EIN gemeinsames Level teilen — das WaniKani-Modell.
 //
@@ -197,9 +164,13 @@ async function ladeAlleSrs(lang) {
   // das höchste der bisherigen Deck-Level, damit niemand Fortschritt verliert.
   if (GEMEINSAMES_LEVEL[lang]) {
     const gespeichert = (await syncLadeDeck(lang, LEVEL_DECK)).unlockedLevel || 0;
-    const ausDecks = Math.max(1, ...(DECKS[lang] || [])
+    // Die alten Deck-Level gelten NUR, solange es noch kein gemeinsames gibt.
+    // Sie sind die Herkunft, nicht die Wahrheit: Sie stammen aus der Zeit, als
+    // jedes Deck für sich zählte, und würden sonst jede Korrektur des
+    // gemeinsamen Levels wieder überschreiben.
+    const ausDecks = gespeichert ? 0 : Math.max(1, ...(DECKS[lang] || [])
       .map(d => T.alleSrs[`trainer-${lang}-${d.key}`]?.unlockedLevel || 1));
-    T.gemeinsamesLevel = Math.max(gespeichert, ausDecks);
+    T.gemeinsamesLevel = Math.max(gespeichert, ausDecks, 1);
     if (T.gemeinsamesLevel > gespeichert) {
       merkeDeck(lang, LEVEL_DECK, T.gemeinsamesLevel);
       console.info(`Gemeinsames Level für ${lang} auf ${T.gemeinsamesLevel} gesetzt (aus den bisherigen Deck-Leveln).`);

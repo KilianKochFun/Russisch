@@ -13,6 +13,7 @@
 // liegt in localStorage und übersteht damit Neuladen und Flugmodus.
 
 import { istFaellig } from './state.js';
+import { DECKS } from './deckliste.js';
 
 const PUFFER_KEY = 'srs-sync-puffer';
 const RUHE_MS = 2500;        // so lange nach der letzten Antwort warten
@@ -83,6 +84,10 @@ function hoechstmarken() {
   try { return JSON.parse(localStorage.getItem(HOECHSTMARKE_KEY) || '{}'); } catch { return {}; }
 }
 
+// Was beim letzten erfolgreichen Laden vom Server kam. Der ist die Wahrheit;
+// die Höchstmarke ist nur der Ersatz, wenn er nicht antwortet.
+const _geladen = {};
+
 export function hoechstesLevel(lang, deck) {
   return hoechstmarken()[`${lang}/${deck}`] || 0;
 }
@@ -90,7 +95,12 @@ export function hoechstesLevel(lang, deck) {
 export function merkeDeck(lang, deck, unlockedLevel) {
   const k = `${lang}/${deck}`;
   const marken = hoechstmarken();
-  const bekannt = Math.max(marken[k] || 0, _decks[k]?.unlocked_level || 0);
+  // Verglichen wird mit dem ZULETZT GELADENEN Stand, nicht mit der Bestmarke
+  // aller Zeiten. Der Unterschied ist wichtig: Die Marke soll verhindern, dass
+  // ein fehlgeschlagener Ladevorgang das Level neu von unten herleitet — sie
+  // darf aber keine bewusste Korrektur blockieren. Sagt der Server ein
+  // niedrigeres Level, ist das eine Ansage und kein Unfall.
+  const bekannt = _geladen[k] ?? marken[k] ?? 0;
   if (unlockedLevel < bekannt) {
     // Nicht abwärts. Das ist kein Sonderfall, den man still schlucken darf —
     // wenn es passiert, stimmt etwas mit dem geladenen Stand nicht.
@@ -183,9 +193,18 @@ export async function ladeDeck(lang, deck) {
     if (!k.error) for (const r of (k.data || [])) {
       out.cards[r.card_key] = { srs: r.srs, nextReview: r.next_review };
     }
-    // Server und lokale Marke: die höhere gewinnt. Ein Gerät, das ein Level
-    // freigeschaltet hat, darf es einem anderen nicht wegnehmen.
-    if (!d.error && d.data) out.unlockedLevel = Math.max(out.unlockedLevel, d.data.unlocked_level);
+    // Antwortet der Server, gilt SEIN Wert — auch ein niedrigerer. Nur wenn er
+    // nicht antwortet, bleibt es bei der lokalen Marke von oben. Vorher gewann
+    // hier immer der höhere Wert, und damit ließ sich ein falsch gesetztes
+    // Level nie mehr korrigieren.
+    if (!d.error) {
+      const n = d.data?.unlocked_level;
+      if (n) { out.unlockedLevel = n; _geladen[`${lang}/${deck}`] = n; }
+      else { _geladen[`${lang}/${deck}`] = out.unlockedLevel; }
+      const m = hoechstmarken();
+      m[`${lang}/${deck}`] = Math.max(m[`${lang}/${deck}`] || 0, out.unlockedLevel);
+      try { localStorage.setItem(HOECHSTMARKE_KEY, JSON.stringify(m)); } catch {}
+    }
   }
   for (const p of Object.values(_puffer)) {
     if (p.lang === lang && p.deck === deck) out.cards[p.key] = { srs: p.srs, nextReview: p.next_review };
@@ -224,12 +243,23 @@ export async function faelligkeiten({ neu = false } = {}) {
   if (_sb && _userId) {
     const { data, error } = await _sb.from('srs_cards').select('lang, deck, card_key, srs, next_review');
     if (error) return _faelligCache?.daten || {};
-    for (const r of (data || [])) karten.set(`${r.lang}/${r.deck}/${r.card_key}`, { lang: r.lang, srs: r.srs, next: r.next_review });
+    for (const r of (data || [])) karten.set(`${r.lang}/${r.deck}/${r.card_key}`,
+      { lang: r.lang, deck: r.deck, srs: r.srs, next: r.next_review });
   }
-  for (const p of Object.values(_puffer)) karten.set(`${p.lang}/${p.deck}/${p.key}`, { lang: p.lang, srs: p.srs, next: p.next_review });
+  for (const p of Object.values(_puffer)) karten.set(`${p.lang}/${p.deck}/${p.key}`,
+    { lang: p.lang, deck: p.deck, srs: p.srs, next: p.next_review });
+
+  // Nur Decks zählen, die es noch gibt. Als Zhuyin vom SRS-Deck zum
+  // Schnelldurchlauf wurde, blieben seine Karten in srs_cards liegen — die
+  // Übersicht meldete sie weiter als fällig, aber es gab kein Deck mehr, in
+  // dem man sie hätte abarbeiten können. Eine Zahl, die nie kleiner wird, ist
+  // schlimmer als gar keine.
+  const bekannt = new Set();
+  for (const [lang, decks] of Object.entries(DECKS)) for (const d of decks) bekannt.add(`${lang}/${d.key}`);
 
   const daten = {};
-  for (const { lang, srs, next } of karten.values()) {
+  for (const { lang, deck, srs, next } of karten.values()) {
+    if (!bekannt.has(`${lang}/${deck}`)) continue;
     const z = daten[lang] || (daten[lang] = { jetzt: 0, heuteNoch: 0, imUmlauf: 0, fertig: 0 });
     // Dieselbe Regel wie im Trainer, aus state.js — nicht noch einmal
     // hingeschrieben. Vorher zählte diese Stelle Karten auf Stufe 0 mit, die

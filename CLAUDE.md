@@ -33,6 +33,7 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
 | `js/config.js` | Supabase-URL + Publishable Key (öffentlich OK) |
 | `js/screen.js` | Bildschirmwechsel — **eine** Fassung; stand vorher siebenmal im Projekt |
+| `js/deckliste.js` | Welche Decks es je Sprache gibt — von Trainer **und** Sync gebraucht |
 | `js/html.js` | `escapeHtml` für alles, was ein Mensch eingetippt hat |
 | `js/merksatz.js` | Eigene Merksätze je Karte (Tabelle `merksaetze`, privat) |
 | `js/meldung.js` | „⚑ stimmt hier was nicht?" je Karte (Tabelle `meldungen`) |
@@ -292,12 +293,19 @@ Sortiert wird nach Karten ab Guru, nicht nach Kartenzahl. Namen stehen in
 `profiles` (lesbar für alle Angemeldeten, änderbar nur der eigene) — **nie** die
 E-Mail-Adresse. Migrationen einspielen mit `python3 scripts/migrate.py <datei.sql>`.
 
-**Level sind Höchstmarken.** Ein erreichtes Level bleibt erreicht — auch wenn
-Karten zurückfallen, auch offline, auch wenn eine Abfrage fehlschlägt.
-`merkeDeck` in `js/sync.js` lässt keinen kleineren Wert durch als den bekannten
-und führt eine lokale Höchstmarke (`srs-level-hoechstmarke`). Vorher startete
-`ladeDeck` bei Level 1, wenn die Abfrage scheiterte; der Trainer leitete von
-dort neu her, blieb tiefer hängen und schrieb das Ergebnis über den echten Stand.
+**Level: der Server hat recht, sonst die lokale Marke.** Ein erreichtes Level
+darf nicht verlorengehen, weil eine Abfrage scheitert — dafür gibt es die lokale
+Höchstmarke (`srs-level-hoechstmarke`), aus der `ladeDeck` startet, wenn der
+Server schweigt. **Antwortet der Server, gilt aber sein Wert, auch ein
+niedrigerer**; sonst ließe sich ein falsch gesetztes Level nie korrigieren.
+`merkeDeck` vergleicht mit dem zuletzt *geladenen* Stand, nicht mit der Bestmarke
+aller Zeiten. Und die alten Deck-Level gelten nur, solange es noch kein
+gemeinsames gibt — sie sind die Herkunft, nicht die Wahrheit.
+
+**Verwaiste Decks zählen nicht.** `faelligkeiten()` prüft gegen `js/deckliste.js`.
+Als Zhuyin vom SRS-Deck zum Schnelldurchlauf wurde, blieben seine Karten in
+`srs_cards` liegen und die Tagesübersicht meldete sie weiter — eine Zahl, die nie
+kleiner wird, weil es kein Deck mehr gibt, in dem man sie abarbeiten könnte.
 
 **Meldungen:** Auf jeder Kartenrückseite und Detailseite steht „⚑ stimmt hier
 was nicht?". Was dort gemeldet wird, landet in `meldungen` und wird mit
