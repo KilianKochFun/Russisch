@@ -293,6 +293,13 @@ Sortiert wird nach Karten ab Guru, nicht nach Kartenzahl. Namen stehen in
 `profiles` (lesbar für alle Angemeldeten, änderbar nur der eigene) — **nie** die
 E-Mail-Adresse. Migrationen einspielen mit `python3 scripts/migrate.py <datei.sql>`.
 
+**Ein erreichtes Level bleibt erreicht.** Fallen Karten unter Guru zurück, sinkt
+das Level NICHT — ein Level ist eine erreichte Etappe, keine laufende Messung.
+Die zurückgefallenen Karten kommen als Reviews wieder, aber sie nehmen keinen
+Fortschritt weg (wie bei WaniKani). `checkLevelUp` zählt nur hoch;
+`tests/levelbleibt.test.mjs` hält es fest. Herunter geht es nur, wenn der Server
+es ausdrücklich sagt — also bei einer bewussten Korrektur.
+
 **Level: der Server hat recht, sonst die lokale Marke.** Ein erreichtes Level
 darf nicht verlorengehen, weil eine Abfrage scheitert — dafür gibt es die lokale
 Höchstmarke (`srs-level-hoechstmarke`), aus der `ladeDeck` startet, wenn der
