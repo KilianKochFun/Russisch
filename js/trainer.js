@@ -7,6 +7,7 @@ import { speak } from './tts.js';
 import { getSetting, setSetting } from './progress.js';
 import { ladeDeckItems } from './decks.js';
 import { ladeMerksaetze, merksatzHtml, bearbeiteMerksatz } from './merksatz.js';
+import { ladeMeldungen, meldungHtml, melde } from './meldung.js';
 import { ladeDeck as syncLadeDeck, merkeKarte, merkeDeck } from './sync.js';
 import { zeigeScreen } from './screen.js';
 
@@ -54,9 +55,19 @@ const DECKS = {
 // auf Level 3 war, bei den Zeichen auf 1 und bei den Wörtern auf 1 — drei
 // Fortschritte, die nichts miteinander zu tun hatten.
 //
-// `leitTyp` ist die Kartenart, die über den Aufstieg entscheidet.
+// `typen` sind die Kartenarten, die ALLE ihre Schwelle erreichen müssen.
+//
+// Nicht „90 % der Zeichen“, wie es hier zuerst stand: Ein Level ist erst
+// durch, wenn Radikale, Zeichen UND Wörter je 80 % auf Guru haben. Sonst
+// schleppt man Wörter ungelernt ins nächste Level mit.
+//
+// Und untereinander sperren sie sich NICHT. Man kann von Anfang an an allen
+// dreien arbeiten. Vorher waren Zeichen gesperrt, bis alle Radikale des
+// Levels gelernt waren, und Wörter, bis alle ihre Zeichen saßen — das führte
+// dazu, dass beim Öffnen zweimal „0 von 0“ dastand und man nur Radikale
+// machen konnte.
 const GEMEINSAMES_LEVEL = {
-  'chinese-tw': { leitTyp: 'character', schwelle: 90 },
+  'chinese-tw': { typen: ['component', 'character', 'word'], schwelle: 80 },
 };
 const LEVEL_DECK = '__level';   // unter diesem Schlüssel liegt es in srs_decks
 
@@ -274,32 +285,24 @@ function neue(items) {
   kandidaten.sort((a, b) =>
     a.level - b.level || rang(a.typ) - rang(b.typ) || a.position - b.position);
 
-  if (T.deck.key === 'hanzi') {
-    const radikale = standVon('radikale');
-    const gelernt = new Set(Object.entries(radikale?.cards || {})
-      .filter(([, c]) => c.srs >= 1).map(([k]) => k.split('#')[0]));
-    kandidaten = kandidaten.filter(it => {
-      const komponenten = T.items.filter(k => k.item_type === 'component' && k.level === it.level);
-      return komponenten.every(k => gelernt.has('component:' + k.data.zeichen));
-    });
-  }
-  // Französisch hat bewusst KEINE Sperre. Anders als bei Mandarin, wo ein
-  // Zeichen ohne seine Radikale nicht zerlegbar ist, hängt die Bedeutung von
-  // `merci` an keiner Lautregel — und die Aussprache steht auf der Karte.
-  // Das Aussprache-Deck steht trotzdem zuerst in der Liste.
+  // Bei Mandarin sperren sich die drei Decks NICHT gegenseitig. Ein Level ist
+  // eine Etappe, an der man an Radikalen, Zeichen und Wörtern gleichzeitig
+  // arbeitet — und weiter geht es erst, wenn alle drei auf 80 % stehen.
+  // Vorher waren Zeichen gesperrt, bis alle Radikale des Levels saßen, und
+  // Wörter, bis alle ihre Zeichen saßen; beim Öffnen stand deshalb zweimal
+  // „0 von 0“ da.
+  //
+  // Französisch hat aus einem anderen Grund keine Sperre: Die Bedeutung von
+  // `merci` hängt an keiner Lautregel, und die Aussprache steht auf der Karte.
+  //
+  // Russisch behält seine: Dort ist ein Wort buchstäblich aus seinen
+  // Bausteinen zusammengesetzt, und ohne die Teile ist es nicht erklärbar.
   if (T.deck.key === 'ruwoerter') {
     const bau = standVon('bausteine');
     const gelernt = new Set(Object.entries(bau?.cards || {})
       .filter(([k, c]) => k.startsWith('morph:') && c.srs >= 1)
       .map(([k]) => k.split('#')[0].slice('morph:'.length)));
     kandidaten = kandidaten.filter(it => (it.data.teile || []).every(t => gelernt.has(t)));
-  }
-  if (T.deck.key === 'woerter') {
-    const hanzi = standVon('hanzi');
-    const gelernt = new Set(Object.entries(hanzi?.cards || {})
-      .filter(([k, c]) => k.startsWith('character:') && c.srs >= 1)
-      .map(([k]) => k.split('#')[0].split(':')[1]));
-    kandidaten = kandidaten.filter(it => [...it.data.zeichen].every(c => gelernt.has(c)));
   }
   return kandidaten;
 }
@@ -320,6 +323,30 @@ function alleKarten() {
 }
 function alleItems() {
   return (DECKS[T.lang] || []).flatMap(d => pruefItems(d));
+}
+
+// Wie weit ein Level ist — je Kartenart getrennt, weil ALLE ihre Schwelle
+// erreichen müssen. Gezählt werden Items, nicht Abfragen: Ein Zeichen hat
+// zwei Karten (Bedeutung und Lesung) und gilt erst als sitzend, wenn beide
+// auf Guru sind.
+function levelFortschritt(lvl, items = alleItems(), karten = alleKarten(),
+                          cfg = GEMEINSAMES_LEVEL[T.lang]) {
+  const teile = {};
+  let hatInhalt = false, durch = true;
+  for (const typ of (cfg?.typen || [])) {
+    const proItem = new Map();
+    for (const it of items) {
+      if (it.level !== lvl || it.typ !== typ) continue;
+      const s = karten[it.key]?.srs ?? 0;
+      proItem.set(it.basisKey, Math.min(proItem.get(it.basisKey) ?? 99, s));
+    }
+    const total = proItem.size;
+    const guru = [...proItem.values()].filter(s => s >= 5).length;
+    const pct = total ? Math.round(guru / total * 100) : 100;
+    teile[typ] = { total, guru, pct };
+    if (total) { hatInhalt = true; if (pct < (cfg?.schwelle ?? 80)) durch = false; }
+  }
+  return { teile, hatInhalt, durch, schwelle: cfg?.schwelle ?? 80 };
 }
 
 function maxLevel(items) { return items.reduce((m, it) => Math.max(m, it.level), 1); }
@@ -347,31 +374,16 @@ function checkLevelUp(items) {
 // gehören zum selben Level, entscheiden aber nicht über den Aufstieg — genau
 // wie dort.
 function checkLevelUpGemeinsam(cfg) {
-  const leit = alleItems().filter(it => it.typ === cfg.leitTyp);
   const karten = alleKarten();
-  const max = maxLevel(alleItems());
+  const items = alleItems();
+  const max = maxLevel(items);
   let stufe = T.gemeinsamesLevel || 1;
   let aufstieg = false;
 
-  // Gezählt werden ZEICHEN, nicht Abfragen. Ein Zeichen hat zwei Karten
-  // (Bedeutung und Lesung) und gilt als sitzend, wenn beide auf Guru sind —
-  // so wie ein WaniKani-Item eine Stufe hat und nicht zwei.
-  const zeichenAufGuru = (lvl) => {
-    const proZeichen = new Map();
-    for (const it of leit) {
-      if (it.level !== lvl) continue;
-      const s = karten[it.key]?.srs ?? 0;
-      proZeichen.set(it.basisKey, Math.min(proZeichen.get(it.basisKey) ?? 99, s));
-    }
-    const total = proZeichen.size;
-    const guru = [...proZeichen.values()].filter(s => s >= 5).length;
-    return { total, guru, pct: total ? Math.round(guru / total * 100) : 0 };
-  };
-
   while (stufe < max) {
-    const s = zeichenAufGuru(stufe);
-    if (s.total === 0) { stufe++; continue; }          // Level ohne Leitkarten überspringen
-    if (s.pct >= cfg.schwelle) { stufe++; aufstieg = true; continue; }
+    const s = levelFortschritt(stufe, items, karten, cfg);
+    if (!s.hatInhalt) { stufe++; continue; }            // leeres Level überspringen
+    if (s.durch) { stufe++; aufstieg = true; continue; }
     break;
   }
   if (aufstieg) {
@@ -394,7 +406,7 @@ export async function trainerShowDashboard(lang) {
   el('tr-dash-list').innerHTML = '<div class="menu-item"><span class="menu-item-body"><span class="menu-item-name">Lade Inhalte…</span></span></div>';
   try {
     T.items = await ladeDeckItems(lang);
-    await Promise.all([ladeAlleSrs(lang), ladeMerksaetze(lang)]);
+    await Promise.all([ladeAlleSrs(lang), ladeMerksaetze(lang), ladeMeldungen(lang)]);
   } catch (e) {
     el('tr-dash-list').innerHTML = `<div class="menu-item"><span class="menu-item-body"><span class="menu-item-name">⚠ ${e.message}</span></span></div>`;
     return;
@@ -904,7 +916,7 @@ function zeigeLessonKarte() {
   el('tr-counter').textContent = `${T.lessonIdx + 1} / ${T.lessonCards.length}`;
   el('tr-progress').style.width = (T.lessonIdx / T.lessonCards.length * 100) + '%';
   el('tr-front').innerHTML = frontHtml(it, true);
-  el('tr-back').innerHTML = backHtml(it) + merksatzHtml(it.key);
+  el('tr-back').innerHTML = backHtml(it) + merksatzHtml(it.key) + meldungHtml(it.key, anzeigeVon(it).vorne);
   zeigeKarte(true);
   sprich(it);
 }
@@ -964,7 +976,7 @@ function zeigeReviewKarte(it, aufgedeckt = false) {
   el('tr-stage-badge').textContent = stage.name;
   el('tr-stage-badge').style.background = stage.color;
   el('tr-front').innerHTML = frontHtml(it, false);
-  el('tr-back').innerHTML = backHtml(it) + merksatzHtml(it.key);
+  el('tr-back').innerHTML = backHtml(it) + merksatzHtml(it.key) + meldungHtml(it.key, anzeigeVon(it).vorne);
   zeigeKarte(!aufgedeckt);
   const rg = el('tr-rueckgang');
   if (rg) {
@@ -1163,6 +1175,65 @@ export function trainerShowBrowse() {
       &nbsp;<b>gestrichelt = Baustein</b>, kein eigenes Wort</span>` : ''}
   </div>`;
 
+  // ── Sprachen mit gemeinsamem Level: ein Block JE LEVEL ──────────────────
+  // Vorher stand hier je Deck ein Abschnitt, obwohl ein Level gar nicht nach
+  // Decks getrennt ist: Radikale, Zeichen und Wörter eines Levels gehören
+  // zusammen und werden zusammen abgeschlossen. Getrennt dargestellt sah es
+  // aus, als könne man bei den Radikalen weitergehen, ohne die Zeichen fertig
+  // zu haben — was nicht stimmt.
+  const cfg = GEMEINSAMES_LEVEL[T.lang];
+  if (cfg) {
+    const alleI = alleItems();
+    const karten = alleKarten();
+    const max = maxLevel(alleI);
+    const roh = (DECKS[T.lang] || []).flatMap(d => deckItems(d).map(it => ({ ...it, deck: d.key })));
+
+    for (let lvl = 1; lvl <= max; lvl++) {
+      const f = levelFortschritt(lvl, alleI, karten, cfg);
+      if (!f.hatInhalt) continue;
+      const offen = lvl <= (T.gemeinsamesLevel || 1);
+      const fertig = f.durch;
+
+      html += `<div style="border:1px solid ${fertig ? 'var(--green-dim,var(--border))' : 'var(--border)'};
+          border-radius:10px;padding:12px 14px;margin-top:16px;${offen ? '' : 'opacity:.45;'}">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <span style="font-family:var(--display);font-weight:900;font-size:16px;">Level ${lvl}${
+            fertig ? ' ✓' : ''}${offen ? '' : ' 🔒'}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--muted);">
+            ${(cfg.typen).map(t => {
+              const s = f.teile[t];
+              if (!s || !s.total) return '';
+              const ok = s.pct >= f.schwelle;
+              return `<span style="color:${ok ? 'var(--green,#2ecc71)' : 'var(--muted)'};">${
+                TYP_NAME[t]} ${s.guru}/${s.total}</span>`;
+            }).filter(Boolean).join(' &nbsp;·&nbsp; ')}
+          </span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin:2px 0 8px;">${
+          fertig ? 'Alle drei über ' + f.schwelle + ' % — Etappe geschafft.'
+                 : 'Weiter geht es, wenn Radikale, Zeichen und Wörter je ' + f.schwelle + ' % auf Guru stehen.'}</div>`;
+
+      for (const typ of cfg.typen) {
+        const teil = roh.filter(i => i.level === lvl && i.typ === typ)
+          .sort((x, y) => x.position - y.position);
+        if (!teil.length) continue;
+        html += `<div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin:8px 0 4px;">${TYP_NAME[typ]}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">`;
+        for (const it of teil) {
+          const stufen = (PRUEFUNGEN[it.typ] || ['bedeutung']).map(p => karten[it.key + '#' + p]?.srs ?? -1);
+          const srs = Math.min(...stufen);
+          const farbe = (!offen || srs < 1) ? 'var(--border)' : SRS_STAGES[srs].color;
+          const { vorne: glyph, hinten: tip } = anzeigeVon(it);
+          const strich = it.typ === 'component' ? 'border-style:dashed;' : '';
+          html += `<span data-deck="${it.deck}" data-key="${it.key.replace(/"/g, '&quot;')}" title="${
+            (it.typ === 'component' ? 'Komponente: ' : '') + tip.replace(/"/g, '&quot;')}"
+            style="padding:4px 9px;border-radius:3px;border:1px solid ${farbe};${strich}font-size:16px;cursor:pointer;">${glyph}</span>`;
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+  } else {
   for (const deck of (DECKS[T.lang] || [])) {
     T.deck = deck; ladeSrs();
     const items = deckItems(deck);
@@ -1191,6 +1262,8 @@ export function trainerShowBrowse() {
       html += '</div>';
     }
   }
+  }
+
   c.innerHTML = html;
   c.onclick = (e) => {
     const box = e.target.closest('[data-key]');
@@ -1307,6 +1380,7 @@ export function trainerShowDetail(deckKey, key) {
   }
 
   html += zeile('Mein Merksatz', merksatzHtml(it.key));
+  html += zeile('Rückmeldung', meldungHtml(it.key, anzeigeVon(it).vorne));
 
   el('tr-detail-content').innerHTML = html;
   animiereZeichen(el('tr-detail-strokes'), (it.typ === 'character' || it.typ === 'word') ? d.zeichen : null, 130, true);
@@ -1325,6 +1399,19 @@ export function trainerShowDetail(deckKey, key) {
 // gespeichert war. In der Einfangphase läuft dieser Handler vor dem der
 // Rückseite, und stopPropagation greift wirklich.
 document.addEventListener('click', (e) => {
+  // Melde-Knopf: derselbe Weg wie beim Merksatz, aus demselben Grund — die
+  // Kartenrückseite trägt onclick="trNext()", ohne Einfangphase spränge die
+  // Karte weg, bevor der Text geschrieben ist.
+  const knopf = e.target.closest?.('.melde-knopf');
+  if (knopf) {
+    e.stopPropagation(); e.preventDefault();
+    const key = knopf.dataset.melde;
+    melde(T.lang, key, knopf.dataset.anzeige, () => {
+      const behaelter = knopf.parentElement;
+      if (behaelter) behaelter.outerHTML = meldungHtml(key, knopf.dataset.anzeige);
+    });
+    return;
+  }
   const box = e.target.closest?.('.mein-merksatz');
   if (!box) return;
   e.stopPropagation();

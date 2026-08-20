@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v23';   // v23: echte Einzelzeichen-Wörter, bessere Bedeutungen
+const VERSION = 'sprachen-v24';   // v24: Level als Etappe, Meldungen
 
 const SHELL = [
   '.',
@@ -19,7 +19,7 @@ const SHELL = [
   'js/main.js', 'js/state.js', 'js/ui.js', 'js/input.js', 'js/content.js',
   'js/tts.js', 'js/config.js', 'js/supabase.js', 'js/progress.js',
   'js/decks.js', 'js/trainer.js', 'js/buecher.js', 'js/forecast.js', 'js/sync.js',
-  'js/vergleich.js', 'js/merksatz.js', 'js/screen.js', 'js/html.js',
+  'js/vergleich.js', 'js/merksatz.js', 'js/screen.js', 'js/html.js', 'js/meldung.js',
 ];
 
 self.addEventListener('install', (e) => {

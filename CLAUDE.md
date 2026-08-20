@@ -35,6 +35,7 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `js/screen.js` | Bildschirmwechsel — **eine** Fassung; stand vorher siebenmal im Projekt |
 | `js/html.js` | `escapeHtml` für alles, was ein Mensch eingetippt hat |
 | `js/merksatz.js` | Eigene Merksätze je Karte (Tabelle `merksaetze`, privat) |
+| `js/meldung.js` | „⚑ stimmt hier was nicht?" je Karte (Tabelle `meldungen`) |
 | `js/vergleich.js` | Bestenliste über `bestenliste()` |
 | `js/supabase.js` | Supabase-Client + Auth (dynamisch importiert, Offline-Fallback) |
 | `js/progress.js` | Fortschritt/SRS-Upserts + Settings (Weiter lernen, Fällige Karten) |
@@ -133,12 +134,16 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   deutsche Radikal-Namen, Zerlegungs-Hinweise; bewusst erst Level 1–3 gebaut
   (MAX_LEVEL in seed_hanzi.js erhöhen zum Erweitern). Leere Level werden übersprungen.
   Gating: Komponenten vor Zeichen; Wörter erst, wenn alle ihre Zeichen gelernt sind.
-  **Ein gemeinsames Level für alle drei Decks** (`GEMEINSAMES_LEVEL`, gespeichert
-  unter dem Pseudo-Deck `__level`) — wie bei WaniKani gehören Radikale, Zeichen
-  und Wörter eines Levels zusammen. Aufstieg bei **90 % der ZEICHEN** dieses
-  Levels auf Guru; ein Zeichen zählt erst, wenn Bedeutung UND Lesung dort sind.
-  Vorher hatte jedes Deck ein eigenes Level, und man war bei den Radikalen auf 3
-  und bei den Zeichen auf 1.
+  **Ein Level ist eine Etappe, kein Deck-Zustand** (`GEMEINSAMES_LEVEL`, gespeichert
+  unter dem Pseudo-Deck `__level`). Radikale, Zeichen und Wörter eines Levels
+  gehören zusammen: Man arbeitet an allen dreien **gleichzeitig** — sie sperren
+  sich NICHT gegenseitig —, und weiter geht es erst, wenn **alle drei je 80 %**
+  auf Guru stehen. Ein Item zählt erst, wenn alle seine Prüfungen dort sind.
+  Vorher waren Zeichen gesperrt, bis alle Radikale des Levels saßen, und Wörter,
+  bis alle ihre Zeichen saßen — beim Öffnen stand deshalb zweimal „0 von 0".
+  Die **Übersicht zeigt einen Kasten je Level** mit allen drei Sorten darin und
+  den Guru-Zahlen je Sorte; getrennte Deck-Abschnitte legten nahe, man könne bei
+  den Radikalen weitergehen, ohne die Zeichen fertig zu haben.
   **Zhuyin ist ein Spiel**: alle 42 am Stück, falsche kommen wieder, es entstehen
   keine SRS-Karten. 42 Zeichen sind ein Nachmittag, kein Halbjahr — und solange
   man sie nicht kann, kann man keine Lesung nachschlagen.
@@ -293,6 +298,13 @@ Karten zurückfallen, auch offline, auch wenn eine Abfrage fehlschlägt.
 und führt eine lokale Höchstmarke (`srs-level-hoechstmarke`). Vorher startete
 `ladeDeck` bei Level 1, wenn die Abfrage scheiterte; der Trainer leitete von
 dort neu her, blieb tiefer hängen und schrieb das Ergebnis über den echten Stand.
+
+**Meldungen:** Auf jeder Kartenrückseite und Detailseite steht „⚑ stimmt hier
+was nicht?". Was dort gemeldet wird, landet in `meldungen` und wird mit
+`node scripts/meldungen.js` gelesen und **beantwortet** — die Antwort erscheint
+danach in der App unter genau dieser Karte, mit Status (`geaendert` · `bleibt`).
+Der Rückweg ist der Sinn der Sache: Eine Meldung, auf die nie jemand reagiert,
+schreibt man kein zweites Mal.
 
 **Speichern:** Lernstände liegen als **eine Zeile je Karte** in `srs_cards`/`srs_decks`
 (nicht mehr als Klumpen in `settings.data` — das führte dazu, dass zwei Geräte sich
