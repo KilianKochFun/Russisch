@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v25';   // v25: verwaiste Decks zählen nicht mehr
+const VERSION = 'sprachen-v26';   // v26: Aussprache als Aufnahme aus dem Bucket
 
 const SHELL = [
   '.',
@@ -34,7 +34,8 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+      // audio-v1 füllt js/tts.js mit den Aufnahmen — die überleben jedes Update.
+      .then(keys => Promise.all(keys.filter(k => k !== VERSION && k !== 'audio-v1').map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });

@@ -30,7 +30,7 @@ Lerninhalte für Mandarin: Tabelle `vocab_items` (RLS: nur eingeloggt). Fortschr
 | `js/sync.js` | Lernstand speichern: gebündelt, offlinefest, mit Statusanzeige |
 | `js/input.js` | Pedal-Handler (Tasten frei belegbar) + Pedal-Setup |
 | `js/content.js` | Lädt `content/sprachen.json` |
-| `js/tts.js` | Sprachausgabe (Web Speech, lokal `/tts`-Proxy) |
+| `js/tts.js` | Sprachausgabe: Mandarin aus Bucket `audio`, sonst Web Speech (lokal `/tts`-Proxy) |
 | `js/config.js` | Supabase-URL + Publishable Key (öffentlich OK) |
 | `js/screen.js` | Bildschirmwechsel — **eine** Fassung; stand vorher siebenmal im Projekt |
 | `js/deckliste.js` | Welche Decks es je Sprache gibt — von Trainer **und** Sync gebraucht |
@@ -359,6 +359,18 @@ Light-/Dark-Mode automatisch via `prefers-color-scheme`.
 ## Text-to-Speech
 
 - Auf der Detailseite eines Items ist das große Wort **antippbar zum Anhören**.
+- **Mandarin spielt fertige Aufnahmen** aus dem privaten Bucket `audio` (nur mit
+  Login). Die Browser-Stimmen klangen für zh-TW nach nichts Echtem. Eine MP3 je
+  Zeichen, Wort und Zhuyin-Beispielwort, keine für Radikale. Pfad:
+  `zh-TW/<Codepoints hex, mit - verbunden>.mp3` (好 → `597d.mp3`), weil
+  Storage-Schlüssel keine Hanzi vertragen. Geladene Dateien liegen im Cache
+  `audio-v1` und spielen offline; `sw.js` löscht diesen Cache bei Updates nicht.
+  Fehlt eine Aufnahme, spricht wie bisher die Browser-Stimme.
+  **Nach neuen Zeichen/Wörtern:** `node scripts/audio_zh.js` — erzeugt nur, was
+  fehlt, eine Anfrage pro Sekunde (schneller sperrt Google). Quelle ist der
+  inoffizielle Google-Übersetzer-Zugang; deshalb liegt der Bucket nicht public.
+  Google spricht Einzelzeichen in der häufigsten Lesung —
+  `node scripts/audio_zh.js --mehrdeutig` listet Zeichen mit mehreren Lesungen.
 - Überall: **Web Speech API** (`speechSynthesis`), Sprache pro Inhalt (`ru-RU`, `ja-JP`, `de-DE`).
   Fehlt eine Stimme → Konsolen-Hinweis, kein Fehler.
 - Nur lokal mit `node server.js`: `/tts`-Proxy (Google Translate) wird automatisch bevorzugt.

@@ -125,7 +125,7 @@ for (let lvl = 1; lvl <= MAX_LEVEL; lvl++) {
 }
 
 // ── Zeilen bauen ────────────────────────────────────────────────────────────
-const PRIMAER = { '行': 'xing2', '讀': 'du2', '重': 'zhong4', '曲': 'qu3', '血': 'xue4', '校': 'xiao4', '尺': 'chi3', '中': 'zhong1', '大': 'da4', '比': 'bi3' };
+const PRIMAER = { '行': 'xing2', '讀': 'du2', '重': 'zhong4', '曲': 'qu3', '血': 'xue4', '校': 'xiao4', '尺': 'chi3', '中': 'zhong1', '大': 'da4', '比': 'bi3', '足': 'zu2', '咖': 'ka1' };
 // Nachnamen-, Varianten- und Kurzform-Einträge sind selten die Lern-Bedeutung
 const nachrangig = e => (e.eigenname || /variant of|surname |abbr\. for|^used in |^see /i.test(e.defs[0] || '')) ? 1 : 0;
 

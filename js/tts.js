@@ -3,7 +3,13 @@
 // (Google-TTS, bessere Qualität am Desktop). Überall sonst — insbesondere auf
 // GitHub Pages — läuft die Web Speech API (speechSynthesis). Fehlt eine passende
 // Stimme, gibt es nur einen Konsolen-Hinweis, keinen Fehler.
+//
+// Vor beidem kommt für Mandarin die fertige Aufnahme aus dem Bucket `audio`
+// (erzeugt mit scripts/audio_zh.js): Browser-Stimmen klingen für zh-TW nach
+// nichts Echtem. Einmal geladen, liegt jede Datei im Cache `audio-v1` und
+// spielt auch offline.
 import { S } from './state.js';
+import { getClient } from './progress.js';
 
 const LANG_TAGS = { ru: 'ru-RU', ja: 'ja-JP', de: 'de-DE', zh: 'zh-TW' };
 const IST_LOCALHOST = ['localhost', '127.0.0.1'].includes(location.hostname);
@@ -26,6 +32,7 @@ function _ttsLang() {
 
 export function stopTTS() {
   _ttsPlaying = false;
+  _auftrag++;   // eine Aufnahme, die noch lädt, soll danach nicht mehr losgehen
   if (_currentAudio) { _currentAudio.pause(); _currentAudio = null; }
   if ('speechSynthesis' in window) speechSynthesis.cancel();
 }
@@ -50,11 +57,63 @@ function _speakWeb(text, lang) {
   speechSynthesis.speak(u);
 }
 
+// ── Aufnahmen aus dem Bucket ────────────────────────────────────────────────
+
+const AUFNAHME_SPRACHEN = new Set(['zh-TW']);
+const AUDIO_CACHE = 'audio-v1';
+const _fehlt = new Set();   // Pfade, die es im Bucket nicht gibt — nicht jedes Mal neu fragen
+let _auftrag = 0;           // jeder speak()-Aufruf zählt hoch; ältere Downloads spielen dann nicht mehr
+
+// Muss mit audioPfad() in scripts/audio_zh.js übereinstimmen.
+function audioPfad(sprache, text) {
+  return `${sprache}/${[...text].map(c => c.codePointAt(0).toString(16)).join('-')}.mp3`;
+}
+
+async function ladeAufnahme(pfad) {
+  // Der Cache-Schlüssel ist nur ein Name, unter dem nie wirklich etwas abgerufen wird.
+  const schluessel = new Request('audio-cache/' + pfad);
+  const cache = await caches.open(AUDIO_CACHE).catch(() => null);
+  const treffer = await cache?.match(schluessel);
+  if (treffer) return treffer.blob();
+
+  const sb = getClient();
+  if (!sb) return null;
+  const { data, error } = await sb.storage.from('audio').download(pfad);
+  if (error || !data) { _fehlt.add(pfad); return null; }
+  cache?.put(schluessel, new Response(data, { headers: { 'Content-Type': 'audio/mpeg' } }));
+  return data;
+}
+
+// true, wenn eine Aufnahme spielt; false → der Aufrufer nimmt eine Stimme.
+async function spieleAufnahme(text, lang, auftrag) {
+  if (!AUFNAHME_SPRACHEN.has(lang)) return false;
+  const pfad = audioPfad(lang, text.trim());
+  if (_fehlt.has(pfad)) return false;
+  let blob;
+  try { blob = await ladeAufnahme(pfad); } catch { return false; }
+  if (!blob) return false;
+  if (auftrag !== _auftrag) return true;   // inzwischen weitergeblättert — nichts mehr sagen
+
+  const blobUrl = URL.createObjectURL(blob);
+  const audio = new Audio(blobUrl);
+  _currentAudio = audio;
+  audio.addEventListener('ended', () => URL.revokeObjectURL(blobUrl), { once: true });
+  try { await audio.play(); } catch { URL.revokeObjectURL(blobUrl); return false; }
+  return true;
+}
+
 export function speak(text, lang) {
   if (!text) return;
   stopTTS();
   const l = lang || _ttsLang();
+  const auftrag = ++_auftrag;
 
+  spieleAufnahme(text, l, auftrag).then((gespielt) => {
+    if (!gespielt && auftrag === _auftrag) sprichMitStimme(text, l);
+  });
+}
+
+function sprichMitStimme(text, l) {
   if (IST_LOCALHOST && _proxyOk !== false) {
     const audio = new Audio('/tts?q=' + encodeURIComponent(text) + '&lang=' + l);
     _currentAudio = audio;
