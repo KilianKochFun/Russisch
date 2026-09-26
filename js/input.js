@@ -16,6 +16,16 @@ import { zeigeScreen } from './screen.js';
 // ── Pedal-Belegung ──────────────────────────────────────────────────────────
 const STANDARD_PEDALE = { A: 'A', B: 'B', C: 'C' };
 
+// Mit dem Pedal gibt es kein Mausrad: Rutscht der Cursor aus dem sichtbaren
+// Bereich, muss die Seite mitgehen. Listen markieren die Zeile mit
+// `.selected`; eine neue Karte fängt oben an.
+function folgeCursor(vorher) {
+  const markiert = document.querySelector('.screen.active .selected');
+  if (markiert) { markiert.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  const neueKarte = S.state !== vorher || /front|zhuyin-spiel/.test(S.state);
+  if (neueKarte && document.querySelector('#tr-card-screen.active')) window.scrollTo({ top: 0 });
+}
+
 function normKey(k) { return k.length === 1 ? k.toUpperCase() : k; }
 
 function pedalVon(key) {
@@ -76,6 +86,11 @@ export function initInput() {
     const key = pedalVon(raw);
     if (!key) return;
     e.preventDefault();
+    // Nach der Taste dahin scrollen, wo jetzt der Cursor steht. Manche
+    // Bildschirme zeichnen erst nach einem Ladevorgang — deshalb zweimal.
+    const vorher = S.state;
+    requestAnimationFrame(() => folgeCursor(vorher));
+    setTimeout(() => folgeCursor(vorher), 300);
 
     if (S.state === 'sprachen-menu') {
       if (key === 'A') sprachenMove(-1);

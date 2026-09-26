@@ -4,10 +4,10 @@
 // GitHub Pages — läuft die Web Speech API (speechSynthesis). Fehlt eine passende
 // Stimme, gibt es nur einen Konsolen-Hinweis, keinen Fehler.
 //
-// Vor beidem kommt für Mandarin die fertige Aufnahme aus dem Bucket `audio`
-// (erzeugt mit scripts/audio_zh.js): Browser-Stimmen klingen für zh-TW nach
-// nichts Echtem. Einmal geladen, liegt jede Datei im Cache `audio-v1` und
-// spielt auch offline.
+// Mandarin spricht NUR aus fertigen Aufnahmen im Bucket `audio` (erzeugt mit
+// scripts/audio_zh.js), nie mit einer Stimme: Browser-Stimmen klingen für zh-TW
+// nach nichts Echtem. Fehlt eine Aufnahme, bleibt es still. Einmal geladen,
+// liegt jede Datei im Cache `audio-v1` und spielt auch offline.
 import { S } from './state.js';
 import { getClient } from './progress.js';
 
@@ -84,9 +84,8 @@ async function ladeAufnahme(pfad) {
   return data;
 }
 
-// true, wenn eine Aufnahme spielt; false → der Aufrufer nimmt eine Stimme.
+// Fehlt die Aufnahme, bleibt es still.
 async function spieleAufnahme(text, lang, auftrag) {
-  if (!AUFNAHME_SPRACHEN.has(lang)) return false;
   const pfad = audioPfad(lang, text.trim());
   if (_fehlt.has(pfad)) return false;
   let blob;
@@ -108,9 +107,10 @@ export function speak(text, lang) {
   const l = lang || _ttsLang();
   const auftrag = ++_auftrag;
 
-  spieleAufnahme(text, l, auftrag).then((gespielt) => {
-    if (!gespielt && auftrag === _auftrag) sprichMitStimme(text, l);
-  });
+  // Mandarin nur aus der Aufnahme. Die Browser-Stimme redete sonst über die
+  // Aufnahme drüber — und klingt für zh-TW ohnehin nach nichts Echtem.
+  if (AUFNAHME_SPRACHEN.has(l)) { spieleAufnahme(text, l, auftrag); return; }
+  sprichMitStimme(text, l);
 }
 
 function sprichMitStimme(text, l) {

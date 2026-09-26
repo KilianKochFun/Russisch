@@ -365,7 +365,7 @@ Light-/Dark-Mode automatisch via `prefers-color-scheme`.
   `zh-TW/<Codepoints hex, mit - verbunden>.mp3` (好 → `597d.mp3`), weil
   Storage-Schlüssel keine Hanzi vertragen. Geladene Dateien liegen im Cache
   `audio-v1` und spielen offline; `sw.js` löscht diesen Cache bei Updates nicht.
-  Fehlt eine Aufnahme, spricht wie bisher die Browser-Stimme.
+  Fehlt eine Aufnahme, bleibt es still — Mandarin nie mit der Browser-Stimme.
   **Nach neuen Zeichen/Wörtern:** `node scripts/audio_zh.js` — erzeugt nur, was
   fehlt, eine Anfrage pro Sekunde (schneller sperrt Google). Quelle ist der
   inoffizielle Google-Übersetzer-Zugang; deshalb liegt der Bucket nicht public.

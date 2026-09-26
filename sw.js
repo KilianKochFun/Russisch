@@ -2,7 +2,7 @@
 // Strategie: stale-while-revalidate — sofort aus dem Cache antworten,
 // im Hintergrund aktualisieren (Änderungen greifen beim nächsten Start).
 // Supabase-API-Aufrufe werden nie gecacht.
-const VERSION = 'sprachen-v26';   // v26: Aussprache als Aufnahme aus dem Bucket
+const VERSION = 'sprachen-v27';   // v27: Mandarin nur aus Aufnahmen, Pedal-Cursor scrollt mit
 
 const SHELL = [
   '.',
