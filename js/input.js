@@ -8,7 +8,7 @@ import {
 } from './ui.js';
 import {
   trainerDashMove, trainerDashSelect, trFlip, trNext, trGewusst, trNochmal, trBackToDash,
-  trRueckgaengig,
+  trRueckgaengig, trVorlesen,
   trZurueckZurUebersicht,
 } from './trainer.js';
 import { zeigeScreen } from './screen.js';
@@ -142,15 +142,19 @@ export function initInput() {
       trFlip();
 
     } else if (S.state === 'tr-lesson-back') {
-      trNext();
+      // Auf jeder aufgedeckten Karte ist B „nochmal vorlesen“.
+      if (key === 'B') trVorlesen();
+      else trNext();
 
     } else if (S.state === 'tr-review-back') {
-      if (key === 'C') trNochmal();
-      else trGewusst(); // A und B = gewusst
+      if (key === 'A') trGewusst();
+      else if (key === 'B') trVorlesen();
+      else trNochmal();
 
     } else if (S.state === 'zhuyin-spiel') {
-      // Vorne deckt jede Taste auf, hinten sind A/B „gewusst“ und C „nochmal“ —
+      // Vorne deckt jede Taste auf, hinten A „gewusst“, B vorlesen, C „nochmal“ —
       // dieselbe Belegung wie im Review, damit man nicht umdenken muss.
+      if (key === 'B' && trVorlesen()) return;   // vorne: false → B deckt auf
       if (key === 'C') window.zhuyinAntwort?.(false);
       else window.zhuyinAntwort?.(true);
 

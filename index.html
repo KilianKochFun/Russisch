@@ -176,7 +176,8 @@
   }
   .karte-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: column;       /* so viele Spalten wie Knöpfe */
+    grid-auto-columns: 1fr;
     gap: 12px;
     margin-top: 8px;
   }
@@ -188,9 +189,23 @@
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.05em;
-    padding: 16px;
+    padding: 14px 8px;
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
+    /* Taste und Text nebeneinander in EINER Zeile — vorher brach der Text bei
+       drei Knöpfen unter die Taste, und das Symbol noch eine Zeile tiefer */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  /* Drei Knöpfe auf Handybreite: enger, und das Symbol fällt weg — sonst ragt
+     der dritte über den Rand */
+  @media (max-width: 480px) {
+    .karte-buttons { gap: 8px; }
+    .karte-btn { padding: 14px 4px; gap: 6px; letter-spacing: 0; }
+    #tr-review-buttons .karte-btn .sym { display: none; }
   }
   .karte-btn.gewusst { border-color: var(--green-dim); }
   .karte-btn.gewusst:hover { border-color: var(--green); background: rgba(46,204,113,0.1); }
@@ -624,17 +639,19 @@
   </div>
   <div id="tr-back" onclick="trNext()" style="display:none;cursor:pointer;text-align:center;"></div>
   <div id="tr-review-buttons" class="karte-buttons" style="display:none;">
-    <button class="karte-btn gewusst" onclick="trGewusst()"><kbd>A</kbd> &nbsp; gewusst ✓</button>
-    <button class="karte-btn nochmal" onclick="trNochmal()"><kbd>C</kbd> &nbsp; nochmal ↩</button>
+    <button class="karte-btn gewusst" onclick="trGewusst()"><kbd>A</kbd><span>gewusst</span><span class="sym">✓</span></button>
+    <button class="karte-btn" onclick="trVorlesen()"><kbd>B</kbd><span>anhören</span><span class="sym">🔊</span></button>
+    <button class="karte-btn nochmal" onclick="trNochmal()"><kbd>C</kbd><span>nochmal</span><span class="sym">↩</span></button>
   </div>
   <!-- Sichtbare Knöpfe statt bloßer Hinweistexte: Vorher stand auf der
        Vorderseite gar nichts und auf der Lektionsrückseite nur „Tippen oder
        Taste → weiter“. Man musste raten, wohin man drückt. -->
   <div id="tr-aufdecken-buttons" class="karte-buttons" style="display:none;">
-    <button class="karte-btn" onclick="trFlip()"><kbd>B</kbd> &nbsp; aufdecken 👁</button>
+    <button class="karte-btn" onclick="trFlip()"><kbd>B</kbd><span>aufdecken</span><span class="sym">👁</span></button>
   </div>
   <div id="tr-weiter-buttons" class="karte-buttons" style="display:none;">
-    <button class="karte-btn" onclick="trNext()"><kbd>B</kbd> &nbsp; weiter →</button>
+    <button class="karte-btn" onclick="trVorlesen()"><kbd>B</kbd><span>anhören</span><span class="sym">🔊</span></button>
+    <button class="karte-btn" onclick="trNext()"><kbd>C</kbd><span>weiter</span><span class="sym">→</span></button>
   </div>
 </div>
 
@@ -709,7 +726,7 @@
     </div>
     <p style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--green);margin-bottom:12px;" id="tr-result-levelup"></p>
     <p style="font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:24px;" id="tr-result-level"></p>
-    <button class="karte-btn" onclick="trBackToDash()" style="padding:16px 32px;"><kbd>B</kbd> &nbsp; Zurück zum Dashboard</button>
+    <button class="karte-btn" onclick="trBackToDash()" style="padding:16px 32px;"><kbd>B</kbd><span>Zurück zum Dashboard</span></button>
   </div>
 </div>
 

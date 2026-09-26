@@ -154,6 +154,9 @@ Karten/Fragen deshalb **nur anhängen, nie mittendrin einfügen oder umsortieren
   neben dem, das gelernt wird, hilft nicht. Auf der **Zhuyin-Karte selbst** bleibt
   Pinyin stehen; dort ist es die Antwort.
   Strichfolge via `vendor/hanzi-writer.min.js` (Zeichendaten vom CDN, offline still).
+  Sie läuft **einmal und langsam**; **B auf der aufgedeckten Karte** spielt Ton
+  und Strichfolge zusammen neu (`trVorlesen`). Vorher lief sie in gut einer
+  Sekunde durch, und man sah nur das fertige Zeichen.
   PWA: `manifest.json` + `sw.js` (stale-while-revalidate; bei Shell-Änderungen VERSION
   in sw.js NICHT nötig zu bumpen — Updates greifen beim nächsten Start).
   **Aber:** „beim nächsten Start" heißt einen Start *später*, weil stale-while-revalidate
@@ -269,7 +272,8 @@ gespeichert als `pedalKeys` in settings). Zusätzlich ist alles klick-/antippbar
 |---|---|---|---|
 | Menüs/Dashboards | hoch | auswählen | runter |
 | Karte (vorne) | aufdecken | aufdecken | aufdecken |
-| Karte (hinten, Review) | gewusst ✓ | gewusst ✓ | nochmal ↩ |
+| Karte (hinten, Review) | gewusst ✓ | anhören 🔊 | nochmal ↩ |
+| Karte (hinten, Lektion) | weiter | anhören 🔊 | weiter |
 | Buch-Viewer | zurück | herunterladen | zurück |
 | Review-Vorschau | hoch | Tag auf-/zuklappen | runter |
 | Statistik | hoch | zurück | runter |

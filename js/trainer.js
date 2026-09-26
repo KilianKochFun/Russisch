@@ -806,7 +806,14 @@ function bausteinWoerter(form, ausser) {
 
 // Strichfolge-Animation (Hanzi Writer, vendored; Zeichendaten vom CDN —
 // offline schlägt das leise fehl und der Container bleibt unsichtbar)
-function animiereZeichen(ziel, zeichen, groesse = 110, zeigeFehler = false) {
+// Die Strichfolge läuft einmal und langsam; B (trVorlesen) lässt sie zusammen
+// mit dem Ton neu laufen. Vorher lief sie in gut einer Sekunde durch — bis man
+// hinsah, stand nur noch das fertige Zeichen da, und es sah aus, als liefe sie nie.
+let _writer = null;   // die zuletzt gezeichnete Strichfolge, für B
+
+function animiereZeichen(ziel, zeichen, groesse = 160, zeigeFehler = false) {
+  _writer?.pauseAnimation();
+  _writer = null;
   const fehler = (grund) => {
     if (!ziel) return;
     if (zeigeFehler) {
@@ -824,8 +831,8 @@ function animiereZeichen(ziel, zeichen, groesse = 110, zeigeFehler = false) {
     const writer = window.HanziWriter.create(ziel, zeichen, {
       width: groesse, height: groesse, padding: 4,
       strokeColor: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f0ece4',
-      delayBetweenStrokes: 120,
-      strokeAnimationSpeed: 1.6,
+      delayBetweenStrokes: 350,
+      strokeAnimationSpeed: 0.8,
       // Strichdaten lokal (strokes/, offlinefähig), CDN nur als Fallback
       charDataLoader: (c) =>
         fetch('strokes/' + encodeURIComponent(c) + '.json')
@@ -835,6 +842,8 @@ function animiereZeichen(ziel, zeichen, groesse = 110, zeigeFehler = false) {
       onLoadCharDataError: () => fehler('keine Strichdaten'),
     });
     writer.animateCharacter();
+    _writer = writer;
+    // Antippen spielt sie neu — und blättert die Karte nicht um (#tr-back hat trNext)
     ziel.onclick = (ev) => { ev.stopPropagation(); writer.animateCharacter(); };
   } catch (e) {
     fehler(e.message);
@@ -1354,7 +1363,7 @@ export function trainerShowDetail(deckKey, key) {
   html += zeile('Rückmeldung', meldungHtml(it.key, anzeigeVon(it).vorne));
 
   el('tr-detail-content').innerHTML = html;
-  animiereZeichen(el('tr-detail-strokes'), (it.typ === 'character' || it.typ === 'word') ? d.zeichen : null, 130, true);
+  animiereZeichen(el('tr-detail-strokes'), (it.typ === 'character' || it.typ === 'word') ? d.zeichen : null, 180, true);
   const wortEl = el('tr-detail-wort');
   if (wortEl) wortEl.onclick = () => sprich(it);
   sprich(it);
@@ -1410,5 +1419,19 @@ export function trBackToDash() {
   trainerShowDashboard(T.lang);
 }
 
+// B auf der aufgedeckten Karte: dasselbe Wort nochmal hören, und die
+// Strichfolge läuft neu. Vorher war B
+// dort ein zweites „gewusst“ — eine Taste doppelt belegt, während man das Wort
+// nur einmal hören konnte.
+// Gibt zurück, ob vorgelesen wurde — im Zhuyin-Spiel ist B vorne „aufdecken“.
+export function trVorlesen() {
+  let it = null;
+  if (S.state === 'zhuyin-spiel') it = Z.offen ? Z.aktuell : null;
+  else if (S.state === 'tr-lesson-back') it = T.lessonCards[T.lessonIdx];
+  else if (S.state === 'tr-review-back') it = T.current;
+  if (it) { sprich(it); _writer?.animateCharacter(); }
+  return !!it;
+}
+
 // Für ui.js (Sprachauswahl) und inline-onclick ohne Import-Zyklus:
-Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash, trainerShowBrowse, trAbbrechen, trainerShowDetail, trZurueckZurUebersicht });
+Object.assign(window, { trainerShowDashboard, trFlip, trNext, trGewusst, trNochmal, trBackToDash, trainerShowBrowse, trAbbrechen, trainerShowDetail, trZurueckZurUebersicht, trVorlesen });

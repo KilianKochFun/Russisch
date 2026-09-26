@@ -17,9 +17,14 @@ export default async (app, soll) => {
   soll.wahr(await app.sichtbar('#tr-weiter-buttons'), 'die Rückseite zeigt einen Weiter-Knopf');
   soll.wahr(!await app.sichtbar('#tr-aufdecken-buttons'), 'der Aufdecken-Knopf ist hinten verborgen');
 
-  // Und der Knopf tut auch, was draufsteht
+  // B liest auf der Rückseite nochmal vor und blättert NICHT weiter
   const vorher = await app.text('#tr-counter');
-  await app.klick('#tr-weiter-buttons button');
+  await app.pedal('B');
+  await app.page.waitForTimeout(300);
+  soll.gleich(await app.text('#tr-counter'), vorher, 'B bleibt auf der Karte (nochmal anhören)');
+
+  // Und der Knopf tut auch, was draufsteht
+  await app.klick('#tr-weiter-buttons button:has-text("weiter")');
   await app.page.waitForTimeout(300);
   soll.wahr(await app.text('#tr-counter') !== vorher, 'der Weiter-Knopf blättert zur nächsten Karte');
 
