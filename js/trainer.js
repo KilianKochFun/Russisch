@@ -811,6 +811,9 @@ function bausteinWoerter(form, ausser) {
 // hinsah, stand nur noch das fertige Zeichen da, und es sah aus, als liefe sie nie.
 let _writer = null;   // die zuletzt gezeichnete Strichfolge, für B
 
+const farbe = (name, ersatz) =>
+  getComputedStyle(document.documentElement).getPropertyValue(name).trim() || ersatz;
+
 function animiereZeichen(ziel, zeichen, groesse = 160, zeigeFehler = false) {
   _writer?.pauseAnimation();
   _writer = null;
@@ -830,7 +833,11 @@ function animiereZeichen(ziel, zeichen, groesse = 160, zeigeFehler = false) {
   try {
     const writer = window.HanziWriter.create(ziel, zeichen, {
       width: groesse, height: groesse, padding: 4,
-      strokeColor: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f0ece4',
+      strokeColor: farbe('--text', '#f0ece4'),
+      // Der Umriss muss sich deutlich von den Strichen abheben. Der Standard
+      // (#DDD) ist im dunklen Modus fast so hell wie die Striche — man sah
+      // dann nur ein fertiges Zeichen, das Zeichnen nicht.
+      outlineColor: farbe('--border', '#2a2a2a'),
       delayBetweenStrokes: 350,
       strokeAnimationSpeed: 0.8,
       // Strichdaten lokal (strokes/, offlinefähig), CDN nur als Fallback
